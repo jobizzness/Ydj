@@ -1,0 +1,116 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>DesignJuice</title>
+    <meta name="description" content=".">
+
+    <base href="/">
+
+    <link rel="icon" href="/images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet">
+    <!-- See https://goo.gl/OOhYW5 -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/images/manifest/safari-pinned-tab.svg" color="#ff4081">
+    <link rel="shortcut icon" href="/images/manifest/favicon.ico">
+    <!-- See https://goo.gl/qRE0vM -->
+    <meta name="theme-color" content="#ff4081">
+
+    <!--  Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/manifest/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="194x194" href="/images/manifest/favicon-194x194.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/manifest/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/manifest/favicon-16x16.png">
+
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="My App">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Afrodapp">
+
+    <!-- Homescreen icons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/manifest/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/manifest/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/manifest/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/manifest/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/manifest/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/manifest/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/manifest/apple-touch-icon-180x180.png">
+
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+  <meta name="msapplication-TileColor" content="#ff4081">
+  <meta name="msapplication-TileImage" content="/images/manifest/mstile-144x144.png">
+  <meta name="msapplication-config" content="/images/manifest/browserconfig.xml">
+
+    <script>
+      // Setup Polymer options
+      window.Polymer = {
+        dom: 'shadow',
+        lazyRegister: true,
+      };
+
+      // Load webcomponentsjs polyfill if browser does not support native
+      // Web Components
+      (function() {
+        'use strict';
+
+        var onload = function() {
+          // For native Imports, manually fire WebComponentsReady so user code
+          // can use the same code path for native and polyfill'd imports.
+          if (!window.HTMLImports) {
+            document.dispatchEvent(
+              new CustomEvent('WebComponentsReady', {bubbles: true})
+            );
+          }
+        };
+
+        var webComponentsSupported = (
+          'registerElement' in document
+          && 'import' in document.createElement('link')
+          && 'content' in document.createElement('template')
+        );
+
+        if (!webComponentsSupported) {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+          script.onload = onload;
+          document.head.appendChild(script);
+        } else {
+          onload();
+        }
+      })();
+
+      // Load pre-caching Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js');
+        });
+      }
+    </script>
+
+    <link rel="import" href="src/my-app.html">
+
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        line-height: 1.5;
+        min-height: 100vh;
+        background-color: #fafafa;
+      }
+    </style>
+  </head>
+  <body>
+    <my-app></my-app>
+    <!-- You hear more when you listen -->
+  </body>
+</html>

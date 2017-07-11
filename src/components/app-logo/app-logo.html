@@ -1,0 +1,51 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-logo">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    	<iron-image src="/images/logo.png" id="logo" 
+    				style$="width:[[width]]px; height:[[height]]px; background-color: transparent;"
+  					sizing="contain" 
+  					preload>
+		
+	</iron-image>
+
+  </template>
+
+  <script>
+    class AppLogo extends Polymer.Element {
+
+      static get is() { return 'app-logo'; }
+
+      static get properties() {return {
+          width: String,
+		 height: String
+        }}
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppLogo.is, AppLogo);
+  </script>
+</dom-module>

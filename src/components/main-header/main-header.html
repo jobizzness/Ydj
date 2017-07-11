@@ -1,0 +1,155 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../my-icons.html">
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../app-logo/app-logo.html">
+<link rel="import" href="../../components/app-button/app-button.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="main-header">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment app-button">
+      :host {
+        display: block;
+      }
+      .toolbar-bottom{
+        background-color: white;
+        @apply --layout-horizontal;
+      }
+      .top-toolbar{
+        height: 90px;
+      }
+      app-logo{
+        padding-top: 5px;
+      }
+      .logo-link{
+        padding: 0 24px;
+        display: block;
+      }
+      iron-selector.app-nav{
+        width: 100%;
+        @apply --layout-horizontal;
+      }
+      iron-selector.app-nav a.link{
+        @apply --layout-vertical;
+          color: var(--app-text-color);
+          text-decoration: none;
+          font-weight: 600;
+          outline: none;
+          font-size: 14px;
+          padding: 22px 24px;
+          cursor: pointer;
+          white-space: nowrap;
+          position: relative;
+          overflow: hidden;
+      }
+      iron-selector.app-nav a.link:before{
+        position: absolute;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        height: 4px;
+        left:0;
+        content: "";
+        transition: -webkit-transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
+        transition: transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
+        -webkit-transform: translate3d(0, 4px, 0);
+        transform: translate3d(0, 4px, 0);
+        background: var(--app-accent-color, #509fff);
+      }
+      iron-selector.app-nav a.link:hover:before, iron-selector.app-nav a.link.selected:before{
+        transform: translate3d(0, 0, 0);
+      }
+      header-actions{
+        @apply --layout-horizontal;
+      }
+      header-actions>*{
+        margin: 0 8px;
+      }
+    </style>
+
+      <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
+
+      <app-toolbar class="top-toolbar content">
+        <a href="#" class="logo-link">
+          <app-logo height="90" width="180"></app-logo>
+        </a>
+        <span class="flex"></span>
+        <header-actions>
+          <dom-if if="[[!smallScreen]]">
+            <template>
+              <a href="#"><app-button border>Log In</app-button></a>
+              <a href="#"><app-button shaded>Sign Up</app-button></a>
+            </template>
+          </dom-if>
+        </header-actions>
+<!--         
+        <div main-title>My App</div> -->
+      </app-toolbar>
+      <app-toolbar class="toolbar-bottom" sticky>
+        <div class="content layout horizontal">
+          <dom-if if="[[!smallScreen]]">
+            <template>
+              <iron-selector attr-for-selected="href" selected="non-existing"
+                       fallback-selection="default" class="app-nav">
+                    <template is="dom-repeat" items="[[nav.items]]" as="item">
+                      <a href="[[item.slug]]" class="link">[[item.name]]</a>
+                    </template>
+              </iron-selector>
+              <!-- Search Box -->
+              <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+            </template>
+          </dom-if>
+        </div>
+      </app-toolbar>
+
+  </template>
+
+  <script>
+    class MainHeader extends Polymer.Element {
+
+      static get is() { return 'main-header'; }
+
+      static get properties() {return {
+          nav:{
+            type:Object,
+            computed: 'navigation()'
+          }
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+      navigation(){return {
+            items: [
+              {name: 'Print Templates', slug: 'templates/print'},
+              {name: 'Graphics', slug: '#'},
+              {name: 'Web & Apps', slug: '#'},
+              {name: 'Branding', slug: '#'},
+              {name: 'Plug-ins', slug: '#'},
+              {name: 'Fonts', slug: '#'},
+              {name: '3D', slug: '#'}
+            ]}
+      }
+    }
+
+    window.customElements.define(MainHeader.is, MainHeader);
+  </script>
+</dom-module>
