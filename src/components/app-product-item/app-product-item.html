@@ -1,0 +1,183 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+
+<!-- App components -->
+
+<dom-module id="app-product-item">
+  <template>
+
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      /* local styles go here */
+      :host {
+        position: relative;
+        overflow: hidden;
+      }
+      .shot-card{
+        background-color: #fff;
+        height: 100%;
+        color: rgba(33, 33, 33, 0.61);
+      }
+      .product-owner{
+        font-weight: 500;
+        font-size: 13px;
+        padding: 0 0 24px;
+        margin: 0;
+      }
+      .product-owner a{
+        color: inherit;
+      }
+      .card{
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        box-shadow:0 1px 1px rgba(0,0,0,.1);
+      }
+      .shot{
+        width: 100%;
+      }
+      .price{
+        font-weight: 600;
+        font-size: 18px;
+        color: rgba(32, 32, 36, 0.82);
+      }
+      .shot-footer{
+        font-size: 14px;
+        padding: 8px;
+      }
+      .owner-info{
+        position: absolute;
+        top: -39px;
+        padding: 0 16px;
+        width: 100%;
+      }
+      .owners-name{
+      }
+      footer{
+        position: relative;
+        display: block;
+      }
+      .shot-fab{
+        position: absolute;
+        top: -26px;
+        right: 8px;
+      }
+      .shot-buttons{
+        padding-top: 8px;
+        margin: 0px -16px;
+      }
+      .shot-buttons> paper-button{
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .shot-buttons> paper-button iron-icon{
+        --iron-icon-height: 20px;
+        --iron-icon-width: 20px;
+        margin-right: 5px;
+      }
+      .shot-image{
+        height: 245px;
+        width: 100%;
+      }
+      .price-tag{
+        padding-top: 8px;
+      }
+      .product-title{
+        margin: 0;
+        font-size: 15px;
+        margin-bottom: 8px;
+        color: rgba(0, 0, 0, 0.81);
+        font-weight: 600;
+      }
+      .product-category{
+        margin: 0;
+        padding-bottom: 8px;
+      }
+      .product-category a{
+        color: var(--app-accent-color);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      @media (max-width: 800px){
+
+      }
+       @media (max-width: 479px) {
+        .product-description{
+          font-size: 14px;
+        }
+       }
+       .mobile .shot-buttons paper-button span, .mobile .owner-info{
+        display: none;
+       }
+       .mobile .shot-footer .shot-title{
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+       }
+
+    </style>
+
+    <!-- local DOM goes here -->
+    <article class="shot" id="shot">
+      <div class="card shot-card">
+        <a href="/goodies/cool-design-made-by-me"><iron-image preload
+                    class="shot-image"
+                    style="background-color: #eee;"
+                    fade
+                    sizing="cover" src="http://lorempixel.com/400/700/fashion/[[index]]">
+            </iron-image></a>
+
+        <footer>
+          <div class="shot-footer">
+              <a href="#"><h1 class="product-title">Phantom Cloud Illustration Shop</h1></a>
+              <p class="product-owner">
+                  by <a href="#">LB Design</a>
+              </p>
+              <div class="layout horizontal price-tag">
+                <p class="product-category">
+                  <a href="#">Branding</a>
+                </p>
+                <span class="flex"></span>
+                <span class="price">$150</span>
+              </div>
+              <div class="shot-buttons layout horizontal">
+                <paper-button class="pink flex"><iron-icon icon="app-icons:like"></iron-icon> <span>Like</span></paper-button>
+                <paper-button class="pink flex"><iron-icon icon="app-icons:comment"></iron-icon><span>Comment</span></paper-button>
+                <paper-button class="pink flex"><iron-icon icon="app-icons:share"></iron-icon><span>Share</span></paper-button>
+              </div>
+          </div>
+        </footer>
+      </div>
+    </article>
+  </template>
+
+  <script>
+      class AppProductItem extends Polymer.Element {
+
+      static get is() { return 'app-product-item'; }
+
+      static get properties() {return {
+          properties: {
+            data: Object,
+        }
+      }}
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppProductItem.is, AppProductItem);
+
+  </script>
+</dom-module>

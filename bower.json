@@ -16,7 +16,10 @@
     "polymer": "^2.0.1",
     "webcomponentsjs": "^1.0.1",
     "iron-image": "^2.1.1",
-    "iron-localstorage": "^2.0.0"
+    "iron-localstorage": "^2.0.0",
+    "iron-list": "^2.0.4",
+    "paper-button": "^2.0.0",
+    "paper-input": "^2.0.1"
   },
   "resolutions": {
     "polymer": "^2.0.1",

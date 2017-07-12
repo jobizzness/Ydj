@@ -1,12 +1,17 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../my-icons.html">
-<link rel="import" href="../components/app-hero/app-hero.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../bower_components/google-youtube/google-youtube.html">
 <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
-
+<link rel="import" href="../components/app-hero/app-hero.html">
+<link rel="import" href="../my-icons.html">
+<link rel="import" href="../components/app-product-item/app-product-item.html">
+<link rel="import" href="../components/app-products/app-products.html">
+<link rel="import" href="../components/app-footer/app-footer.html">
 <!--
 `<Name>` is Description
 
@@ -14,7 +19,7 @@
 -->
 <dom-module id="app-home">
   <template>
-    <style include="shared-styles iron-flex iron-flex-alignment app-hero">
+    <style include="shared-styles iron-flex iron-flex-alignment app-hero app-products">
       :host {
         display: block;
         min-height:100vh;
@@ -26,38 +31,115 @@
       google-youtube{
       	--google-youtube-container:{
 	  	    width: 100%;
-	    	height: 270px;
-    	}
+	    	  height: 270px;
+  	    }
+      }
+      .products-toolbar{
+  	    height: 64px;
+  	    border: 1px solid #eee;
+  	    @apply --layout-horizontal;
+  	    @apply --layout-center-center;
+      }
+	   iron-list{
+	  	  width:100%;
+        padding-top:16px;
+      }
+      #products-grid>app-product-item{
+        width: 25%;
+        padding: 16px;
+      }
+      #banner-1>.hero-info{
+        position: absolute;
+        z-index: 1;
+      }
+      #banner-1>.hero-info p{
+        margin: 0;
+        color: white;
+      }
+      #banner-1>.hero-info h1{
+        color:white;
+      }
+      .blue-btn{
+        color: white;
+        background-color: #03A9F4;
+        padding: 16px;
+      }
+      @media (max-width: 1024px) {
+        #products-grid>app-product-item{
+          width: 50%;
+          padding: 16px;
+        }
+      }
+      @media (max-width: 479px) {
+        #products-grid>app-product-item{
+          width: 100%;
+          padding: 16px;
+        }
+        iron-list{
+          padding-top: 8px;
+        }
       }
     </style>
     <!-- Media Query -->
     <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
 
     <main class="layout vertical">
+      <!-- App Hero -->
     	<app-hero class="layout vertical center-center">
     		<div class="layout horizontal space-around hero-info content">
     			<div class="flex layout vertical center-justified">
     				<h1><span class="accent">Design</span> and <span class="accent">creative</span><br/> assets you’ll love!</h1>
     				<p>Find any design and graphic resources that you need for your projects. Because we have it!</p>
-
     			</div>
     			<dom-if if="[[!smallScreen]]">
     				<template>
 		    			<div class="flex layout vertical center-center">
 		    				<video-card>
 		    					<google-youtube 
-		    						video-id="LXd26Nqg5tQ" height="270px">
-		                            </google-youtube>
+		    						video-id="LXd26Nqg5tQ" 
+                    height="270px"></google-youtube>
 		    				</video-card>
 		    			</div>
 	    			</template>
     			</dom-if>
     		</div>
-    		<!-- <iron-image
-			sizing="cover" preload src="http://lorempixel.com/1600/700" class="background"></iron-image> -->
     	</app-hero>
-    </main>
+      <!-- Product Listing -->
+    	<app-products class="layout vertical">
+    		<app-toolbar class="products-toolbar">
+    			<span class="flex"></span>
+    			<!-- Search Bar -->
 
+    		</app-toolbar>
+      		<!-- List here -->
+      		<iron-list items="[[products]]" 
+                      as="product"
+                      class="content" 
+                      scroll-target="document" 
+                      grid id="products-grid">
+  		        <template>
+  		          <app-product-item data="[[product]]" on-tap="_viewPost" index="[[index]]"></app-product-item>
+  		        </template>
+	      	</iron-list>
+    	</app-products>
+      <!-- Bottom Banner -->
+      <app-hero class="layout horizontal center-center" id="banner-1">
+        <div class="hero-info layout vertical center-center">
+          <h1>Become a Cretivepreneuer!</h1>
+          <p>Create what you love and enjoy big sales earnings when you sell your item on YDJ Marketplace.</p>
+          <a href="#"><paper-button raised class="blue-btn">Start selling now!</paper-button></a>
+        </div>
+        <!-- Background Image -->
+        <iron-image sizing="cover" 
+                    preload src="http://devexweb.com/material_concept/images/slide_2.jpg" 
+                    class="background" 
+                    style="background-color: #5f5f5f;"></iron-image>
+      </app-hero>
+    </main>
+    <!-- Footer -->
+    <footer>
+      <app-footer></app-footer>
+    </footer>
   </template>
 
   <script>
@@ -67,7 +149,10 @@
 
       static get properties() {
         return {
-          
+          products: {
+            type: Object,
+            value: [{},{},{},{},{},{},{},{},{},{},{}]
+          }
         };
       }
 

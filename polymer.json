@@ -2,10 +2,7 @@
   "entrypoint": "index.html",
   "shell": "src/my-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html",
-    "src/my-view404.html"
+    "src/pages/app-home.html"
   ],
   "sources": [
     "src/**/*",
@@ -18,5 +15,21 @@
   ],
   "lint": {
     "rules": ["polymer-2"]
-  }
+  },
+   "builds": [{
+     "bundle": true,
+    "name": "es5-unbundled",
+    "js": {"minify": true, "compile": true},
+    "css": {"minify": true},
+    "html": {"minify": true},
+    "addServiceWorker": true,
+    "addPushManifest": true
+  },{
+    "name": "es6-unbundled",
+    "js": {"minify": true},
+    "css": {"minify": true},
+    "html": {"minify": true},
+    "addServiceWorker": false,
+    "addPushManifest": false
+  }]
 }

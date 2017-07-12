@@ -8,28 +8,17 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 
 <!-- shared styles for all views -->
-<dom-module id="shared-styles">
+<dom-module id="app-products">
   <template>
     <style>
-      .content {
-        margin: 0 auto;
-        max-width: 1300px;
+      app-products> .products-toolbar{
+        background-color: white;
       }
-      :link, :visited {
-          outline: 0;
-          text-decoration: none;
-      }
-      .flex-2 {
-        flex:2;
-      }
-
-      h1 {
-        margin: 16px 0;
-        color: #212121;
-        font-size: 22px;
+      app-products{
+        background-color: #fafafa;
       }
     </style>
   </template>
