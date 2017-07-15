@@ -1,0 +1,90 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-goodies">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+        background-color: #fafafa;
+        min-height: 100vh;
+        padding: 1em 0;
+      }
+      .container>*{
+        padding: 24px;
+      }
+      .container{
+        @apply(--layout-horizontal);
+      }
+      product-media{
+        min-height: 50vh;
+        background-color: white;
+        display: block;
+      }
+      /*Mobile*/
+      @media (max-width: 425px) {
+        .container>*{
+          padding: 0;
+        }
+        .container{
+          @apply(--layout-vertical);
+        }
+         :host {
+          padding:0;
+        }
+      }
+    </style>
+
+    <article class="content">
+          <div class="container">
+            <main class="flex-2">
+              <!-- Product Viewer -->
+              <product-media media="[[product.media]]"></product-media>
+
+              <secion class="post-content">
+                
+              </secion>
+            </main>
+            <aside class="flex">Aside</aside>
+          </div>
+          
+          <footer></footer>
+    </article>
+
+  </template>
+
+  <script>
+    class AppGoodies extends Polymer.Element {
+
+      static get is() { return 'app-goodies'; }
+
+      static get properties() {
+        return {
+          
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppGoodies.is, AppGoodies);
+  </script>
+</dom-module>

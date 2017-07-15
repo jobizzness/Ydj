@@ -21,11 +21,11 @@
 <link rel="import" href="components/app-logo/app-logo.html">
 <link rel="import" href="components/app-button/app-button.html">
 <link rel="import" href="my-icons.html">
-<!-- Pages -->
 
+<!-- Pages -->
 <link rel="lazy-import" href="pages/app-home.html">
-<link rel="lazy-import" href="my-view2.html">
-<link rel="lazy-import" href="my-view3.html">
+<link rel="lazy-import" href="pages/app-goodies.html">
+<link rel="lazy-import" href="pages/app-login.html">
 <link rel="lazy-import" href="my-view404.html">
 
 <dom-module id="my-app">
@@ -34,6 +34,7 @@
       :host {
         --app-primary-color: #5f5f5f;
         --app-secondary-color: white;
+        --app-link-color: #036df4;
         --app-text-color: rgba(0, 0, 0, 0.74);
         --app-accent-color:#009688;
         display: block;
@@ -131,7 +132,7 @@
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
-    <app-drawer-layout fullbleed force-narrow>
+    <app-drawer-layout fullbleed force-narrow id="layout">
       <!-- Drawer content -->
       <app-drawer id="drawer" slot="drawer" align="end" opened>
         <app-toolbar>Navigation</app-toolbar>
@@ -145,51 +146,57 @@
       <!-- Main content -->
       <app-header-layout has-scrolling-region>
 
-        <app-header slot="header" condenses reveals effects="waterfall">
-            <app-toolbar class="toolbar-top content">
-              <a href="#" class="logo-link">
-                <app-logo height="90" width="180"></app-logo>
-              </a>
-              <span class="flex"></span>
-              <template is="dom-if" if="[[smallScreen]]">
-                <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-              </template>
-              <header-actions>
-                <dom-if if="[[!smallScreen]]">
-                  <template>
-                    <a href="#"><app-button border>Log In</app-button></a>
-                    <a href="#"><app-button shaded>Sign Up</app-button></a>
-                  </template>
-                </dom-if>
-              </header-actions>
-            </app-toolbar>
+          <app-header slot="header" condenses reveals effects="waterfall">
+            <template is="dom-if" if="[[_shouldRenderHeader]]">
+              <app-toolbar class="toolbar-top content">
+                <a href="#" class="logo-link">
+                  <app-logo height="90" width="180"></app-logo>
+                </a>
+                <span class="flex"></span>
+                <template is="dom-if" if="[[smallScreen]]">
+                  <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+                </template>
+                <header-actions>
+                  <dom-if if="[[!smallScreen]]">
+                    <template>
+                      <a href="/login"><app-button border>Log In</app-button></a>
+                      <a href="/register"><app-button shaded>Sign Up</app-button></a>
+                    </template>
+                  </dom-if>
+                </header-actions>
+              </app-toolbar>
 
-            <app-toolbar class="toolbar-bottom" sticky>
-              <div class="content layout horizontal">
-                <dom-if if="[[!smallScreen]]">
-                  <template>
-                    <iron-selector attr-for-selected="href" 
-                        selected="non-existing"
-                        fallback-selection="default" 
-                        class="app-nav">
-                          <template is="dom-repeat" items="[[nav.items]]" as="item">
-                            <a href="[[item.slug]]" class="link">[[item.name]]</a>
-                          </template>
-                    </iron-selector>
-                    <!-- Search Box -->
-                    <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-                  </template>
-                </dom-if>
-              </div>
-            </app-toolbar>
-        </app-header>
+              <app-toolbar class="toolbar-bottom" sticky>
+                <div class="content layout horizontal">
+                  <dom-if if="[[!smallScreen]]">
+                    <template>
+                      <iron-selector attr-for-selected="href" 
+                          selected="non-existing"
+                          fallback-selection="default" 
+                          class="app-nav">
+                            <template is="dom-repeat" items="[[nav.items]]" as="item">
+                              <a href="[[item.slug]]" class="link">[[item.name]]</a>
+                            </template>
+                      </iron-selector>
+                      <!-- Search Box -->
+                      <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+                    </template>
+                  </dom-if>
+                </div>
+              </app-toolbar>
+            </template>
+          </app-header>
+          
           <!-- App pages -->
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
+          <app-login name="login"></app-login>
           <app-home name="home"></app-home>
+          <app-goodies name="goodies"></app-goodies>
+          <app-register name="register"></app-register>
           <app-404 name="view404"></app-404>
         </iron-pages>
       </app-header-layout>
@@ -214,6 +221,13 @@
           rootPattern: String,
           routeData: Object,
           subroute: String,
+
+          _shouldRenderHeader: {
+            computed: '_computeShouldRenderHeader(page)',
+            type:Boolean,
+            observer: '_headerChanged'
+            
+          }
         }}
 
       static get observers() {
@@ -267,6 +281,20 @@
               {name: 'Fonts', slug: '#'},
               {name: '3D', slug: '#'}
             ]}
+      }
+      _computeShouldRenderHeader(page){
+        let res = true;
+        switch(page){
+          case 'login':
+          case 'register':
+            res = false;
+          break;
+        }
+        return res;
+      }
+
+      _headerChanged(){
+        this.$.layout.resetLayout();
       }
     }
 

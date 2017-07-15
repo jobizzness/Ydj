@@ -1,0 +1,47 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="Name-element">
+  <template>
+    <style>
+      :host {
+        display: block
+      }
+    </style>
+
+    
+
+  </template>
+
+  <script>
+    class NameElement extends Polymer.Element {
+
+      static get is() { return 'Name-element'; }
+
+      static get properties() {
+        return {
+          
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(NameElement.is, NameElement);
+  </script>
+</dom-module>
