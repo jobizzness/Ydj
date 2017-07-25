@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../components/app-hero/app-hero.html">
@@ -17,53 +18,47 @@
 
 @element Name
 -->
-<dom-module id="app-home">
+<dom-module id="app-category">
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment app-hero app-products">
       :host {
         display: block;
+        min-height: 100vh;
+        background-color: #fafafa;
       }
       app-hero{
-      	height: 60vh;
-      	background-color: white;
+      	margin-bottom: 3em;
+      	height: 400px;
+      	background-color: transparent;
+      	position: relative;
+      	color: white;
       }
-      google-youtube{
-      	--google-youtube-container:{
-	  	    width: 100%;
-	    	  height: 270px;
-  	    }
+      app-hero>.hero-info .title{
+
       }
-      .products-toolbar{
-  	    height: 64px;
-  	    border: 1px solid #eee;
-  	    @apply --layout-horizontal;
-  	    @apply --layout-center-center;
+      app-hero>.hero-info{
+      	max-width: 800px;
       }
-	   iron-list{
+      app-hero>.hero-info p{
+  	    margin: 0;
+		    font-size: 16px;
+      }
+      app-hero .hero-info>* {
+      	color:inherit;
+      }
+      iron-list{
 	  	  width:100%;
         padding-top:16px;
       }
       #products-grid>app-product-item{
-        width: 33.3333%;
+        width: 25%;
         padding: 16px;
       }
-      #banner-1>.hero-info{
-        position: absolute;
-        z-index: 1;
-      }
-      #banner-1>.hero-info p{
-        margin: 0;
-        color: white;
-      }
-      #banner-1>.hero-info h1{
-        color:white;
-      }
-      .blue-btn{
-        color: white;
-        background-color: #03A9F4;
-        padding: 16px;
-      }
-      @media (max-width: 1024px) {
+      #category-banner>.hero-info {
+		    position: absolute;
+		    z-index: 1;
+	  }
+	  @media (max-width: 1024px) {
         #products-grid>app-product-item{
           width: 50%;
           padding: 16px;
@@ -79,29 +74,22 @@
         }
       }
     </style>
+
     <!-- Media Query -->
     <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
 
-    <main class="layout vertical">
-      <!-- App Hero -->
-    	<app-hero class="layout vertical center-center">
-    		<div class="layout horizontal space-around hero-info content">
-    			<div class="flex layout vertical center-justified">
-    				<h1><span class="accent">Design</span> and <span class="accent">creative</span><br/> assets you’ll love!</h1>
-    				<p>Find any design and graphic resources that you need for your projects. Because we have it!</p>
-    			</div>
-    			<dom-if if="[[!smallScreen]]">
-    				<template>
-		    			<div class="flex layout vertical center-center">
-		    				<video-card>
-		    					<google-youtube 
-		    						video-id="LXd26Nqg5tQ" 
-                    height="270px"></google-youtube>
-		    				</video-card>
-		    			</div>
-	    			</template>
-    			</dom-if>
-    		</div>
+    <main class="layout vertical content">
+    	<!-- App Hero -->
+    	<app-hero class="layout vertical center-center" id="category-banner">
+			<div class="hero-info layout vertical">
+	          <h1 class="title">Print Templates</h1>
+	          <p>Business cards, book covers, brochures, bbuntings, calendars, flyers, invitations, greeting cards, posters... and many more!</p>
+	        </div>
+	        <!-- Background Image -->
+	        <iron-image sizing="cover" 
+	                    preload src="/images/banner/design.jpg" 
+	                    class="background" 
+	                    style="background-color: #5f5f5f;"></iron-image>
     	</app-hero>
       <!-- Product Listing -->
     	<app-products class="layout vertical">
@@ -121,26 +109,14 @@
   		        </template>
 	      	</iron-list>
     	</app-products>
-      <!-- Bottom Banner -->
-      <app-hero class="layout horizontal center-center" id="banner-1">
-        <div class="hero-info layout vertical center-center">
-          <h1>Become a Cretivepreneuer!</h1>
-          <p>Create what you love and enjoy big sales earnings when you sell your item on YDJ Marketplace.</p>
-          <a href="#"><paper-button raised class="blue-btn">Start selling now!</paper-button></a>
-        </div>
-        <!-- Background Image -->
-        <iron-image sizing="cover" 
-                    preload src="http://devexweb.com/material_concept/images/slide_2.jpg" 
-                    class="background" 
-                    style="background-color: #5f5f5f;"></iron-image>
-      </app-hero>
     </main>
+
   </template>
 
   <script>
-    class AppHome extends Polymer.Element {
+    class AppCategory extends Polymer.Element {
 
-      static get is() { return 'app-home'; }
+      static get is() { return 'app-category'; }
 
       static get properties() {
         return {
@@ -165,6 +141,6 @@
 
     }
 
-    window.customElements.define(AppHome.is, AppHome);
+    window.customElements.define(AppCategory.is, AppCategory);
   </script>
 </dom-module>

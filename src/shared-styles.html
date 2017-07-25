@@ -25,6 +25,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .flex-2 {
         flex:2;
       }
+      .flex-3 {
+        flex:3;
+      }
+      .small-heading{
+        margin: 0;
+        font-size: 1em;
+        font-weight: 600;
+        color: #3c3c3c;
+      }
+      .card{
+        background-color: white;
+        min-height: 200px;
+        padding: 16px;
+        box-sizing: border-box;
+        box-shadow:0 1px 1px rgba(0,0,0,.1);
+      }
+      .cards>*{
+        margin-bottom:3em;
+        padding: 16px;
+      }
+      p{
+        color:var(--app-primary-color);
+      }
       .accent-color{
         color:var(--app-accent-color);
       }
@@ -32,6 +55,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 16px 0;
         color: #212121;
         font-size: 22px;
+      }
+      /* Buttons*/
+      .danger-trans{
+        color: #f44336;
+        background-color: transparent;
+      }
+      paper-button[primary]{
+        background-color:var(--app-accent-lighter);
+        color:white;
       }
     </style>
   </template>

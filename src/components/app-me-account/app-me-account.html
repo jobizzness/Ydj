@@ -1,0 +1,159 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../app-avatar/app-avatar.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-account">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+      }
+      .card-title{
+  	    font-weight: 300;
+    	color: #5f5f5f;
+      }
+      .spaceout>*{
+      	margin-right: 2em;
+      	flex:1;
+      }
+      paper-input{
+        --paper-input-container-focus-color: var(--app-accent-color);
+        max-width: 300px;
+      }
+      .accent-btn{
+	    text-transform: capitalize;
+	    max-width: 151px;
+	    background-color: #13c3b3;
+	    color: white;
+	    margin-top: 1em;
+	    padding: 8px 9px;
+      }
+	  paper-dropdown-menu, paper-listbox {
+		    max-width: 300px;
+	  }
+	  paper-dropdown-menu {
+	  	--paper-dropdown-menu-input:{
+        		--paper-input-container-focus-color: var(--app-accent-color);
+	  	}
+	    display: block;
+	  }
+	  .delete{
+	  	margin-top: 16px;
+	  	text-transform: capitalize;
+	  }
+	  .delete iron-icon{
+	  	margin-right: 5px;
+	  }
+	  .subcription>*{
+	  	margin: 8px 0;
+	  }
+	  paper-checkbox{
+	  	--paper-checkbox-label-checked-color: var(--app-accent-color);
+	  	--paper-checkbox-checked-color: gray;
+	  }
+    </style>
+    <div class="cards">
+    	<!-- General Account -->
+		<section class="card">
+			<h1 class="card-title">General Account Information</h1>
+			<div class="layout vertical">
+				<div class="layout horizontal spaceout">
+					<paper-input label="Your Name" name="name" id="name" value="Lai Lian Lee">
+		                <iron-icon icon="person" prefix></iron-icon>
+		              </paper-input>
+		          	<paper-input label="Your Email" type="email" name="email" id="email" value="lailian@triplebytes.com">
+		            	<iron-icon icon="main" prefix></iron-icon>
+		          	</paper-input>
+
+		          	<div class="layout vertical center-center">
+		          		<app-avatar src="/images/defualt-profiles.png" width="60px" height="60px"></app-avatar>
+		          		<paper-button raised class="accent-btn">Change Image</paper-button>
+		          	</div>
+		        </div>
+	          	<!-- Location -->
+	          	<paper-dropdown-menu label="Country">
+				  <paper-listbox slot="dropdown-content" selected="1">
+				    <paper-item>Select Your Country</paper-item>
+				    <paper-item>Malaysia</paper-item>
+				    <paper-item>carcharodontosaurus</paper-item>
+				    <paper-item>diplodocus</paper-item>
+				  </paper-listbox>
+				</paper-dropdown-menu>	
+			</div>
+		</section>
+		<!-- Mailing Subscription -->
+		<section class="card">
+			<h1 class="card-title">Mailing Settings</h1>
+			<div class="layout vertical subcription">
+				<paper-checkbox checked>Weekly Posts</paper-checkbox>
+				<paper-checkbox checked>Important Information</paper-checkbox>
+			</div>
+		</section>
+
+		<!-- Billing Settings -->
+		<section class="card">
+			<h1 class="card-title">Billing Settings</h1>
+			<div class="layout vertical">
+
+			</div>
+		</section>
+
+		<!-- Security Settings -->
+		<section class="card">
+			<h1 class="card-title">Security Settings</h1>
+			<paper-input label="Your Password" type="password" name="password" id="password" value="tester123">
+            	<iron-icon icon="main" prefix></iron-icon>
+          	</paper-input>
+          	<!-- Delete Button -->
+          	<paper-button class="danger-trans delete"><iron-icon icon="my-icons:sad"></iron-icon> Delete Account</paper-button>
+		</section>
+
+		<!-- Controls -->
+		<section>
+			<paper-button primary>Update</paper-button>
+		</section>
+	</div>	
+  </template>
+
+  <script>
+    class AppMeAccount extends Polymer.Element {
+
+      static get is() { return 'app-me-account'; }
+
+      static get properties() {
+        return {
+          
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMeAccount.is, AppMeAccount);
+  </script>
+</dom-module>

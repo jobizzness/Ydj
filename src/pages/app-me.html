@@ -1,0 +1,150 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+
+<!-- Lazy components -->
+<link rel="lazy-import" href="../components/app-me-account/app-me-account.html">
+<link rel="lazy-import" href="../components/app-me-goodies/app-me-goodies.html">
+<link rel="lazy-import" href="../components/app-dashboard/app-dashboard.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+        background-color: #fafafa;
+      }
+	  .container>*{
+        padding: 24px;
+      }
+      .container{
+        @apply(--layout-horizontal);
+      }
+      .acc-nav--item{
+      	padding: 16px;
+      	color: var(--app-primary-color);
+      }
+      .acc-nav--item.iron-selected{
+      	background-color: #fafafa;
+      	color: var(--app-accent-color);
+      }
+      #account_nav{
+      	@apply(--layout-vertical);
+      	background-color: white;
+  	    min-height: 100vh;
+  	    padding: 16px 24px;
+        box-shadow: 0 1px 1px rgba(0,0,0,.1);
+      }
+      iron-selector.pages>*:not(.iron-selected){
+      	display: none !important;
+      }
+      /*Mobile*/
+      @media (max-width: 425px) {
+        .container>*{
+          padding: 0;
+        }
+        .container{
+          @apply(--layout-vertical);
+        }
+    }
+    </style>
+
+    <!-- app-route provides the name of the category. -->
+    <app-route
+            route="[[route]]"
+            pattern="/:slug"
+            data="{{routeData}}"></app-route>
+
+    <div class="content">
+	    <section class="container">
+	    	<aside class="flex">
+	    		<iron-selector attr-for-selected="name" selected="[[page]]" id="account_nav">
+            <a href="/me/dashboard" name="dashboard" class="acc-nav--item">
+            Dashboard</a>
+	    			<a href="/me/account" name="me-account" class="acc-nav--item">My Account</a>
+	    			<a href="/me/goodies" name="me-goodies" class="acc-nav--item">My Goodies</a>
+            <a href="/me/sales" name="me-sales" class="acc-nav--item">My Sales</a>
+	    		</iron-selector>
+	    	</aside>
+	    	<main class="flex-3">
+	    		<iron-selector attr-for-selected="name" selected="[[page]]" class="pages">
+            <app-dashboard name="dashboard"></app-dashboard>
+	    			<app-me-account name="me-account"></app-me-account>
+	    			<app-me-goodies name="me-goodies"></app-me-goodies>
+	    			<app-me-sales name="me-sales"></app-me-sales>
+	    			<app-me-favorites name="me-favorites"></app-me-favorites>
+	    			<app-me-messages name="me-messages"></app-me-messages>
+	    		</iron-selector>
+	    		
+	    	</main>
+	    </section>
+	</div>
+  </template>
+
+  <script>
+    class AppMe extends Polymer.Element {
+
+      static get is() { return 'app-me'; }
+
+      static get properties() {return {
+          page:{
+          	type: String,
+          	reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          routeData:{
+          	type: Object
+
+          }
+      }}
+
+      static get observers(){
+      	return [
+      		'routeChanged(routeData.slug)'
+      	]
+      }
+
+      constructor() {
+        super();
+      }
+
+      routeChanged(slug){
+      	switch(slug){
+      		case 'account':
+      		case 'goodies':
+      		case 'favorites':
+      		case 'messages':
+      			this.page = 'me-'+slug;
+      			break;
+      		default:
+      			this.page = 'dashboard';
+      	}
+      }
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('../components/app-' + page + '/app-' + page + '.html');
+        Polymer.importHref(resolvedPageUrl, null, null, true);
+      }
+
+
+      ready() {
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMe.is, AppMe);
+  </script>
+</dom-module>

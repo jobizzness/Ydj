@@ -19,7 +19,14 @@
     "iron-localstorage": "^2.0.0",
     "iron-list": "^2.0.4",
     "paper-button": "^2.0.0",
-    "paper-input": "^2.0.1"
+    "paper-input": "^2.0.1",
+    "paper-material": "^2.0.0",
+    "iron-ajax": "^2.0.2",
+    "paper-badge": "^2.0.0",
+    "paper-dropdown-menu": "^2.0.0",
+    "paper-listbox": "^2.0.0",
+    "paper-item": "^2.0.0",
+    "paper-checkbox": "^2.0.1"
   },
   "resolutions": {
     "polymer": "^2.0.1",

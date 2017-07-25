@@ -2,7 +2,16 @@
   "entrypoint": "index.html",
   "shell": "src/my-app.html",
   "fragments": [
-    "src/pages/app-home.html"
+    "src/pages/app-home.html",
+    "src/pages/app-login.html",
+    "src/pages/app-register.html",
+    "src/pages/app-goodies.html",
+    "src/pages/app-category.html",
+    "src/pages/app-me.html",
+    "src/components/app-me-account/app-me-account.html",
+    "src/components/app-me-goodies/app-me-goodies.html",
+    "src/components/app-dashboard/app-dashboard.html"
+
   ],
   "sources": [
     "src/**/*",

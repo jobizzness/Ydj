@@ -1,7 +1,12 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
 
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-button/app-button.html">
+<link rel="import" href="../components/product-media/product-media.html">
+<link rel="import" href="../components/app-avatar/app-avatar.html">
 
 <!--
 `<Name>` is Description
@@ -10,11 +15,10 @@
 -->
 <dom-module id="app-goodies">
   <template>
-    <style include="shared-styles iron-flex iron-flex-alignment">
+    <style include="shared-styles iron-flex iron-flex-alignment app-button">
       :host {
         display: block;
         background-color: #fafafa;
-        min-height: 100vh;
         padding: 1em 0;
       }
       .container>*{
@@ -26,7 +30,77 @@
       product-media{
         min-height: 50vh;
         background-color: white;
+      }
+      .product-actions>*{
         display: block;
+        margin: 16px 0;
+      }
+      .product-actions app-button{
+          color: var(--app-primary-color);
+          box-shadow: inset 0 0 0 2px var(--app-primary-color);
+          font-weight: 600;
+      }
+      aside>*{
+        margin-bottom: 16px;
+      }
+      section.licience{
+        padding-top: 1.5em;
+      }
+      .price-tag{
+        font-weight: 600;
+        color: #545454;
+      }
+      .paypal-logo{
+        @apply(--layout-vertical);
+        @apply(--layout-end);
+      }
+      .information-layout-item{
+        @apply(--layout-horizontal);
+        border-bottom: 1px solid #eee;
+      }
+      .information-layout-item:last-child{
+        border-bottom: 0;
+      }
+      .text-header{
+        color: #2b373a;
+        font-weight: 600;
+      }
+      .post-content p{
+        color: #888;
+        font-size: 1em;
+        line-height: 1.71429em;
+        font-weight: 400;
+      }
+      .post-paragraph .post-title.small {
+          font-size: 1.375em;
+      }
+      .post-content{
+        padding: 16px;
+        margin: 3em 0;
+      }
+      .post-paragraph .post-title {
+        font-size: 1.75em;
+        text-align: left;
+        margin:0;
+        color: rgba(49, 49, 49, 0.86);
+      }
+      .author-info>*{
+        margin-bottom: 16px;
+      }
+      .author-info app-avatar{
+        margin: 16px;
+      }
+      .author-info .author, .author-info .author-title{
+        display: block;
+        font-weight: 500;
+      }
+      .author-title{
+        font-weight: 100 !important;
+      }
+      .btn-follow{
+        max-width: 200px;
+        color: var(--app-accent-color);
+        margin: 2em auto;
       }
       /*Mobile*/
       @media (max-width: 425px) {
@@ -48,11 +122,71 @@
               <!-- Product Viewer -->
               <product-media media="[[product.media]]"></product-media>
 
-              <secion class="post-content">
-                
-              </secion>
+              <section class="post-content">
+                <div class="post-paragraph">
+                  <h3 class="post-title">The Pack Contains:</h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in henderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <div class="post-paragraph">
+                  <h3 class="post-title small">Westeros HTML Instructions</h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in henderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+              </section>
             </main>
-            <aside class="flex">Aside</aside>
+            <aside class="flex">
+              <section class="card licience">
+                <div class="layout horizontal center-center">
+                  <h3 class="small-heading">STANDARD LICENSE</h3>
+                  <span class="flex"></span>
+                  <span class="price-tag">$17</span>
+                </div>
+                <p>Used by you to create end-product but NOT transferable to third parties.</p>
+                <div class="paypal-logo"><img src="images/pp.jpg"></div>
+                <div class="product-actions">
+                  <a href="#"><app-button border>Download Now</app-button></a>
+                  <a href="#"><app-button border>Add to cart</app-button></a>
+                  <a href="#"><app-button border>Add to favorites</app-button></a>
+                </div>
+              </section>
+              <section class="card">
+                  <div class="information-layout-item">
+                    <p class="text-header">File Type:</p>
+                    <span class="flex"></span>
+                    <p>.Ai, .SVG, .PSD</p>
+                  </div>
+                  <div class="information-layout-item">
+                    <p class="text-header">File Size:</p>
+                    <span class="flex"></span>
+                    <p>1.0 MB</p>
+                  </div>
+                  <div class="information-layout-item">
+                    <p class="text-header">Files Included:</p>
+                    <span class="flex"></span>
+                    <p>PSD, AI, JPEG, PNG</p>
+                  </div>
+                  <div class="information-layout-item">
+                    <p class="text-header">Date Posted:</p>
+                    <span class="flex"></span>
+                    <p>March 21,2017</p>
+                  </div>
+              </section>
+              <!-- Author details -->
+              <section class="card author-info">
+                <h3 class="small-heading">CREATED BY:</h3>
+                <div class="layout horizontal" style="align-items: center;">
+                    <app-avatar src="/images/defualt-profiles.png"
+                                width="50px"
+                                height="50px"></app-avatar>
+                    <div class="layout vertical">
+                      <span class="author">Jones&Co</span>
+                      <span class="author-title">Creative Studio</span>
+                    </div>
+                    
+                </div>
+                <app-button border class="btn-follow">Follow <iron-icon icon="my-icons:follow"></iron-icon></app-button>
+              </section>
+            </aside>
           </div>
           
           <footer></footer>

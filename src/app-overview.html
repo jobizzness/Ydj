@@ -1,0 +1,411 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<!-- App Components -->
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="components/app-logo/app-logo.html">
+<link rel="import" href="components/app-button/app-button.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="components/app-footer/app-footer.html">
+<link rel="import" href="components/user-actions/user-actions.html">
+<link rel="import" href="components/app-avatar/app-avatar.html">
+
+<!-- Pages -->
+<link rel="lazy-import" href="pages/app-home.html">
+<link rel="lazy-import" href="pages/app-goodies.html">
+<link rel="lazy-import" href="pages/app-login.html">
+<link rel="lazy-import" href="pages/app-me.html">
+<link rel="lazy-import" href="my-view404.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-overview">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment app-button user-actions">
+      :host {
+        --app-primary-color: #5f5f5f;
+        --app-secondary-color: white;
+        --app-link-color: #036df4;
+        --app-text-color: rgba(0, 0, 0, 0.74);
+        --app-accent-color:#009688;
+        --app-accent-lighter: #13c3b3;
+        display: block;
+      }
+
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 20px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+      .toolbar-bottom{
+        background-color: white;
+      }
+      .toolbar-top{
+        height: 90px;
+      }
+      app-logo{
+        padding-top: 5px;
+      }
+      .logo-link{
+        padding: 0 24px;
+        display: block;
+      }
+      iron-selector.app-nav{
+        width: 100%;
+        @apply --layout-horizontal;
+      }
+      iron-selector.app-nav a.link{
+        @apply --layout-vertical;
+          color: var(--app-text-color);
+          text-decoration: none;
+          font-weight: 600;
+          outline: none;
+          font-size: 14px;
+          padding: 22px 24px;
+          cursor: pointer;
+          white-space: nowrap;
+          position: relative;
+          overflow: hidden;
+      }
+      iron-pages{
+        min-height: 100vh;
+      }
+      iron-selector.app-nav a.link:before{
+        position: absolute;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        height: 4px;
+        left:0;
+        content: "";
+        transition: -webkit-transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
+        transition: transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
+        -webkit-transform: translate3d(0, 4px, 0);
+        transform: translate3d(0, 4px, 0);
+        background: var(--app-accent-color, #509fff);
+      }
+      iron-selector.app-nav a.link:hover:before, iron-selector.app-nav a.link.selected:before{
+        transform: translate3d(0, 0, 0);
+      }
+      header-actions{
+        @apply --layout-horizontal;
+      }
+      header-actions>*{
+        margin: 0 8px;
+      }
+    </style>
+
+    <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPattern]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+    <app-drawer-layout fullbleed force-narrow id="layout">
+      <!-- Drawer content -->
+      <app-drawer id="drawer" slot="drawer" align="end" opened>
+        <app-toolbar>Navigation</app-toolbar>
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+          <a name="view1" href="view1">View One</a>
+          <a name="view2" href="view2">View Two</a>
+          <a name="view3" href="view3">View Three</a>
+        </iron-selector>
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+
+          <app-header slot="header" condenses reveals effects="waterfall">
+            <template is="dom-if" if="[[_shouldRenderHeader]]">
+              <app-toolbar class="toolbar-top content">
+                <a href="/" class="logo-link">
+                  <app-logo height="90" width="150"></app-logo>
+                </a>
+                <span class="flex"></span>
+                <template is="dom-if" if="[[smallScreen]]">
+                  <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+                </template>
+                <header-actions>
+                  <dom-if if="{{_shouldRenderAuthElements(smallScreen, loggedIn)}}">
+                    <template>
+                      <a href="/login"><app-button border>Log In</app-button></a>
+                      <a href="/register"><app-button shaded>Sign Up</app-button></a>
+                    </template>
+                  </dom-if>
+
+                  <!-- User Actions -->
+                  <template is="dom-if" if="{{_shouldRenderUserElements(smallScreen, loggedIn)}}">
+                    <user-actions class="layout horizontal">
+                      <!-- User Notification Icons -->
+                      <ul class="notification-icons layout horizontal">
+                        <li>
+                          <a href="#">
+                            <iron-icon src="/images/icons/gift.svg"></iron-icon>
+                            <app-badge>7</app-badge>
+                            <iron-icon icon="my-icons:arrow-down" class="arrow-down"></iron-icon>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <iron-icon src="/images/icons/heart.svg"></iron-icon>
+                            <app-badge>1</app-badge>
+                             <iron-icon icon="my-icons:arrow-down" class="arrow-down"></iron-icon>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <iron-icon src="/images/icons/envelope.svg"></iron-icon>
+                            <app-badge>20</app-badge>
+                             <iron-icon icon="my-icons:arrow-down" class="arrow-down"></iron-icon>
+                          </a>
+                        </li>
+                      </ul>
+                      <!-- User Info & Avatar -->
+                      <a href="/me" class="avatar-wrapper layout horizontal">
+                        <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
+                        <div class="user-info">
+                          <span class="username">[[user.username]]</span>
+                          <span class="user-balance">$745.00</span>
+                        </div>
+                      </a>
+                    </user-actions>
+                  </template>
+                </header-actions>
+              </app-toolbar>
+
+              <template is="dom-if" if="{{_shouldRenderBottomHeader(page)}}">
+                <app-toolbar class="toolbar-bottom" sticky>
+                  <div class="content layout horizontal">
+                    <dom-if if="[[!smallScreen]]">
+                      <template>
+                        <iron-selector attr-for-selected="href" 
+                            selected="non-existing"
+                            fallback-selection="default" 
+                            class="app-nav">
+                              <template is="dom-repeat" items="[[nav.items]]" as="item">
+                                <a href="[[item.slug]]" class="link">[[item.name]]</a>
+                              </template>
+                        </iron-selector>
+                        <!-- Search Box -->
+                        <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+                      </template>
+                    </dom-if>
+                  </div>
+                </app-toolbar>
+              </template>
+            </template>
+          </app-header>
+          
+          <!-- App pages -->
+        <iron-pages
+            selected="[[page]]"
+            attr-for-selected="name"
+            fallback-selection="view404"
+            role="main">
+          <app-login name="login"></app-login>
+          <app-home name="home"></app-home>
+          <app-goodies name="goodies"></app-goodies>
+          <app-register name="register"></app-register>
+          <app-category name="category"></app-category>
+          <app-me name="me" route="[[subroute]]"></app-me>
+          <app-404 name="view404"></app-404>
+        </iron-pages>
+        <!-- Footer -->
+          <footer>
+            <app-footer></app-footer>
+          </footer>
+      </app-header-layout>
+    </app-drawer-layout>
+  </template>
+
+  <script>
+    class AppOverview extends Polymer.Element {
+
+      static get is() { return 'app-overview'; }
+
+      static get properties() {return {
+          nav:{
+            type:Object,
+            computed: 'navigation()'
+          },
+          page: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          rootPattern: String,
+          routeData: Object,
+          subroute: String,
+
+          _shouldRenderHeader: {
+            computed: '_computeShouldRenderHeader(page)',
+            type:Boolean,
+            observer: '_headerChanged'
+            
+          }
+        }}
+
+      static get observers() {
+        return [
+          '_routePageChanged(routeData.page)',
+        ];
+      }
+
+      constructor() {
+        super();
+        // Get root pattern for app-route, for more info about `rootPath` see:
+        // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
+        this.rootPattern = (new URL(this.rootPath)).pathname;
+      }
+
+      _routePageChanged(page) {
+        // Polymer 2.0 will call with `undefined` on initialization.
+        // Ignore until we are properly called with a string.
+        if (page === undefined) {
+          return;
+        }
+
+        // If no page was found in the route data, page will be an empty string.
+        // Deault to 'home' in that case.
+        this.page = page || 'home';
+
+        // Close a non-persistent drawer when the page & route are changed.
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      }
+
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        this._middleware(page);
+        var resolvedPageUrl = this.resolveUrl('pages/app-' + page + '.html');
+        Polymer.importHref(resolvedPageUrl, null, this._showPage404.bind(this), true);
+      }
+
+      _middleware(page){
+        switch(page){
+          case 'login':
+          case 'signup':
+          if(this.user){
+            this.set("route.path", '/');
+          }
+          break;
+          case 'me':
+          case 'logout':
+          if(!this.user){
+            this.set("route.path", '/login');
+          }
+          break;
+        }
+      }
+      _showPage404() {
+        this.page = 'view404';
+      }
+
+      navigation(){return {
+            items: [
+              {name: 'Print Templates', slug: 'category/print-templates'},
+              {name: 'Graphics', slug: 'category/graphics'},
+              {name: 'Web & Apps', slug: 'category/web-apps'},
+              {name: 'Branding', slug: 'category/branding'},
+              {name: 'Plug-ins', slug: 'category/plugins'},
+              {name: 'Fonts', slug: 'category/fonts'},
+              {name: '3D', slug: 'category/3d'}
+            ]}
+      }
+      _computeShouldRenderHeader(page){
+        let res = true;
+        switch(page){
+          case 'login':
+          case 'register':
+            res = false;
+          break;
+        }
+        return res;
+      }
+
+      _headerChanged(){
+        this.$.layout.resetLayout();
+      }
+
+      _shouldRenderAuthElements(smallScreen, loggedIn){
+        if(smallScreen || loggedIn){
+          return false;
+        }
+        return true;
+      }
+
+      _shouldRenderUserElements(smallScreen, loggedIn){
+        if(smallScreen || !loggedIn){
+          return false;
+        }
+        return true;
+      }
+
+      userIsLoggedIn(){
+        //Extract this later
+        //this.page = 'home';
+        //this._loadUserResources();
+      }
+
+      _shouldRenderBottomHeader(page){
+        if(page === 'me'){
+          this._headerChanged();
+          return false;
+
+        }
+
+        this._headerChanged();
+        return true;
+      }
+
+      _loadUserResources(){
+
+      }
+    }
+
+    window.customElements.define(AppOverview.is, AppOverview);
+  </script>
+</dom-module>

@@ -1,11 +1,10 @@
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <!--
-`<Name>` is Description
+`<product-media>` is Description
 
 @element Name
 -->
-<dom-module id="Name-element">
+<dom-module id="product-media">
   <template>
     <style>
       :host {
@@ -18,18 +17,30 @@
   </template>
 
   <script>
-    class NameElement extends Polymer.Element {
+    class ProductMedia extends Polymer.Element {
 
-      static get is() { return 'Name-element'; }
+      static get is() { return 'product-media'; }
 
-      static get properties() {
-        return {
+      static get properties() {return {
           
-        };
-      }
+        }}
 
       constructor() {
         super();
+        this.data = [
+              {
+                  "title": "demo title",
+                  "text": "demo text, here for the sole purpose of giving a demo.",
+                  "image": "https://assets.materialup.com/uploads/9815f8c9-6411-429e-93fd-eae06727cf11/preview.png",
+                  "link": "//example.com"
+              },
+              {
+                  "title": "another demo title",
+                  "text": "more demo text, here for the sole purpose of giving a demo.",
+                  "image": "https://assets.materialup.com/uploads/65deedaf-4d40-497d-9b67-e97519639934/preview.gif",
+                  "link": "//example.org"
+              }
+          ]
       }
 
       ready() {
@@ -42,6 +53,6 @@
 
     }
 
-    window.customElements.define(NameElement.is, NameElement);
+    window.customElements.define(ProductMedia.is, ProductMedia);
   </script>
 </dom-module>

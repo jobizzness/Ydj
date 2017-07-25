@@ -4,10 +4,10 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<!-- <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html"> -->
 
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-auth/app-auth.html">
 
 <!--
 `<app-login>` is Description
@@ -32,7 +32,6 @@
       paper-input{
         --paper-input-container-focus-color: var(--app-accent-color);
       }
-
       .login{
       	padding: 3em 0;
       	width: 100%;
@@ -57,7 +56,7 @@
   	    margin: 3em 0;
       }
       #login-btn{
-  	    background: var(--app-accent-color);
+  	    background:#7250ff;
     	   color: white;
       }
       .link{
@@ -80,35 +79,35 @@
       }
     </style>
 
+    <app-auth id="auth" user="{{user}}" on-error="handleError" signed-in="{{userIsLoggedIn}}"></app-auth>
+
     <section class="layout vertical center-center login content">
     	<div class="login-card">
-    		<div class="layout horizontal center-center">
-    			<img src="images/login-logo.png" class="logo">
-			</div>
-			<form is="iron-form" method="post" id="form" class="space-top-bottom">
-				<div class="inputs">
-					<!-- Inputs -->
-		            <paper-input label="Email" name="username" id="username">
-		              <iron-icon icon="mail" prefix></iron-icon>
-		            </paper-input>
-		            <paper-input label="password" type="password" name="password" id="password">
-		              <iron-icon icon="communication:vpn-key" prefix></iron-icon>
-		            </paper-input>
-		            <!-- Controls -->
-		            <div class="layout horizontal center space-top-bottom">
-		            	<a href="#" class="link">Forgot password</a>
-		            	<span class="flex"></span>
-		            	<paper-button raised id="login-btn">Login</paper-button>
-		            </div>
-		            <!-- Social Login -->
-		            <div  class="layout horizontal space-top-bottom">
-		            	<span>Or login with:</span>
-		            	<span class="flex"></span>
-		            	
-		            </div>
-				</div>
-	            
-        	</form>
+      		<div class="layout horizontal center-center">
+      			<img src="images/login-logo.png" class="logo">
+  			</div>
+  			<form is="iron-form" method="post" id="form" class="space-top-bottom">
+  				<div class="inputs">
+  					<!-- Inputs -->
+              <paper-input label="Email" name="username" id="username">
+                <iron-icon icon="mail" prefix></iron-icon>
+              </paper-input>
+              <paper-input label="password" type="password" name="password" id="password">
+                <iron-icon icon="communication:vpn-key" prefix></iron-icon>
+              </paper-input>
+              <!-- Controls -->
+              <div class="layout horizontal center space-top-bottom">
+              	<a href="#" class="link">Forgot password</a>
+              	<span class="flex"></span>
+              	<paper-button raised id="login-btn" on-tap="signIn">Login</paper-button>
+              </div>
+              <!-- Social Login -->
+              <div  class="layout horizontal space-top-bottom">
+              	<span>Or login with:</span>
+              	<span class="flex"></span>
+              </div>
+  				</div>  
+      	</form>
     	</div>
     </section>
 
@@ -133,6 +132,15 @@
         Polymer.RenderStatus.afterNextRender(this, function() {
           
         });
+      }
+
+        /**
+         * Once user submits the form, we validate the inputs
+         * and then fire out an event to get them signed in.
+         */
+      signIn () {
+        console.info('okay! i heard you.')
+        window.dispatchEvent(new CustomEvent('login', {detail:{username: this.$.username.value , password: this.$.password.value}}, {bubbles: true, composed: true}));
       }
 
     }

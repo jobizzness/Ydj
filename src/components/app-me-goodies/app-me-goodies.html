@@ -1,0 +1,145 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-goodies">
+  <template>
+    <style  include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block
+      }
+      #main{
+        border-top: 2px solid var(--app-accent-lighter, white);
+        padding: 0;
+        border-radius: 5px;
+      }
+      panel{
+        background-color: #fafafa;
+        display: block;
+        padding: 16px;
+      }
+      panel .panel-title{
+        font-weight: 500;
+        color: var(--app-primary-color);
+        font-size: 0.89rem;
+      }
+      .item-details{
+        padding: 16px;
+        @apply --layout-horizontal;
+      }
+      .item-details>*{
+        padding: 16px;
+        justify-content: center;
+      }
+      .strong-text{
+        font-weight: 500;
+        color: #333232;
+      }
+      .light-text{
+        font-size: .9rem;
+        color: rgba(95, 95, 95, 0.76);
+      }
+      .mb-20{
+        margin-bottom: 20px;
+      }
+      .p-0{
+        padding: 0;
+      }
+      .start-center{
+        justify-content: center;
+      }
+    </style>
+
+    <div class="cards">
+      <!-- General Account -->
+      <section class="card" id="main">
+        <section class="layout horizontal">
+          <div class="flex-2">
+            <panel>
+              <span class="panel-title">Item Name</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Item Price</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Actions</span>
+            </panel>
+          </div>
+        </section>
+
+        <!-- Goodies List -->
+        <template is="dom-repeat" items="[[items]]">
+          <section class="layout horizontal">
+            <div class="flex-2">
+              <!-- Items Names -->
+              <div class="item-details">
+                <a href="#" class="flex">
+                <iron-image preload style="background-color: #eee;width: 100%;height: 100%;min-height: 70px;" 
+                            fade sizing="cover" 
+                            src="http://lorempixel.com/400/700/abstract/[[index]]"></iron-image>
+                </a>
+                <div class="layout vertical">
+                  <a href="#" class="strong-text"><span>Photographer business cards</span></a>
+                  <span class="light-text">Mar 22th-17</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex layout vertical start-center">
+              <!-- Prices -->
+                  <span class="strong-text mb-20">$100</span>
+            </div>
+            <div class="flex layout vertical start-center">
+              <!-- Actions -->
+                  <a href="#" class="light-text mb-20">
+                    <span>Download</span>
+                  </a>
+            </div>
+          </section>
+        </template>
+      </section>
+    </div>
+  </section>
+
+  </template>
+
+  <script>
+    class AppMeGoodies extends Polymer.Element {
+
+      static get is() { return 'app-me-goodies'; }
+
+      static get properties() {return {
+          items:{
+            type: Array,
+            value: function(){
+              return [{},{},{},{}]
+            }
+          }
+        }}
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMeGoodies.is, AppMeGoodies);
+  </script>
+</dom-module>

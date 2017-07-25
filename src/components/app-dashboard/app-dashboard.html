@@ -1,0 +1,143 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-dashboard">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+      }
+      .dashboard-layout{
+      	@apply --layout-horizontal;
+      }
+      .dashboard-layout>*{
+      	padding: 16px;
+      }
+      .circle-inner{
+    	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        height: 170px;
+	    background-color: #fafafa;
+	    width: 170px;
+	    border-radius: 50%;
+      }
+      .circle-inner span{
+  	    font-size: 4.5rem;
+	    font-weight: 500;
+	    color: var(--app-accent-lighter);
+      }
+      .circle-outter{
+  	    padding: 16px;
+	    border-radius: 50%;
+	    border: 1px solid #13c3b3;
+      }
+      .mb-2>*{
+      	margin-bottom: 2em;
+      }
+      .mb-2{
+      	margin-bottom: 2em;
+      }
+      .small-title{
+  	    font-weight: 500;
+	    font-size: .86rem;
+	    color: #5f5f5f;
+      }
+      .dashboard-layout .banner{
+      	height: 30vh;
+      }
+      .dashboard-layout .banner .banner-heading{
+  	    max-width: 20rem;
+      }
+      .dashboard-layout .banner .title{
+	    font-weight: 500;
+	    font-size: 1.5rem;
+	    line-height: 3.2rem;
+	    color: #484747;
+	    margin-bottom: 0;
+      }
+      .dashboard-layout .banner .summary-text{
+  	     color: #7b7b7b;
+	    line-height: 1.8rem;
+	    font-weight: 100;
+	    font-size: 1.5rem;
+	    margin: 0;
+      }
+    </style>
+
+    <div class="dashboard-layout">
+	    <main class="flex-2">
+		    <section class="banner">
+		    	<div class="banner-heading">
+		    		<h1 class="title">Howdy, Lian.</h1>
+		    		<p class="summary-text">Here's a summary of your store.</p>
+		    	</div>
+			</section>
+			<section class="cards">
+				<div class="card"></div>
+				<div class="card"></div>
+			</section>
+	    </main>
+	    <aside class="flex">
+	    	<!-- Todays Visitors -->
+	    	<div class="card mb-2">
+	    		<div class="layout horizontal">
+	    			<iron-icon icon="my-icons:person"></iron-icon>
+	    			<span class="small-title">Today's Visitos</span>
+	    		</div>
+	    		
+	    		<div class="layout vertical center-center">
+	    		<div class="circle-outter">
+	    			<div class="circle-inner layout horizontal center-center">
+	    				<span>25</span>
+	    			</div>
+	    		</div>
+	    		</div>
+	    	</div>
+	    	<!-- Messages -->
+	    	<div class="card mb-2">
+	    		<div class="layout horizontal">
+	    			<iron-icon icon="my-icons:person"></iron-icon>
+	    			<span class="small-title">Messages</span>
+	    		</div>
+	    	</div>
+	    	<messages>
+	    		
+	    	</messages>
+	    </aside>
+    </div>
+  </template>
+
+  <script>
+    class AppDashboard extends Polymer.Element {
+
+      static get is() { return 'app-dashboard'; }
+
+      static get properties() {
+        return {
+          
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppDashboard.is, AppDashboard);
+  </script>
+</dom-module>

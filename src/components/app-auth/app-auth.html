@@ -1,0 +1,226 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+
+<!-- App Components -->
+<link rel="import" href="auth-store.html">
+<link rel="import" href="../app-env/app-env.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-auth">
+ <template>
+    <auth-store id="store"></auth-store>
+    <iron-ajax
+            id="loginTunnel"
+            method="POST"
+            content-type="application/json"
+            handle-as="json"
+            on-response="handleAuthResponse"
+            on-error="handleAuthError"></iron-ajax>
+        <iron-ajax
+                id="authUser"
+                method="GET"
+                content-type="application/json"
+                headers="[[header]]"
+                handle-as="json"
+                on-response="handleUserResponse"
+                on-error="handleUserError"></iron-ajax>
+    </template> 
+
+    <script>
+        class AppAuth extends Polymer.Element {
+
+            static get is() { return 'app-auth'; }
+
+            static get properties() {return {
+                    /**
+                    * The currently-authenticated user with user-related metadata.
+                    * @return{user{roles, username, avatar, last_loggedIn}}
+                    * @var user
+                    */
+                    user: {
+                        type: Object,
+                        readOnly: true,
+                        notify: true,
+                        observer: '_userChanged'
+
+                    },
+                    /**
+                    * True if the client is authenticated, and false if the client is not
+                    * authenticated.
+                    */
+                    signedIn: {
+                        type: Boolean,
+                        notify:true,
+                        readOnly: true,
+                        value: false
+                    },
+                    /**
+                    * HTTP header object
+                    * @var header
+                    */
+                    header:{
+                        type: Object
+                    }
+                }}
+
+            constructor() {
+                super();
+               // this.attachShadow({mode: 'closed', delegatesFocus: true});
+                this.app = env;
+            }
+
+            /**
+             * Fires when the user object changes.
+             * @param {newVal}
+             * @param {oldVal}
+             */
+            _userChanged(newVal, oldVal) {
+                if(newVal){
+                    this._setSignedIn(true);
+                    return;
+                }
+                this._setSignedIn(false);
+            }
+
+            ready() {
+                super.ready();
+
+                var tokenData = this._retrieveTokens();
+                //Checks if the auth object is available on the local storage
+                if(tokenData){
+                    this._setHeaders(tokenData.access_token);
+
+                    // We must wait for the request so lets make sure its syncronous
+                    this.$.authUser.sync = true;
+                    this._fetchUser();
+                    this._done();
+                }else{
+                    this._setUser(null);
+                    this._done();
+                }
+                Polymer.RenderStatus.afterNextRender(this, () => {
+                    
+                });
+            }
+
+
+            _done(){
+                console.log('we are done');
+                 this.dispatchEvent(new CustomEvent('set', {detail:{}}, { bubbles: false}));
+            }
+            /**
+             * Creates a new user account using an email / password combination.
+             *
+             * @param  {!String} email Email address corresponding to the user account.
+             * @param  {!String} password Password corresponding to the user account.
+             * @return {Promise} Promise that handles success and failure.
+             */
+	        signInWithUserNameAndPassword(username, password) {
+	          return this._handleSignIn(username, password);
+	        }
+            /**
+             *
+             */
+            signOut() {
+                this.$.store.unSetTokens();
+                this._setUser(null);
+            }
+            /**
+             *
+             */
+            _handleSignIn(username, password){
+                this.$.loginTunnel.body = this._getCredentials(username, password);
+                this.$.loginTunnel.url = this.app.app_domain + '/oauth/token';
+                return this.$.loginTunnel.generateRequest();
+            }
+
+            /**
+             */
+		    _getCredentials(username, password) {
+		        return JSON.stringify({
+		            'grant_type': 'password',
+		            'client_id': this.app.clientId,
+		            'client_secret': this.app.clientSecret,
+		            'username': username,
+		            'password': password,
+		            'scope': '',
+		        });
+		    }
+            onAuthStateChanged(callback) {
+                return this.addEventListener('user-changed', callback);
+            }
+            /**
+             * Once auth is successful we rush to get
+             * our users details.
+             * @param event
+             * @return {*|!IronRequestElement}
+             */
+		    handleAuthResponse(event) {
+
+		        var response = event.detail.response;
+		        if (response.access_token) {
+                    this._storeTokens(response);
+		            this._setHeaders(response.access_token);
+                    this._fetchUser();
+		        }
+		    }
+            _fetchUser() {
+                this.$.authUser.url = this.app.app_domain+'/api/user';
+                return this.$.authUser.generateRequest();
+            }
+            /**
+             * Sets Authentication headers + our access token
+             * @param token
+             * @private
+             */
+            _setHeaders(token){
+		        this.header = {
+		            'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            }
+            /**
+             * Once we have a user we can keep them logged in by
+             * storing the access token to our local storage
+             * @param data
+             * @private
+             */
+            _storeTokens(data) {
+                this.$.store.data = data;
+
+            }
+            /**
+             * if we need to make a request for a logged in user
+             * we would need their access token from local storage
+             * @return {string|*}
+             * @private
+             */
+            _retrieveTokens() {
+              return this.$.store.getTokens();
+            }
+            /**
+             *
+             * @param event
+             */
+		    handleAuthError(event) {
+		        this.error = event.detail.request.xhr.response;
+		    }
+            /**
+             *
+             * @param event
+             */
+		    handleUserResponse(event) {
+                this._setUser(JSON.parse(event.detail.response));
+                this.dispatchEvent(new CustomEvent('user-changed', {detail: {user: this.user}}));
+            }
+
+
+
+        }
+
+        window.customElements.define(AppAuth.is, AppAuth);
+    </script>
+</dom-module>
