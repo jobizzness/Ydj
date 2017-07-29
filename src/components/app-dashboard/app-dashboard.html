@@ -2,7 +2,7 @@
 
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
-
+<link rel="import" href="../chartist-element/chartist-element.html">
 <!--
 `<Name>` is Description
 
@@ -10,7 +10,7 @@
 -->
 <dom-module id="app-dashboard">
   <template>
-    <style include="shared-styles iron-flex iron-flex-alignment">
+    <style include="shared-styles iron-flex iron-flex-alignment chartist">
       :host {
         display: block;
       }
@@ -38,10 +38,10 @@
 	    border: 1px solid #13c3b3;
       }
       .mb-2>*{
-      	margin-bottom: 2em;
+      	margin-bottom: 1em;
       }
       .mb-2{
-      	margin-bottom: 2em;
+      	margin-bottom: 1em;
       }
       .small-title{
   	    font-weight: 500;
@@ -50,6 +50,10 @@
       }
       .dashboard-layout .banner{
       	height: 30vh;
+        margin-bottom: 1em;
+        background-color: #16C7C3 ;
+        padding: 16px;
+        color: white;
       }
       .dashboard-layout .banner .banner-heading{
   	    max-width: 20rem;
@@ -58,17 +62,107 @@
 	    font-weight: 500;
 	    font-size: 1.5rem;
 	    line-height: 3.2rem;
-	    color: #484747;
+	    color: inherit;
 	    margin-bottom: 0;
       }
       .dashboard-layout .banner .summary-text{
-  	     color: #7b7b7b;
+	     color: inherit;
 	    line-height: 1.8rem;
 	    font-weight: 100;
 	    font-size: 1.5rem;
 	    margin: 0;
       }
-    </style>
+      .title-icon{
+        color: var(--app-accent-color);
+        margin-right: 8px;
+        --iron-icon-width: 20px;
+        --iron-icon-height: 20px;
+      }
+      messages, message{
+        display: block;
+      }
+      message{
+        cursor: pointer;
+      }
+      message-header>*{
+        margin: 0 8px;
+      }
+      message-header .message-time{
+        display: block;
+        font-size: .84rem;
+        color: #807e7e;
+        padding-top: 0;
+      }
+      message-header .message-owners-name{
+        font-weight: 500;
+        font-size: .86rem;
+        color: #5f5f5f;
+      }
+      message>*{
+        padding: 8px 0;
+      }
+      messages{
+        margin: 0 -16px;
+      }
+      messages>message:not(:last-child){
+        border-bottom: 1px solid #eee;
+        padding: 0 8px;
+      }
+      messages>message:last-child{
+         border-bottom:0 !important;
+      }
+      messages>message:hover{
+        background-color: rgb(250, 250, 250);
+      }
+      .card-header{
+        padding-bottom: 16px;
+        border-bottom: 1px solid #eee;
+      }
+      message-body{
+        display: block;
+        font-size: .8rem;
+        color: #818182;
+        font-weight: 400;
+        padding-top: 0;
+      }
+      .summary-data{
+        padding: 0;
+      }
+      .summary-data>*{
+        min-height: 100px;
+        padding: 16px;
+        color:white;
+      }
+      .summary-data>*:not(:last-child){
+        margin: 0 16px 0 0;
+      }
+      .summary-title{
+        font-weight: 500;
+        display: block;
+        font-size: 1rem;
+      }
+      .charts{
+        padding: 3em 0 0 0;
+      }
+      .sales-chart{
+        height: 400px;
+      }
+      .ct-series-a .ct-area{
+            fill: #13c3b3;
+      }
+      .ct-series-a .ct-line {
+        /* Set the colour of this series line */
+        stroke: #13c3b3;
+        /* Control the thikness of your lines */
+        stroke-width: 1px;
+        /* Create a dashed line with a pattern */
+
+      }
+      .ct-series-a .ct-point {
+        stroke: #16c7c3;
+        stroke-width: 7px;
+      }
+          </style>
 
     <div class="dashboard-layout">
 	    <main class="flex-2">
@@ -77,17 +171,42 @@
 		    		<h1 class="title">Howdy, Lian.</h1>
 		    		<p class="summary-text">Here's a summary of your store.</p>
 		    	</div>
-			</section>
-			<section class="cards">
-				<div class="card"></div>
-				<div class="card"></div>
-			</section>
+			  </section>
+  			<section class="cards">
+          <div class="layout horizontal summary-data">
+            <div class="card flex" style="background-color: #E91E63;">
+              <span class="summary-title">My Total Earnings:</span>
+              <span>$140.80</span>
+            </div>
+            <div class="card flex" style="background-color: #03A9F4;">
+              <span class="summary-title">Amount withdrawn</span>
+              <span>$0.00</span>
+            </div>
+            <div class="card flex" style="background-color: #673AB7;">
+              <span class="summary-title">Balance</span>
+              <span>$140.80</span>
+            </div>
+          </div>
+  				<div class="card sales-chart">
+            <div class="layout horizontal card-header">
+                <iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
+                <span class="small-title">Sales</span>
+            </div>
+            <div id="chartSales" class="charts"></div>     
+          </div>
+  				<div class="card">
+            <div class="layout horizontal card-header">
+              <iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
+              <span class="small-title">Engagements</span>
+          </div>
+          </div>
+  			</section>
 	    </main>
 	    <aside class="flex">
 	    	<!-- Todays Visitors -->
 	    	<div class="card mb-2">
 	    		<div class="layout horizontal">
-	    			<iron-icon icon="my-icons:person"></iron-icon>
+	    			<iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
 	    			<span class="small-title">Today's Visitos</span>
 	    		</div>
 	    		
@@ -100,15 +219,28 @@
 	    		</div>
 	    	</div>
 	    	<!-- Messages -->
-	    	<div class="card mb-2">
-	    		<div class="layout horizontal">
-	    			<iron-icon icon="my-icons:person"></iron-icon>
+	    	<div class="card">
+	    		<div class="layout horizontal card-header">
+	    			<iron-icon icon="my-icons:mail" class="title-icon"></iron-icon>
 	    			<span class="small-title">Messages</span>
 	    		</div>
+          <messages>
+            <template is="dom-repeat" items="[[messages]]">
+              <message>
+                <message-header class="layout horizontal">
+                  <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
+                  <div>
+                    <span class="message-owners-name">Mary Jane</span>
+                    <!-- <span>Online</span> -->
+                  </div>
+                  <span class="flex"></span>
+                  <span class="message-time">1 min ago</span>
+                </message-header>
+                <message-body>Semoga dadi milyuner rika ya!</message-body>   
+              </message>
+            </template>
+          </messages>
 	    	</div>
-	    	<messages>
-	    		
-	    	</messages>
 	    </aside>
     </div>
   </template>
@@ -120,7 +252,9 @@
 
       static get properties() {
         return {
-          
+          messages:{
+            value: [{},{},{},{}]
+          }
         };
       }
 
@@ -131,6 +265,15 @@
       ready() {
         super.ready();
 
+        new Chartist.Line(this.$.chartSales, {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8],
+          series: [
+            [5, 9, 7, 8, 5, 3, 5, 4]
+          ]
+        }, {
+          low: 0,
+          showArea: true
+        });
         Polymer.RenderStatus.afterNextRender(this, function() {
           
         });

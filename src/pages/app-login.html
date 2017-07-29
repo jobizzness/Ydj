@@ -65,6 +65,23 @@
       .link:hover{
       	color: var(--app-accent-color);
       }
+      .social-icons{
+        margin: 0;
+        padding: 16px;
+      }
+      .social-icons>li{
+        list-style: none;
+        display: block;
+        padding:6px;
+      }
+      .social-icons>li>a{
+        display: block;
+      }
+      .social-icons>li img{
+        width: 35px;
+      }
+
+
        /*Mobile*/
       @media (max-width: 425px) {
       	.login{
@@ -105,6 +122,17 @@
               <div  class="layout horizontal space-top-bottom">
               	<span>Or login with:</span>
               	<span class="flex"></span>
+                <ul class="layout horizontal social-icons">
+                  <li>
+                    <a href="#"><img src="/images/icons/facebook.svg"></a>
+                  </li>
+                  <li>
+                    <a href="#"><img src="/images/icons/twitter.svg"></a>
+                  </li>
+                  <li>
+                    <a href="#"><img src="/images/icons/google-plus.svg"></a>
+                  </li>
+                </ul>
               </div>
   				</div>  
       	</form>

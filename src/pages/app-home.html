@@ -44,7 +44,7 @@
         padding-top:16px;
       }
       #products-grid>app-product-item{
-        width: 33.3333%;
+        width: 25%;
         padding: 16px;
       }
       #banner-1>.hero-info{
@@ -62,6 +62,22 @@
         color: white;
         background-color: #03A9F4;
         padding: 16px;
+      }
+      .features{
+        min-height: 45vh;
+        padding: 16px;
+        @apply --layout-horizontal;
+      }
+      .features>*{
+        padding:16px;
+        text-align: center;
+      }
+      .features>* h5{
+        font-size: 1.3rem;
+        line-height: 110%;
+        font-weight: 500;
+        color: #4a4a4a;
+        margin: 0.82rem 0 0.656rem 0;
       }
       @media (max-width: 1024px) {
         #products-grid>app-product-item{
@@ -103,6 +119,31 @@
     			</dom-if>
     		</div>
     	</app-hero>
+
+      <!-- Features -->
+      <section class="features content">
+        <div class="flex">
+            <iron-icon src="images/icons/icon.svg"></iron-icon>
+            <h5>Find something you love</h5>
+            <p class="grey-text text-darken-2">
+              Our marketplace has design assets creatively created to best meet your needs.
+            </p>
+          </div>
+          <div class="flex">
+            <iron-icon src="images/icons/icon.svg"></iron-icon>
+            <h5>Shop with confidence</h5>
+            <p class="grey-text text-darken-2">
+              We protect every transactions safely and securely via PayPal.
+            </p>
+          </div>
+          <div class="flex">
+            <iron-icon src="images/icons/icon.svg"></iron-icon>
+            <h5>Quality design marketplace</h5>
+            <p class="grey-text text-darken-2">
+              We ensure that you both value for money and good quality design assets.
+            </p>
+          </div>
+      </section>
       <!-- Product Listing -->
     	<app-products class="layout vertical">
     		<app-toolbar class="products-toolbar">
