@@ -10,6 +10,8 @@
 <link rel="lazy-import" href="../components/app-me-account/app-me-account.html">
 <link rel="lazy-import" href="../components/app-me-goodies/app-me-goodies.html">
 <link rel="lazy-import" href="../components/app-dashboard/app-dashboard.html">
+<link rel="lazy-import" href="../components/app-me-store/app-me-store.html">
+<link rel="lazy-import" href="../components/app-me-earnings/app-me-earnings.html">
 
 <!--
 `<Name>` is Description
@@ -71,8 +73,9 @@
             <a href="/me/dashboard" name="dashboard" class="acc-nav--item">
             Dashboard</a>
 	    			<a href="/me/account" name="me-account" class="acc-nav--item">My Account</a>
+            <a href="/me/store" name="me-store" class="acc-nav--item">My Store</a>
 	    			<a href="/me/goodies" name="me-goodies" class="acc-nav--item">My Purchases</a>
-            <a href="/me/sales" name="me-sales" class="acc-nav--item">My Sales</a>
+            <a href="/me/earnings" name="me-earnings" class="acc-nav--item">My Earnings</a>
 	    		</iron-selector>
 	    	</aside>
 	    	<main class="flex-3">
@@ -80,9 +83,10 @@
             <app-dashboard name="dashboard"></app-dashboard>
 	    			<app-me-account name="me-account"></app-me-account>
 	    			<app-me-goodies name="me-goodies"></app-me-goodies>
-	    			<app-me-sales name="me-sales"></app-me-sales>
+	    			<app-me-earnings name="me-earnings"></app-me-earnings>
 	    			<app-me-favorites name="me-favorites"></app-me-favorites>
 	    			<app-me-messages name="me-messages"></app-me-messages>
+            <app-me-store name="me-store"></app-me-store>
 	    		</iron-selector>
 	    		
 	    	</main>
@@ -123,6 +127,8 @@
       		case 'goodies':
       		case 'favorites':
       		case 'messages':
+          case 'earnings':
+          case 'store':
       			this.page = 'me-'+slug;
       			break;
       		default:

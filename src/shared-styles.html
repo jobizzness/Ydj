@@ -61,9 +61,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #f44336;
         background-color: transparent;
       }
+      /*Buttons*/
       paper-button[primary]{
         background-color:var(--app-accent-lighter);
         color:white;
+      }
+      paper-button[trans]{
+        background-color:transparent;
+        color:var(--app-accent-lighter);
+      }
+      .p-0{
+        padding: 0;
+      }
+      .strong-text{
+        font-weight: 500;
+        color: #333232;
+      }
+      .light-text{
+        font-size: .9rem;
+        color: rgba(95, 95, 95, 0.76);
+      }
+      /* Panel */
+      .card.with--panel{
+        border-top: 2px solid var(--app-accent-lighter, white);
+        padding: 0;
+        border-radius: 5px;
+      }
+      panel{
+        background-color: #fafafa;
+        display: block;
+        padding: 16px;
+      }
+      panel .panel-title{
+        font-weight: 500;
+        color: var(--app-primary-color);
+        font-size: 0.89rem;
       }
     </style>
   </template>

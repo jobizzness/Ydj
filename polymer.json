@@ -10,6 +10,8 @@
     "src/pages/app-me.html",
     "src/components/app-me-account/app-me-account.html",
     "src/components/app-me-goodies/app-me-goodies.html",
+    "src/components/app-me-store/app-me-store.html",
+    "src/components/app-me-earnings/app-me-earnings.html",
     "src/components/app-dashboard/app-dashboard.html"
 
   ],

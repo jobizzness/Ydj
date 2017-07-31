@@ -1,0 +1,126 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-earnings">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block
+      }
+      .earnings>*{
+      	padding:16px;
+      }
+      #withdrawbtn{
+      	margin-top: 1em;
+      }
+    </style>
+
+     <div class="cards">
+
+     	  <section class="layout horizontal">
+     	  	<!-- Date Picker -->
+     	  	<vaadin-date-picker label="View From"></vaadin-date-picker>
+			<span class="flex"></span>
+			<div>
+				<paper-button primary raised id="withdrawbtn">MAKE A WITHDRAWAL</paper-button>
+			</div>
+     	  </section>
+	      <!-- All Earnings -->
+	      <section class="card with--panel">
+	        <section class="layout horizontal">
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title">Date:</span>
+	            </panel>
+	          </div>
+	          <div class="flex-2">
+	            <panel>
+	              <span class="panel-title">From:</span>
+	            </panel>
+	          </div>
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title">Downloads:</span>
+	            </panel>
+	          </div>
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title">Total Earnings:</span>
+	            </panel>
+	          </div>
+	        </section>
+
+	        <!-- Earnings List -->
+	        <template is="dom-repeat" items="[[items]]">
+	          <section class="layout horizontal earnings">
+	            <div class="flex"><span class="light-text">April 2, 2017</span></div>
+	            <div class="flex-2"><span class="strong-text">STOREFRONT - Apparel Mockups Bundle</span></div>
+	            <div class="flex layout vertical start-center"><span class="light-text">3</span></div>
+	            <div class="flex layout vertical start-center"><span class="strong-text">$20.20</span></div>
+	          </section>
+	        </template>
+
+	        <!-- Footer -->
+	        <section class="layout horizontal" style="background-color: #fafafa">
+	        	<span class="flex"></span>
+	        	<div class="flex-2">
+	            <panel>
+	              <span class="panel-title">Total:</span>
+	            </panel>
+	          </div>
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title">11</span>
+	            </panel>
+	          </div>
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title">$140</span>
+	            </panel>
+	          </div>
+	        </section>
+	   	</section>
+   	</div>
+
+  </template>
+
+  <script>
+    class AppMeEarnings extends Polymer.Element {
+
+      static get is() { return 'app-me-earnings'; }
+
+      static get properties() {
+        return {
+          items:{
+          	value: [{},{},{},{}]
+          }
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMeEarnings.is, AppMeEarnings);
+  </script>
+</dom-module>

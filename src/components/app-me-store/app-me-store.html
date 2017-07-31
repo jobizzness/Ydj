@@ -1,7 +1,10 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
 <!--
@@ -9,7 +12,7 @@
 
 @element Name
 -->
-<dom-module id="app-me-goodies">
+<dom-module id="app-me-store">
   <template>
     <style  include="shared-styles iron-flex iron-flex-alignment">
       :host {
@@ -31,8 +34,16 @@
       }
     </style>
 
-    <div class="cards">
-      <!-- General Account -->
+    <app-goodies-editor id="goodiesEditor"></app-goodies-editor>
+
+    <div class="cards">      
+      <section class="layout horizontal">
+        <span class="flex"></span>
+        <div>
+          <paper-button trans on-tap="_create"><iron-icon icon="my-icons:upload" style="margin-right: 8px;"></iron-icon>Upload</paper-button>
+        </div>
+      </section>
+      <!-- Panel -->
       <section class="card with--panel">
         <section class="layout horizontal">
           <div class="flex-2">
@@ -43,6 +54,11 @@
           <div class="flex">
             <panel>
               <span class="panel-title">Item Price</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Downloads</span>
             </panel>
           </div>
           <div class="flex">
@@ -69,15 +85,16 @@
                 </div>
               </div>
             </div>
+            <!-- Price -->
             <div class="flex layout vertical start-center">
-              <!-- Prices -->
-                  <span class="strong-text mb-20">$100</span>
+                <span class="strong-text mb-20">$100</span>
             </div>
+            <!-- Downloads -->
             <div class="flex layout vertical start-center">
-              <!-- Actions -->
-                  <a href="#" class="light-text mb-20">
-                    <paper-button primary>Download</paper-button>
-                  </a>
+              <span class="light-text mb-20">30</span>
+            </div>
+            <!-- Actions -->
+            <div class="flex layout vertical start-center">
             </div>
           </section>
         </template>
@@ -88,9 +105,9 @@
   </template>
 
   <script>
-    class AppMeGoodies extends Polymer.Element {
+    class AppMeStore extends Polymer.GestureEventListeners(Polymer.Element) {
 
-      static get is() { return 'app-me-goodies'; }
+      static get is() { return 'app-me-store'; }
 
       static get properties() {return {
           items:{
@@ -108,12 +125,19 @@
       ready() {
         super.ready();
         Polymer.RenderStatus.afterNextRender(this, function() {
-          
+          Polymer.importHref(this.resolveUrl('../app-goodies-editor/app-goodies-editor.html'), null, null, true);
         });
       }
 
+
+      /**
+       *
+       */
+       _create(){
+          this.$.goodiesEditor.open({});
+       }
     }
 
-    window.customElements.define(AppMeGoodies.is, AppMeGoodies);
+    window.customElements.define(AppMeStore.is, AppMeStore);
   </script>
 </dom-module>

@@ -143,26 +143,48 @@
       }
       .charts{
         padding: 3em 0 0 0;
+            height: 220px
       }
-      .sales-chart{
-        height: 400px;
+      #chartSales .ct-series-a .ct-area{
+        fill: #13c3b3;
       }
-      .ct-series-a .ct-area{
-            fill: #13c3b3;
-      }
-      .ct-series-a .ct-line {
-        /* Set the colour of this series line */
+      #chartSales .ct-series-a .ct-line {
         stroke: #13c3b3;
-        /* Control the thikness of your lines */
         stroke-width: 1px;
-        /* Create a dashed line with a pattern */
-
       }
-      .ct-series-a .ct-point {
+      #chartSales .ct-series-a .ct-point {
         stroke: #16c7c3;
         stroke-width: 7px;
       }
-          </style>
+      #chartEng .ct-series-a .ct-area{
+        fill: #64E8ED;
+      }
+      #chartEng .ct-series-a .ct-line {
+        stroke: #3ec0c5;
+        stroke-width: 5px;
+      }
+      #chartEng .ct-series-a .ct-point {
+        stroke-width: 0px;
+      }
+      .message-owner-status{
+        font-size: 13px;
+        display: flex;
+        color: #8c8c8c;
+        justify-content: center;
+        align-items: center;
+        font-weight: 400;
+      }
+      .message-owner-status .status-icon{
+        width: 10px;
+        height: 10px;
+        background-color: #eee;
+        border-radius:10px;
+        margin-right: 4px;
+      }
+      .message-owner-status.online .status-icon{
+        background-color: #27d03c;
+      }
+    </style>
 
     <div class="dashboard-layout">
 	    <main class="flex-2">
@@ -197,11 +219,13 @@
   				<div class="card">
             <div class="layout horizontal card-header">
               <iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
-              <span class="small-title">Engagements</span>
-          </div>
+              <span class="small-title">Engagement</span>
+            </div>
+            <div id="chartEng" class="charts"></div>
           </div>
   			</section>
 	    </main>
+
 	    <aside class="flex">
 	    	<!-- Todays Visitors -->
 	    	<div class="card mb-2">
@@ -231,7 +255,7 @@
                   <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
                   <div>
                     <span class="message-owners-name">Mary Jane</span>
-                    <!-- <span>Online</span> -->
+                    <span class="message-owner-status online"><span class="status-icon"></span>Online</span>
                   </div>
                   <span class="flex"></span>
                   <span class="message-time">1 min ago</span>
@@ -272,8 +296,21 @@
           ]
         }, {
           low: 0,
-          showArea: true
+          showArea: true,
+          fullWidth: true,
         });
+
+        new Chartist.Line(this.$.chartEng, {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8],
+          series: [
+            [2, 4, 7, 6, 5, 3, 5, 4]
+          ]
+        }, {
+          low: 0,
+          showArea: true,
+          fullWidth: true,
+        });
+
         Polymer.RenderStatus.afterNextRender(this, function() {
           
         });
