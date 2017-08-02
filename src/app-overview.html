@@ -1,3 +1,9 @@
+<!--
+@Design Juice
+@Author Jobizzness.com
+This is our overview element. Kind of like a middleware that will give you access
+based on your level.
+-->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -30,11 +36,7 @@
 <link rel="lazy-import" href="pages/app-login.html">
 <link rel="lazy-import" href="pages/app-me.html">
 <link rel="lazy-import" href="my-view404.html">
-<!--
-`<Name>` is Description
 
-@element Name
--->
 <dom-module id="app-overview">
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment app-button user-actions">
@@ -253,6 +255,7 @@
           <app-me name="me" route="[[subroute]]"></app-me>
           <app-404 name="view404"></app-404>
         </iron-pages>
+
         <!-- Footer -->
           <footer>
             <app-footer></app-footer>
@@ -267,6 +270,9 @@
       static get is() { return 'app-overview'; }
 
       static get properties() {return {
+          rootPattern: String,
+          routeData: Object,
+          subroute: String,
           nav:{
             type:Object,
             computed: 'navigation()'
@@ -276,10 +282,6 @@
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
-          rootPattern: String,
-          routeData: Object,
-          subroute: String,
-
           _shouldRenderHeader: {
             computed: '_computeShouldRenderHeader(page)',
             type:Boolean,
@@ -288,9 +290,11 @@
           }
         }}
 
+      // Observe for changes to these props
       static get observers() {
         return [
           '_routePageChanged(routeData.page)',
+          '_authChanged(user)'
         ];
       }
 
@@ -329,17 +333,49 @@
         switch(page){
           case 'login':
           case 'signup':
-          if(this.user){
-            this.set("route.path", '/');
-          }
-          break;
+            if(this.user){
+              this.set("route.path", '/');
+            }
+            break;
           case 'me':
           case 'logout':
-          if(!this.user){
-            this.set("route.path", '/login');
-          }
-          break;
+            if(!this.user){
+              this.set("route.path", '/login');
+            }
+            break;
         }
+      }
+
+      /**
+       * This will fire when Auth changes
+       * @param user
+       * @private
+       */
+      _authChanged(user){
+        if(!user){
+          //Well you are not loggedIN
+          return;
+        }
+        this._userIsLoggedIn();
+        //okay you are in
+      }
+
+      _computeShouldRenderHeader(page){
+        let res = true;
+        switch(page){
+          case 'login':
+          case 'register':
+            res = false;
+            break;
+        }
+        return res;
+      }
+
+      _shouldRenderAuthElements(smallScreen, loggedIn){
+        if(smallScreen || loggedIn){
+          return false;
+        }
+        return true;
       }
       _showPage404() {
         this.page = 'view404';
@@ -356,26 +392,8 @@
               {name: '3D', slug: 'category/3d'}
             ]}
       }
-      _computeShouldRenderHeader(page){
-        let res = true;
-        switch(page){
-          case 'login':
-          case 'register':
-            res = false;
-          break;
-        }
-        return res;
-      }
-
       _headerChanged(){
         this.$.layout.resetLayout();
-      }
-
-      _shouldRenderAuthElements(smallScreen, loggedIn){
-        if(smallScreen || loggedIn){
-          return false;
-        }
-        return true;
       }
 
       _shouldRenderUserElements(smallScreen, loggedIn){
@@ -385,17 +403,21 @@
         return true;
       }
 
-      userIsLoggedIn(){
-        //Extract this later
-        //this.page = 'home';
-        //this._loadUserResources();
-      }
+      _userIsLoggedIn(){
+        if(this.page === 'login' || this.page === 'register'){
+          console.info('logged in');
+          this._loadUserResources();
 
+        }
+
+      }
+      _takeMeHome(){
+        this.page = 'home';
+      }
       _shouldRenderBottomHeader(page){
         if(page === 'me'){
           this._headerChanged();
           return false;
-
         }
 
         this._headerChanged();
@@ -403,7 +425,7 @@
       }
 
       _loadUserResources(){
-
+        this._takeMeHome();
       }
     }
 

@@ -1,4 +1,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/app-flickity/flickity-styles.html">
+<link rel="import" href="flickity.html">
 <!--
 `<product-media>` is Description
 
@@ -6,20 +8,30 @@
 -->
 <dom-module id="product-media">
   <template>
-    <style>
+    <style include="flickity-styles">
       :host {
         display: block
       }
+      .carousel-cell{
+        width: 100%;
+        height: 100%;
+      }
+      .flickity-viewport{
+        height: 500px;
+      }
     </style>
 
-    <paper-carousel items="1" dotText="false">
-      <img src="https://unsplash.it/800/500/?image=257" draggable="false"/>
-      <img src="https://unsplash.it/800/500/?image=250" draggable="false"/>
-      <img src="https://unsplash.it/800/500/?image=399" draggable="false"/>
-      <img src="https://unsplash.it/800/500/?image=146" draggable="false"/>
-      <img src="https://unsplash.it/800/500/?image=248" draggable="false"/>
-    </paper-carousel>
-
+    <div class="main-carousel" id="flick">
+      <div class="carousel-cell">
+        <img src="http://lorempixel.com/900/500/abstract/3" draggable="false"/>
+      </div>
+      <div class="carousel-cell">
+        <img src="http://lorempixel.com/900/500/abstract/4" draggable="false"/>
+      </div>
+      <div class="carousel-cell">
+        <img src="http://lorempixel.com/900/500/abstract/5" draggable="false"/>
+      </div>
+    </div>
   </template>
 
   <script>
@@ -51,12 +63,21 @@
 
       ready() {
         super.ready();
-
+        this._initializeFlickity()
         Polymer.RenderStatus.afterNextRender(this, function() {
           
         });
       }
 
+
+      _initializeFlickity(){
+
+        new Flickity( this.$.flick, {
+          // options
+          cellAlign: 'left',
+          contain: true
+        });
+      }
     }
 
     window.customElements.define(ProductMedia.is, ProductMedia);

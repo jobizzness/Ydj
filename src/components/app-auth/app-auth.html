@@ -44,7 +44,7 @@
                         type: Object,
                         readOnly: true,
                         notify: true,
-                        observer: '_userChanged'
+                        observer: '_userChanged',
 
                     },
                     /**
@@ -68,21 +68,7 @@
 
             constructor() {
                 super();
-               // this.attachShadow({mode: 'closed', delegatesFocus: true});
                 this.app = env;
-            }
-
-            /**
-             * Fires when the user object changes.
-             * @param {newVal}
-             * @param {oldVal}
-             */
-            _userChanged(newVal, oldVal) {
-                if(newVal){
-                    this._setSignedIn(true);
-                    return;
-                }
-                this._setSignedIn(false);
             }
 
             ready() {
@@ -106,9 +92,21 @@
                 });
             }
 
+            /**
+             * Fires when the user object changes.
+             * @param {newVal}
+             * @param {oldVal}
+             */
+            _userChanged(newVal, oldVal) {
+                if(newVal){
+                    this._setSignedIn(true);
+                    return;
+                }
+                this._setSignedIn(false);
+            }
 
             _done(){
-                console.log('we are done');
+                console.info('App is ready!');
                  this.dispatchEvent(new CustomEvent('set', {detail:{}}, { bubbles: false}));
             }
             /**
@@ -152,6 +150,7 @@
             onAuthStateChanged(callback) {
                 return this.addEventListener('user-changed', callback);
             }
+
             /**
              * Once auth is successful we rush to get
              * our users details.
@@ -216,8 +215,6 @@
                 this._setUser(JSON.parse(event.detail.response));
                 this.dispatchEvent(new CustomEvent('user-changed', {detail: {user: this.user}}));
             }
-
-
 
         }
 
