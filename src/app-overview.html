@@ -20,6 +20,7 @@ based on your level.
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
 
 <!-- App Components -->
 <link rel="import" href="shared-styles.html">
@@ -95,7 +96,7 @@ based on your level.
       }
       iron-selector.app-nav{
         width: 100%;
-        @apply --layout-horizontal;
+        @apply(--layout-horizontal);
       }
       iron-selector.app-nav a.link{
         @apply --layout-vertical;
@@ -103,7 +104,7 @@ based on your level.
           text-decoration: none;
           font-weight: 600;
           outline: none;
-          font-size: 14px;
+          font-size: 1rem;
           padding: 22px 24px;
           cursor: pointer;
           white-space: nowrap;
@@ -135,6 +136,13 @@ based on your level.
       }
       header-actions>*{
         margin: 0 8px;
+      }
+      shibui-dropdown-menu#dropMenu{
+        --shibui-dropdown-content:{
+          width: 190px;
+          top: 60px;
+          left: -56px;
+        }
       }
     </style>
 
@@ -206,13 +214,20 @@ based on your level.
                         </li>
                       </ul>
                       <!-- User Info & Avatar -->
-                      <a href="/me" class="avatar-wrapper layout horizontal">
-                        <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
-                        <div class="user-info">
-                          <span class="username">[[user.username]]</span>
-                          <span class="user-balance">$745.00</span>
-                        </div>
-                      </a>
+                      <shibui-dropdown-menu id="dropMenu">
+                        <a slot="trigger" class="avatar-wrapper layout horizontal">
+                          <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
+                          <div class="user-info">
+                            <span class="username">[[user.username]]</span>
+                            <span class="user-balance">$745.00</span>
+                          </div>
+                        </a>
+                        <a href="/me">My Account</a>
+                        <a href="">Notifications</a>
+                        <a on-click="signOut">Sign out</a>
+                      </shibui-dropdown-menu>
+
+                      <!-- User Menu -->
                     </user-actions>
                   </template>
                 </header-actions>
@@ -282,6 +297,11 @@ based on your level.
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
+          user:{
+            observer: '_authChanged',
+            notify:true,
+            type:Object
+          },
           _shouldRenderHeader: {
             computed: '_computeShouldRenderHeader(page)',
             type:Boolean,
@@ -293,8 +313,7 @@ based on your level.
       // Observe for changes to these props
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)',
-          '_authChanged(user)'
+          '_routePageChanged(routeData.page)'
         ];
       }
 
@@ -351,9 +370,11 @@ based on your level.
        * @param user
        * @private
        */
-      _authChanged(user){
-        if(!user){
-          //Well you are not loggedIN
+      _authChanged(user, old){
+        console.log('changed');
+        if(!user && old){
+          //You just logged Out
+          this.set("route.path", '/');
           return;
         }
         this._userIsLoggedIn();
@@ -393,7 +414,7 @@ based on your level.
             ]}
       }
       _headerChanged(){
-        this.$.layout.resetLayout();
+        //this.$.layout.resetLayout();
       }
 
       _shouldRenderUserElements(smallScreen, loggedIn){
@@ -405,6 +426,7 @@ based on your level.
 
       _userIsLoggedIn(){
         if(this.page === 'login' || this.page === 'register'){
+          this.set("route.path", '/');
           console.info('logged in');
           this._loadUserResources();
 
@@ -415,17 +437,21 @@ based on your level.
         this.page = 'home';
       }
       _shouldRenderBottomHeader(page){
-        if(page === 'me'){
-          this._headerChanged();
-          return false;
-        }
-
-        this._headerChanged();
+//        if(page === 'me'){
+//          this._headerChanged();
+//          return false;
+//        }
+//
+//        this._headerChanged();
         return true;
       }
 
       _loadUserResources(){
         this._takeMeHome();
+      }
+
+      signOut(){
+        window.dispatchEvent(new CustomEvent('signout', {detail: {kicked: true, bubble:false}}));
       }
     }
 
