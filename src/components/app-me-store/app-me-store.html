@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../components/app-goodies-editor/app-goodies-editor.html">
 
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
@@ -39,9 +40,7 @@
     <div class="cards">      
       <section class="layout horizontal">
         <span class="flex"></span>
-        <div>
-          <paper-button trans on-tap="_create"><iron-icon icon="my-icons:upload" style="margin-right: 8px;"></iron-icon>Upload</paper-button>
-        </div>
+        <a><paper-button raised class="rounded-btn action-btn" on-tap="_create"><iron-icon icon="my-icons:upload" style="margin-right: 8px;"></iron-icon>Upload</paper-button></a>
       </section>
       <!-- Panel -->
       <section class="card with--panel">

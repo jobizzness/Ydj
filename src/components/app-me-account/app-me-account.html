@@ -31,7 +31,6 @@
       	flex:1;
       }
       paper-input{
-        --paper-input-container-focus-color: var(--app-accent-color);
         max-width: 300px;
       }
       #changeAvatar{
@@ -62,6 +61,9 @@
 	  paper-checkbox{
 	  	--paper-checkbox-label-checked-color: var(--app-accent-color);
 	  	--paper-checkbox-checked-color: gray;
+	  }
+	  #paypalEmail{
+	  	max-width: 500px;
 	  }
     </style>
     <div class="cards">
@@ -106,7 +108,13 @@
 		<section class="card">
 			<h1 class="card-title">Billing Settings</h1>
 			<div class="layout vertical">
-
+			<paper-input label="Your Paypal Email" 
+						 type="email" 
+						 name="email" 
+						 id="paypalEmail" 
+						 value="lailian@triplebytes.com">
+	            	<iron-icon icon="main" prefix></iron-icon>
+	          	</paper-input>
 			</div>
 		</section>
 

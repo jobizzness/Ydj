@@ -1,0 +1,180 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/shop-cart-item/shop-cart-item.html">
+
+<dom-module id="app-cart">
+
+  <template>
+
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host{
+        background-color: #fafafa;
+        display: block;
+        min-height: 100vh;
+      }
+      .checkout-box {
+        font-weight: bold;
+        text-align: right;
+        margin-right: 10px;
+      }
+      .subtotal {
+        margin: 0 64px 0 24px;
+      }
+      header {
+        text-align: center;
+        margin: 1em 0;
+      }
+      .empty-cart {
+        text-align: center;
+        font-weight: 300;
+        white-space: nowrap;
+        color: #757575;
+      }
+      header > h1 {
+        margin: 0 0 4px 0;
+        font-size: 1.3em;
+        font-weight: 500;
+      }
+      header > span {
+        color: #757575;
+        font-size: 12px;
+      }
+      @media (max-width: 767px) {
+        .subtotal {
+          margin: 0 0 0 24px;
+        }
+      }
+    </style>
+
+    <div class="main-frame">
+      <div class="subsection" hidden$="[[_hasItems]]">
+        <p class="empty-cart">Your <iron-icon icon="my-icons:cart"></iron-icon> is empty.</p>
+      </div>
+      <header>
+        <h1>Your Cart</h1>
+        <span>([[_getPluralizedQuantity(cart.length)]])</span>
+      </header>
+      <div class="subsection card with--panel" hidden$="[[!_hasItems]]">
+        <section class="layout horizontal">
+          <div class="flex-2">
+            <panel>
+              <span class="panel-title">Item Name</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Item Price</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Qty:</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Actions</span>
+            </panel>
+          </div>
+        </section>
+        <div class="list">
+          <dom-repeat items="[[cart]]" as="entry">
+            <template>
+              <shop-cart-item entry="[[entry]]"></shop-cart-item>
+            </template>
+          </dom-repeat>
+        </div>
+
+        <!-- Footer -->
+        <section class="layout horizontal" style="background-color: #fafafa">
+          <span class="flex"></span>
+          <div class="flex-2">
+            <panel>
+              <span class="panel-title"></span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Total: $200</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Checkout</span>
+            </panel>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+
+    class AppCart extends Polymer.Element {
+
+      static get is() { return 'app-cart'; }
+
+      static get properties() { return {
+
+        total: Number,
+
+        cart: Array,
+
+        visible: {
+          type: Boolean,
+          observer: '_visibleChanged'
+        },
+
+        _hasItems: {
+          type: Boolean,
+          computed: '_computeHasItem(cart.length)'
+        }
+
+      }}
+
+
+      ready(){
+        super.ready();
+        this.cart = [{},{}];
+      }
+      _formatTotal(total) {
+        return isNaN(total) ? '' : '$' + total.toFixed(2);
+      }
+
+      _computeHasItem(cartLength) {
+        console.log(cartLength);
+        return cartLength > 0;
+      }
+
+      _getPluralizedQuantity(quantity) {
+        return quantity + ' ' + (quantity === 1 ? 'item' : 'items');
+      }
+
+      _visibleChanged(visible) {
+        if (visible) {
+          // Notify the section's title
+          this.dispatchEvent(new CustomEvent('change-section', {
+            bubbles: true, composed: true, detail: { title: 'Your cart' }}));
+        }
+      }
+
+    }
+
+    customElements.define(AppCart.is, AppCart);
+
+  </script>
+
+</dom-module>

@@ -35,6 +35,7 @@ based on your level.
 <link rel="lazy-import" href="pages/app-home.html">
 <link rel="lazy-import" href="pages/app-goodies.html">
 <link rel="lazy-import" href="pages/app-login.html">
+<link rel="lazy-import" href="pages/app-user.html">
 <link rel="lazy-import" href="pages/app-me.html">
 <link rel="lazy-import" href="my-view404.html">
 
@@ -142,8 +143,15 @@ based on your level.
           width: 190px;
           top: 60px;
           left: -56px;
+        };
+        --shibui-dropdown-item:{
+          padding: 12px 16px;
+          font-weight: 500;
+          color: #5f5f5f;
         }
       }
+
+
     </style>
 
     <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
@@ -192,24 +200,21 @@ based on your level.
                       <!-- User Notification Icons -->
                       <ul class="notification-icons layout horizontal">
                         <li>
-                          <a href="#">
-                            <iron-icon src="/images/icons/gift.svg"></iron-icon>
-                            <app-badge>7</app-badge>
-                            <iron-icon icon="my-icons:arrow-down" class="arrow-down"></iron-icon>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
+                          <a href="/notifications">
                             <iron-icon src="/images/icons/heart.svg"></iron-icon>
                             <app-badge>1</app-badge>
-                             <iron-icon icon="my-icons:arrow-down" class="arrow-down"></iron-icon>
                           </a>
                         </li>
                         <li>
-                          <a href="#">
+                          <a href="/messages">
                             <iron-icon src="/images/icons/envelope.svg"></iron-icon>
                             <app-badge>20</app-badge>
-                             <iron-icon icon="my-icons:arrow-down" class="arrow-down"></iron-icon>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="/cart">
+                            <iron-icon src="/images/icons/cart.svg"></iron-icon>
+                            <app-badge>7</app-badge>
                           </a>
                         </li>
                       </ul>
@@ -218,23 +223,23 @@ based on your level.
                         <a slot="trigger" class="avatar-wrapper layout horizontal">
                           <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
                           <div class="user-info">
-                            <span class="username">[[user.username]]</span>
+                            <span class="username">[[user.nickname]]</span>
                             <span class="user-balance">$745.00</span>
                           </div>
                         </a>
-                        <a href="/me">My Account</a>
-                        <a href="">Notifications</a>
+                        <a href="/me/dashboard">Dashboard</a>
+                        <a href="/me/account">My Account</a>
+                        <a href="/me/store">My Store</a>
+                        <a href="/me/goodies">My Purchases</a>
+                        <a href="/me/earnings">My Earnings</a>
                         <a on-click="signOut">Sign out</a>
                       </shibui-dropdown-menu>
-
-                      <!-- User Menu -->
                     </user-actions>
                   </template>
                 </header-actions>
               </app-toolbar>
 
-              <template is="dom-if" if="{{_shouldRenderBottomHeader(page)}}">
-                <app-toolbar class="toolbar-bottom" sticky>
+                <app-toolbar class="toolbar-bottom" sticky hidden$="[[!_shouldRenderBottomHeader]]">
                   <div class="content layout horizontal">
                     <dom-if if="[[!smallScreen]]">
                       <template>
@@ -252,7 +257,6 @@ based on your level.
                     </dom-if>
                   </div>
                 </app-toolbar>
-              </template>
             </template>
           </app-header>
           
@@ -267,7 +271,11 @@ based on your level.
           <app-goodies name="goodies"></app-goodies>
           <app-register name="register"></app-register>
           <app-category name="category"></app-category>
+          <app-user name="user" route="[[subroute]]"></app-user>
           <app-me name="me" route="[[subroute]]"></app-me>
+          <app-messages name="messages"></app-messages>
+          <app-notifications name="notifications"></app-notifications>
+          <app-cart name="cart"></app-cart>
           <app-404 name="view404"></app-404>
         </iron-pages>
 
@@ -304,6 +312,13 @@ based on your level.
           },
           _shouldRenderHeader: {
             computed: '_computeShouldRenderHeader(page)',
+            type:Boolean,
+            observer: '_headerChanged'
+            
+          }
+        ,          
+        _shouldRenderBottomHeader: {
+            computed: '_computeShouldRenderBottomHeader(page)',
             type:Boolean,
             observer: '_headerChanged'
             
@@ -357,7 +372,9 @@ based on your level.
             }
             break;
           case 'me':
+          case 'cart':
           case 'logout':
+          case 'messages':
             if(!this.user){
               this.set("route.path", '/login');
             }
@@ -371,7 +388,6 @@ based on your level.
        * @private
        */
       _authChanged(user, old){
-        console.log('changed');
         if(!user && old){
           //You just logged Out
           this.set("route.path", '/');
@@ -414,7 +430,7 @@ based on your level.
             ]}
       }
       _headerChanged(){
-        //this.$.layout.resetLayout();
+        this.$.layout.resetLayout();
       }
 
       _shouldRenderUserElements(smallScreen, loggedIn){
@@ -436,11 +452,10 @@ based on your level.
       _takeMeHome(){
         this.page = 'home';
       }
-      _shouldRenderBottomHeader(page){
-//        if(page === 'me'){
-//          this._headerChanged();
-//          return false;
-//        }
+      _computeShouldRenderBottomHeader(page){
+       if(page === 'me'){
+         return false;
+       }
 //
 //        this._headerChanged();
         return true;

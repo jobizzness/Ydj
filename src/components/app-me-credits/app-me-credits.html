@@ -1,0 +1,54 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-credits">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+
+    </style>
+
+  <section class="">
+    <div class="card">
+      <h1>Sell as many design goods as you can</h1>
+      <span>With our flexible top-up plan that works for you!</span>
+    </div>
+  </section>
+  </template>
+
+  <script>
+    class AppMeCredits extends Polymer.Element {
+
+      static get is() { return 'app-me-credits'; }
+
+      static get properties() {return {
+          
+        }}
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMeCredits.is, AppMeCredits);
+  </script>
+</dom-module>

@@ -1,0 +1,152 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+
+<!--
+`<app-messages>` is Description
+
+@element Name
+-->
+<dom-module id="app-messages">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host{
+        background-color: #fafafa;
+        display: block;
+        min-height: 100vh;
+      }
+      .empty-cart {
+        text-align: center;
+        font-weight: 300;
+        white-space: nowrap;
+        color: #757575;
+      }
+      .messages>div>*{
+        padding:16px;
+        display: block;
+      }
+      .msg-link:hover{
+        text-decoration: underline;
+      }
+      header > h1 {
+        margin: 0 0 4px 0;
+        font-size: 1.3em;
+        font-weight: 500;
+      }
+      header > span {
+        color: #757575;
+        font-size: 12px;
+      }
+      header {
+        text-align: center;
+        margin: 1em 0;
+      }
+    </style>
+
+        <div class="main-frame">
+      <div class="subsection" hidden$="[[_hasItems]]">
+        <p class="empty-cart">Your <iron-icon icon="my-icons:mail"></iron-icon> is empty.</p>
+      </div>
+      <header>
+        <h1>Your Messages</h1>
+        <span>([[_getPluralizedQuantity(messages.length)]])</span>
+      </header>
+      <div class="subsection card with--panel" hidden$="[[!_hasItems]]">
+        <section class="layout horizontal">
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Date:</span>
+            </panel>
+          </div>
+          <div class="flex-2">
+            <panel>
+              <span class="panel-title">Subject:</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">From:</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Actions:</span>
+            </panel>
+          </div>
+        </section>
+        <div class="list">
+          <!-- Earnings List -->
+          <template is="dom-repeat" items="[[messages]]">
+            <section class="layout horizontal messages">
+              <div class="flex"><span class="light-text">April 2, 2017</span></div>
+              <div class="flex-2"><a href="#" class="strong-text msg-link">Thank you for your purchase</a></div>
+              <div class="flex layout vertical start-center"><span class="light-text">YDJ</span></div>
+              <div class="flex layout vertical start-center"><span class="strong-text"></span></div>
+            </section>
+          </template>
+        </div>
+
+        <!-- Footer -->
+<!--         <section class="layout horizontal" style="background-color: #fafafa">
+          <span class="flex"></span>
+          <div class="flex-2">
+            <panel>
+              <span class="panel-title"></span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Total: $200</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Checkout</span>
+            </panel>
+          </div>
+        </section> -->
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    class AppMessages extends Polymer.Element {
+
+      static get is() { return 'app-messages'; }
+
+      static get properties() {return {
+          messages: Array,
+          _hasItems: {
+          type: Boolean,
+          computed: '_computeHasItem(messages.length)'
+        }
+        }}
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        this.messages = [{},{}];
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+      _getPluralizedQuantity(quantity) {
+        return quantity + ' ' + (quantity === 1 ? 'item' : 'items');
+      }
+       _computeHasItem(messagesLength) {
+        return messagesLength > 0;
+      }
+
+    }
+
+    window.customElements.define(AppMessages.is, AppMessages);
+  </script>
+</dom-module>

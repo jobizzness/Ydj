@@ -3,7 +3,9 @@
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+
 <!-- App Components -->
+<link rel="import" href="../../components/create-withdrawal/create-withdrawal.html">
 <link rel="import" href="../../shared-styles.html">
 
 <!--
@@ -11,7 +13,7 @@
 
 @element Name
 -->
-<dom-module id="app-me-earnings">
+<dom-module id="app-me-withdrawals">
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment">
       :host {
@@ -23,11 +25,15 @@
       }
     </style>
 
-     <div class="cards">
+    <create-withdrawal id="withdraw"></create-withdrawal>
 
-     	  <section class="layout horizontal">
+	 <div class="cards">
+
+     	  <section class="layout horizontal center-center">
      	  	<!-- Date Picker -->
      	  	<vaadin-date-picker label="View From"></vaadin-date-picker>
+     	  	<span class="flex"></span>
+     	  	<a><paper-button raised class="rounded-btn action-btn" on-tap="_make">Withdraw</paper-button></a>
      	  </section>
 	      <!-- All Earnings -->
 	      <section class="card with--panel">
@@ -39,17 +45,22 @@
 	          </div>
 	          <div class="flex-2">
 	            <panel>
-	              <span class="panel-title">From:</span>
+	              <span class="panel-title">Reference Code:</span>
 	            </panel>
 	          </div>
 	          <div class="flex">
 	            <panel>
-	              <span class="panel-title">Downloads:</span>
+	              <span class="panel-title">Withdrawn to::</span>
 	            </panel>
 	          </div>
 	          <div class="flex">
 	            <panel>
-	              <span class="panel-title">Total Earnings:</span>
+	              <span class="panel-title">Amount:</span>
+	            </panel>
+	          </div>
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title">Status:</span>
 	            </panel>
 	          </div>
 	        </section>
@@ -58,42 +69,22 @@
 	        <template is="dom-repeat" items="[[items]]">
 	          <section class="layout horizontal earnings">
 	            <div class="flex"><span class="light-text">April 2, 2017</span></div>
-	            <div class="flex-2"><span class="strong-text">STOREFRONT - Apparel Mockups Bundle</span></div>
-	            <div class="flex layout vertical start-center"><span class="light-text">3</span></div>
-	            <div class="flex layout vertical start-center"><span class="strong-text">$20.20</span></div>
+	            <div class="flex-2"><span class="strong-text">PP1710234456</span></div>
+	            <div class="flex layout vertical start-center"><span class="light-text">billing123@paypal.com</span></div>
+	            <div class="flex layout vertical start-center"><span class="strong-text">$120.20</span></div>
+	            <div class="flex layout vertical start-center"><span class="light-text">Pending</span></div>
 	          </section>
 	        </template>
-
-	        <!-- Footer -->
-	        <section class="layout horizontal" style="background-color: #fafafa">
-	        	<span class="flex"></span>
-	        	<div class="flex-2">
-	            <panel>
-	              <span class="strong-text">Total:</span>
-	            </panel>
-	          </div>
-	          <div class="flex">
-	            <panel>
-	              <span class="strong-text">11</span>
-	            </panel>
-	          </div>
-	          <div class="flex">
-	            <panel>
-	              <span class="strong-text">$140</span>
-	            </panel>
-	          </div>
-	        </section>
 	   	</section>
    	</div>
-
   </template>
 
   <script>
-    class AppMeEarnings extends Polymer.Element {
+    class AppMeWithdrawals extends Polymer.Element {
 
-      static get is() { return 'app-me-earnings'; }
+      static get is() { return 'app-me-withdrawals'; }
 
-      static get properties() {
+       static get properties() {
         return {
           items:{
           	value: [{},{},{},{}]
@@ -113,8 +104,13 @@
         });
       }
 
+      _make(){
+      	console.log('make a new withdrawal');
+      	this.$.withdraw.opened = true;
+      }
+
     }
 
-    window.customElements.define(AppMeEarnings.is, AppMeEarnings);
+    window.customElements.define(AppMeWithdrawals.is, AppMeWithdrawals);
   </script>
 </dom-module>

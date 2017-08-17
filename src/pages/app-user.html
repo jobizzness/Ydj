@@ -1,0 +1,230 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-product-item/app-product-item.html">
+<link rel="import" href="../components/app-products/app-products.html">
+<link rel="import" href="../components/app-button/app-button.html">
+
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-user">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment app-products">
+            :host {
+                display: block;
+                background-color: #fafafa;
+            }
+            main{
+                padding-right: 32px;
+            }
+            .flex-3{
+                flex:3;
+            }
+            .container{
+                @apply --layout-horizontal;
+            }
+            app-hero#profileCover{
+                height: 400px;
+                width: 100%;
+                background-color: var(--app-primary-color);
+                display: block;
+            }
+            #products-grid>app-product-item{
+                width: 33.333%;
+                padding: 16px 8px;
+            }
+            app-hero>.background{
+                width: 100%;
+                height: 100%;
+            }
+            aside{
+                margin: 16px 0;
+            }
+            .author-info>*{
+                margin-bottom: 16px;
+            }
+            .author-info .author-info-item iron-icon{
+                margin: 0 8px;
+                color: #404040;
+            }
+            .author-info .author-info-item a{
+                color: #5f5f5f;
+                width: 100%;
+            }
+            .author-info app-avatar{
+                margin: 16px;
+            }
+            .author-info .author, .author-info .author-title{
+                display: block;
+                font-weight: 500;
+            }
+            .author-title, .author-location{
+                font-weight: 100 !important;
+            }
+            .btn-follow{
+                background-color: var(--app-accent-lighter);
+                padding: 14px 40px;
+                border-radius: 30px;
+                color:white;
+            }
+            .btn-follow iron-icon{
+                margin-right: 8px;
+            }
+        </style>
+
+        <div class="content">
+        <!-- Profile Cover -->
+        <app-hero id="profileCover">
+            <!-- Background Image -->
+            <iron-image sizing="cover" 
+                        preload src="/images/banner/fig-2079166_960_720.jpg" 
+                        class="background" 
+                        style="background-color: #5f5f5f;"></iron-image>
+        </app-hero>
+        <section class="container" id="small-content">
+            <main class="flex-3">
+                <!-- Product Listing -->
+                <app-products class="layout vertical">
+                    <!-- List here -->
+                    <iron-list items="[[products]]" 
+                              as="product"
+                              scroll-target="document" 
+                              grid id="products-grid">
+                        <template>
+                          <app-product-item data="[[product]]" on-tap="_viewPost" index="[[index]]"></app-product-item>
+                        </template>
+                    </iron-list>
+                </app-products>
+            </main>
+            <aside class="flex">
+                <div class="cards">
+                    <!-- Author details -->
+                    <section class="card author-info layout">
+                        <div class="layout horizontal" style="align-items: center;">
+                            <app-avatar src="/images/defualt-profiles.png"
+                                        width="70px"
+                                        height="70px"></app-avatar>
+                            <div class="layout vertical">
+                              <span class="author">Jones&Co</span>
+                              <span class="author-title">Creative Studio</span>
+                              <span class="author-location">Toronto, Canada</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p>Remained confused and silent by this explanation of the thoughts which had unconsciously been working in his mind. Follow your heart 💗</p>
+                        </div>
+                        <div class="layout vertical center-center" style="margin: 1.5em 0;">
+                            <paper-button class="btn-follow"><iron-icon icon="my-icons:follow"></iron-icon> Follow</paper-button>
+                        </div>
+                    </section>
+                    <section class="card author-info">
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon icon="my-icons:followers"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>Followers</span>
+                                <span class="flex"></span>
+                                <span>173</span>
+                            </a>
+                        </span>
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon icon="my-icons:follow"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>Following</span>
+                                <span class="flex"></span>
+                                <span>36</span>
+                            </a>
+                        </span>
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon icon="my-icons:share"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>Shares</span>
+                                <span class="flex"></span>
+                                <span>23</span>
+                            </a>
+                        </span>
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon icon="my-icons:eye"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>Views</span>
+                                <span class="flex"></span>
+                                <span>1,267</span>
+                            </a>
+                        </span>
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon icon="my-icons:heart"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>Likes</span>
+                                <span class="flex"></span>
+                                <span>903</span>
+                            </a>
+                        </span>
+                    </section>
+                    <section class="card author-info">
+                        <h3 class="small-heading">References:</h3>
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon src="/images/icons/fb.svg"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>Facebook</span>
+                            </a>
+                        </span>
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon src="/images/icons/tw.svg"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>Twitter</span>
+                            </a>
+                        </span>
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon src="/images/icons/pin.svg"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>Pinterest</span>
+                            </a>
+                        </span>
+                        <span class="layout horizontal author-info-item">
+                            <iron-icon icon="my-icons:eye"></iron-icon>
+                            <a href="#" class="layout horizontal">
+                                <span>https://jobizzness.com</span>
+                            </a>
+                        </span>
+                    </section>
+                </div>
+            </aside>
+        </section>
+
+    </template>
+
+    <script>
+        class AppUser extends Polymer.Element {
+
+            static get is() { return 'app-user'; }
+
+            static get properties() {return {
+                    products: {
+                        type: Array,
+                        value: [{},{},{},{},{},{}]
+                      }
+                }}
+
+            constructor() {
+                super();
+            }
+
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+
+                });
+            }
+
+        }
+
+        window.customElements.define(AppUser.is, AppUser);
+    </script>
+</dom-module>
