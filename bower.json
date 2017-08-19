@@ -31,7 +31,8 @@
     "vaadin-date-picker": "2.0.0-beta2",
     "paper-dialog": "^2.0.0",
     "vaadin-upload": "^2.0.0",
-    "shibui-dropdown-menu": "ShibuiElements/shibui-dropdown-menu#^1.1.0"
+    "shibui-dropdown-menu": "ShibuiElements/shibui-dropdown-menu#^1.1.0",
+    "paper-radio-button": "^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.1",
