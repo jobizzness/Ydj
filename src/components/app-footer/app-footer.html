@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../components/app-custom-color.html">
 <!--
 `<Name>` is Description
 
@@ -18,7 +19,7 @@
         @apply --layout-vertical;
       }
       .top-footer{
-      	background-color: var(--my-custom-app-primary-color);
+      	background-color: var(--app-primary-color);
       	color:#9e9e9e;
       	padding:2.3em 16px;
       }
@@ -62,7 +63,7 @@
       }
       paper-input{
       	--paper-input-container-color:#9e9e9e;
-      	--paper-input-container-focus-color:var(--my-custom-app-accent-color);
+      	--paper-input-container-focus-color:var(--app-accent-color);
       	--paper-input-container-label:{
       		font-size:13px;
       	};
@@ -72,7 +73,7 @@
       	}
       }
       paper-input iron-icon{
-      	color: var(--my-custom-app-accent-color);
+      	color: var(--app-accent-color);
       }
       .top-footer>div{
       		@apply --layout-horizontal;
