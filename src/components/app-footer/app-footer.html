@@ -18,12 +18,12 @@
         @apply --layout-vertical;
       }
       .top-footer{
-      	background-color: var(--app-primary-color);
+      	background-color: var(--my-custom-app-primary-color);
       	color:#9e9e9e;
       	padding:2.3em 16px;
       }
       .bottom-footer{
-	    background-color: #404040;
+	    background-color: #181818;
 	    min-height: 50px;
       }
       .copyright{
@@ -62,7 +62,7 @@
       }
       paper-input{
       	--paper-input-container-color:#9e9e9e;
-      	--paper-input-container-focus-color:var(--app-accent-color);
+      	--paper-input-container-focus-color:var(--my-custom-app-accent-color);
       	--paper-input-container-label:{
       		font-size:13px;
       	};
@@ -72,7 +72,7 @@
       	}
       }
       paper-input iron-icon{
-      	color: var(--app-accent-color);
+      	color: var(--my-custom-app-accent-color);
       }
       .top-footer>div{
       		@apply --layout-horizontal;
@@ -93,7 +93,7 @@
 						<p>DESIGN AND CREATIVE ASSETS YOU’LL LOVE!</p>
 					</figure>
 					<div class="mailing-list-form">
-						<paper-input label="Be the first to hear more from us" id="inputWithButton">
+						<paper-input label="Subscribe and receive updates" id="inputWithButton">
 				          <iron-icon icon="my-icons:mail" slot="prefix" style="margin-right: 8px;"></iron-icon>
 				          <paper-icon-button slot="suffix" on-click="_subscribe"
 				              icon="my-icons:forward-right" alt="subscribe" title="subscribe">
@@ -147,7 +147,7 @@
     	</div>
     </section>
     <section class="bottom-footer layout horizontal center-center">
-    	<p class="content copyright">Copyright <span>©</span> All Rights Reserved Your Design Juice [[year]]</p>
+    	<p class="content copyright">Copyright YDJ Design <span>©</span> [[year]]. All Rights Reserved.</p>
     </section>
   </template>
 
