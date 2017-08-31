@@ -21,6 +21,7 @@ based on your level.
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-search/paper-search.html">
 
 <!-- App Components -->
 <link rel="import" href="shared-styles.html">
@@ -151,7 +152,9 @@ based on your level.
         }
       }
 
-
+      paper-search-bar {
+        margin: 8px;
+      }
     </style>
 
     <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
@@ -252,6 +255,15 @@ based on your level.
                               </template>
                         </iron-selector>
                         <!-- Search Box -->
+                        <dom-bind>
+                          <template>
+                            <paper-search-bar
+                              placeholder="Search and you shall find">
+                              
+                            </paper-search-bar>
+                          </template>
+                        </dom-bind>
+
                         <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
                       </template>
                     </dom-if>
@@ -472,4 +484,6 @@ based on your level.
 
     window.customElements.define(AppOverview.is, AppOverview);
   </script>
+
+
 </dom-module>
