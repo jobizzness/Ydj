@@ -15,62 +15,62 @@
         display: block;
       }
       .dashboard-layout{
-      	@apply --layout-horizontal;
+        @apply --layout-horizontal;
       }
       .dashboard-layout>*{
-      	padding: 16px;
+        padding: 16px;
       }
       .circle-inner{
-    	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
         height: 170px;
-	    background-color: #fafafa;
-	    width: 170px;
-	    border-radius: 50%;
+      background-color: #fafafa;
+      width: 170px;
+      border-radius: 50%;
       }
       .circle-inner span{
-  	    font-size: 4.5rem;
-	    font-weight: 500;
-	    color: var(--app-accent-lighter);
+        font-size: 4.5rem;
+      font-weight: 500;
+      color: var(--app-accent-lighter);
       }
       .circle-outter{
-  	    padding: 16px;
-	    border-radius: 50%;
-	    border: 1px solid #13c3b3;
+        padding: 16px;
+      border-radius: 50%;
+      border: 1px solid #13c3b3;
       }
       .mb-2>*{
-      	margin-bottom: 1em;
+        margin-bottom: 1em;
       }
       .mb-2{
-      	margin-bottom: 1em;
+        margin-bottom: 1em;
       }
       .small-title{
-  	    font-weight: 500;
-	    font-size: .86rem;
-	    color: #5f5f5f;
+        font-weight: 500;
+      font-size: .86rem;
+      color: #5f5f5f;
       }
       .dashboard-layout .banner{
-      	height: 30vh;
+        height: 30vh;
         margin-bottom: 1em;
         background-color: #16C7C3 ;
         padding: 16px;
         color: white;
       }
       .dashboard-layout .banner .banner-heading{
-  	    max-width: 20rem;
+        max-width: 20rem;
       }
       .dashboard-layout .banner .title{
-	    font-weight: 500;
-	    font-size: 1.5rem;
-	    line-height: 3.2rem;
-	    color: inherit;
-	    margin-bottom: 0;
+      font-weight: 500;
+      font-size: 1.5rem;
+      line-height: 3.2rem;
+      color: inherit;
+      margin-bottom: 0;
       }
       .dashboard-layout .banner .summary-text{
-	     color: inherit;
-	    line-height: 1.8rem;
-	    font-weight: 100;
-	    font-size: 1.5rem;
-	    margin: 0;
+       color: inherit;
+      line-height: 1.8rem;
+      font-weight: 100;
+      font-size: 1.5rem;
+      margin: 0;
       }
       .title-icon{
         color: var(--app-accent-color);
@@ -187,14 +187,14 @@
     </style>
 
     <div class="dashboard-layout">
-	    <main class="flex-2">
-		    <section class="banner">
-		    	<div class="banner-heading">
-		    		<h1 class="title">Howdy, Lian.</h1>
-		    		<p class="summary-text">Here's a summary of your store.</p>
-		    	</div>
-			  </section>
-  			<section class="cards">
+      <main class="flex-2">
+        <section class="banner">
+          <div class="banner-heading">
+            <h1 class="title">Howdy, Lian.</h1>
+            <p class="summary-text">Here's a summary of your store.</p>
+          </div>
+        </section>
+        <section class="cards">
           <div class="layout horizontal summary-data">
             <div class="card flex" style="background-color: #E91E63;">
               <span class="summary-title">My Total Earnings:</span>
@@ -209,63 +209,61 @@
               <span>$140.80</span>
             </div>
           </div>
-  				<div class="card sales-chart">
+          <!-- Todays Visitors -->
+          <div class="card mb-2">
+            <div class="layout horizontal">
+              <iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
+              <span class="small-title">Today's Visitos</span>
+            </div>
+            
+            <div class="layout vertical center-center">
+            <div class="circle-outter">
+              <div class="circle-inner layout horizontal center-center">
+                <span>25</span>
+              </div>
+            </div>
+            </div>
+          </div>
+          <!-- Sales Chart -->
+          <div class="card sales-chart">
             <div class="layout horizontal card-header">
                 <iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
                 <span class="small-title">Sales</span>
             </div>
             <div id="chartSales" class="charts"></div>     
           </div>
-  				<div class="card">
+          <div class="card">
             <div class="layout horizontal card-header">
               <iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
               <span class="small-title">Engagement</span>
             </div>
             <div id="chartEng" class="charts"></div>
           </div>
-  			</section>
-	    </main>
-
-	    <aside class="flex">
-	    	<!-- Todays Visitors -->
-	    	<div class="card mb-2">
-	    		<div class="layout horizontal">
-	    			<iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
-	    			<span class="small-title">Today's Visitos</span>
-	    		</div>
-	    		
-	    		<div class="layout vertical center-center">
-	    		<div class="circle-outter">
-	    			<div class="circle-inner layout horizontal center-center">
-	    				<span>25</span>
-	    			</div>
-	    		</div>
-	    		</div>
-	    	</div>
-	    	<!-- Messages -->
-	    	<div class="card">
-	    		<div class="layout horizontal card-header">
-	    			<iron-icon icon="my-icons:mail" class="title-icon"></iron-icon>
-	    			<span class="small-title">Messages</span>
-	    		</div>
-          <messages>
-            <template is="dom-repeat" items="[[messages]]">
-              <message>
-                <message-header class="layout horizontal">
-                  <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
-                  <div>
-                    <span class="message-owners-name">Mary Jane</span>
-                    <span class="message-owner-status online"><span class="status-icon"></span>Online</span>
-                  </div>
-                  <span class="flex"></span>
-                  <span class="message-time">1 min ago</span>
-                </message-header>
-                <message-body>Semoga dadi milyuner rika ya!</message-body>   
-              </message>
-            </template>
-          </messages>
-	    	</div>
-	    </aside>
+           <!-- Messages -->
+            <div class="card">
+              <div class="layout horizontal card-header">
+                <iron-icon icon="my-icons:mail" class="title-icon"></iron-icon>
+                <span class="small-title">Messages</span>
+              </div>
+              <messages>
+                <template is="dom-repeat" items="[[messages]]">
+                  <message>
+                    <message-header class="layout horizontal">
+                      <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
+                      <div>
+                        <span class="message-owners-name">Mary Jane</span>
+                        <span class="message-owner-status online"><span class="status-icon"></span>Online</span>
+                      </div>
+                      <span class="flex"></span>
+                      <span class="message-time">1 min ago</span>
+                    </message-header>
+                    <message-body>Semoga dadi milyuner rika ya!</message-body>   
+                  </message>
+                </template>
+              </messages>
+            </div>
+        </section>
+      </main>
     </div>
   </template>
 
