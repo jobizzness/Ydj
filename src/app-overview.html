@@ -21,7 +21,7 @@ based on your level.
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
-<link rel="import" href="../bower_components/paper-search/paper-search.html">
+<link rel="import" href="../bower_components/paper-search/paper-search-panel.html">
 
 <!-- App Components -->
 <link rel="import" href="shared-styles.html">
@@ -154,6 +154,8 @@ based on your level.
 
       paper-search-bar {
         margin: 8px;
+        color: #333333;
+        border: solid 1px #509fff;
       }
     </style>
 
@@ -179,7 +181,7 @@ based on your level.
       <!-- Main content -->
       <app-header-layout has-scrolling-region>
 
-          <app-header slot="header" condenses reveals effects="waterfall">
+          <app-header slot="header" condenses fixed effects="waterfall">
             <template is="dom-if" if="[[_shouldRenderHeader]]">
               <app-toolbar class="toolbar-top content">
                 <a href="/" class="logo-link">
@@ -258,7 +260,8 @@ based on your level.
                         <dom-bind>
                           <template>
                             <paper-search-bar
-                              placeholder="Search and you shall find">
+                              placeholder="Search and you shall find..."
+                              disable-filter-button="true">
                               
                             </paper-search-bar>
                           </template>
