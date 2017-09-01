@@ -34,7 +34,7 @@
       }
 
       .login{
-      	padding: 3em 0;
+      	padding: 2.3em 0;
         z-index: 1;
       	width: 100%;
       }
@@ -46,6 +46,12 @@
         min-height: 70vh;
         width:100%;
         @apply(--layout-horizontal);
+        margin-bottom: 40px;
+
+        -webkit-box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
+        -moz-box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
+        box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
+        -moz-box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
       }
       .logo{
       	max-width: 140px;
@@ -55,17 +61,34 @@
       	margin:0 auto;
       }
       .space-top-bottom{
-  	    margin: 3em 0;
+  	    margin: 2.3em 0;
       }
       #login-btn{
   	    background: var(--app-accent-color);
     	   color: white;
       }
       .link{
-      	color: var(--app-primary-color, #4e4e4e);
+      	color: var(--app-link-color);
+        font-style: italic;
+        text-decoration: underline;
       }
       .link:hover{
       	color: var(--app-accent-color);
+      }
+
+      .social-icons{
+        margin: 0;        
+      }
+      .social-icons>li{
+        list-style: none;
+        display: block;
+        padding:6px;
+      }
+      .social-icons>li>a{
+        display: block;
+      }
+      .social-icons>li img{
+        width: 40px;
       }
       .registration-banner{
         height: 100%;
@@ -74,7 +97,7 @@
        
       }
       #form{
-        padding: 0 3em;
+        padding: 0 2.3em;
       }
       .background{
         position: absolute;
@@ -108,35 +131,47 @@
   			</div>
   			<form is="iron-form" method="post" id="form" class="space-top-bottom flex">
           <div>
-            <h1>Sign Up in seconds!</h1>
-            <p>Let's inspire and grow with one another. Create a free account now to join our community of creative from around the world!</p>
+            <h1>Sign up in seconds!</h1>
+            <p>Let’s inspire and grow with one another. Create a free account now and join our community of designers from around the world!</p>
           </div>
   				<div class="inputs">
   					<!-- Inputs -->
-              <paper-input label="Full Name" name="name" id="name">
+              <paper-input label="FULL NAME" name="name" id="name">
                 <iron-icon icon="mail" prefix></iron-icon>
               </paper-input>
-              <paper-input label="Email" name="username" id="username">
+              <paper-input label="EMAIL" name="username" id="username">
                 <iron-icon icon="mail" prefix></iron-icon>
               </paper-input>
-              <paper-input label="password" type="password" name="password" id="password">
+              <paper-input label="PASSWORD" type="password" name="password" id="password">
                 <iron-icon icon="communication:vpn-key" prefix></iron-icon>
               </paper-input>
               <!-- Controls -->
               <div class="layout horizontal center space-top-bottom">
-              	<a href="/login" class="link">Already have an account?</a>
+              	<a href="/login" class="link">Already have an account? Login here.</a>
               	<span class="flex"></span>
-              	<paper-button raised id="login-btn">Register</paper-button>
+              	<paper-button raised id="login-btn">Create Account</paper-button>
               </div>
               <!-- Social Login -->
               <div  class="layout horizontal space-top-bottom">
-              	<span>Or login with:</span>
+              	<span>Or sign up with:</span>
               	<span class="flex"></span>
+                <ul class="layout horizontal social-icons">
+                  <li>
+                    <a href="#"><img src="/images/icons/facebook.svg"></a>
+                  </li>
+                  <li>
+                    <a href="#"><img src="/images/icons/twitter.svg"></a>
+                  </li>
+                  <li>
+                    <a href="#"><img src="/images/icons/google-plus.svg"></a>
+                  </li>
+                </ul>
               	
               </div>
   				</div> 
       	</form>
     	</div>
+      <p>By signing up, you also agree to our <a href="" class="link">terms of use</a> and <a href="" class="link">privacy policy</a>.</p>
     </section>
 
   </template>
