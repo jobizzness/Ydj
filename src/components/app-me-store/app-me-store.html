@@ -5,6 +5,7 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../components/app-goodies-editor/app-goodies-editor.html">
+<link rel="import" href="../../src/app-overview.html">
 
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
@@ -33,14 +34,54 @@
       .start-center{
         justify-content: center;
       }
+
+       paper-button.custom {
+        max-height: 30px;
+      --paper-button-ink-color: var(--paper-primary-color);
+      /* These could also be individually defined for each of the
+        specific css classes, but we'll just do it once as an example */
+      --paper-button-flat-keyboard-focus: {
+      background-color: var(--paper-primary-color);
+      color: white !important;
+    };
+    --paper-button-raised-keyboard-focus: {
+      background-color: var(--paper-primary-color) !important;
+      color: white !important;
+    };
+  }
+    paper-button.custom:hover {
+    background-color: var(--app-primary-color);
+    }
+    paper-button.grey {
+      background-color: var(--paper-grey-500);
+      color: white;
+    }
+
+    paper-button.green {
+      background-color: var(--paper-green-500);
+      margin-bottom: 85px;
+      color: white;
+    }
+     paper-button.red {
+      background-color: var(--paper-red-500);
+      margin-bottom: 85px;
+      color: white;
+    }
+    paper-button.disabled {
+      color: white;
+    }
     </style>
+
+    <style is="custom-style">
+ 
+</style>
 
     <app-goodies-editor id="goodiesEditor"></app-goodies-editor>
 
     <div class="cards">      
       <section class="layout horizontal">
         <span class="flex"></span>
-        <a><paper-button raised class="rounded-btn action-btn" on-tap="_create"><iron-icon icon="my-icons:upload" style="margin-right: 8px;"></iron-icon>Upload</paper-button></a>
+        <a><paper-button raised class="rounded-btn action-btn" on-tap="_create"><iron-icon icon="my-icons:upload" style="margin-right: 26px;"></iron-icon>Upload</paper-button></a>
       </section>
       <!-- Panel -->
       <section class="card with--panel">
@@ -102,14 +143,19 @@
               <span class="light-text mb-20">30</span>
             </div>
             <!-- Actions -->
-            <div class="flex layout vertical start-center">
+            <div class="flex layout vertical center center-justified">
+              <paper-checkbox style="margin-bottom:12px;" >Delete</paper-checkbox>
+              <paper-button toggles raised class="custom grey">Edit</paper-button>
             </div>
           </section>
         </template>
       </section>
     </div>
   </section>
-
+  <div class="flex layout horizontal end-justified">
+    <paper-button toggles raised class="red">Delete all</paper-button>
+    <paper-button toggles raised class="green">Delete selected</paper-button>
+  </div>
   </template>
 
   <script>
