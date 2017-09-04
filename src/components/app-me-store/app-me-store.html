@@ -44,8 +44,8 @@
       </section>
       <!-- Panel -->
       <section class="card with--panel">
-        <section class="layout horizontal">
-          <div class="flex-2">
+        <section class="layout horizontal around-justified layout">
+          <div class="flex-3">
             <panel>
               <span class="panel-title">Item Name</span>
             </panel>
@@ -53,6 +53,11 @@
           <div class="flex">
             <panel>
               <span class="panel-title">Item Price</span>
+            </panel>
+          </div>
+          <div class="flex vertical center start-center">
+            <panel>
+              <span class="panel-title">Status</span>
             </panel>
           </div>
           <div class="flex">
@@ -69,8 +74,8 @@
 
         <!-- Goodies List -->
         <template is="dom-repeat" items="[[items]]">
-          <section class="layout horizontal">
-            <div class="flex-2">
+          <section class="layout horizontal around-justified layout">
+            <div class="flex-3">
               <!-- Items Names -->
               <div class="item-details">
                 <a href="#" class="flex">
@@ -78,18 +83,22 @@
                             fade sizing="cover" 
                             src="http://lorempixel.com/400/700/abstract/[[index]]"></iron-image>
                 </a>
-                <div class="layout vertical">
+                <div class="flex-3 layout vertical">
                   <a href="#" class="strong-text"><span>Photographer business cards</span></a>
-                  <span class="light-text">Mar 22th-17</span>
+                  <span class="light-text">Created: 4 March, 2017</span>
                 </div>
               </div>
             </div>
             <!-- Price -->
-            <div class="flex layout vertical start-center">
+            <div class="flex layout vertical center start-center">
                 <span class="strong-text mb-20">$100</span>
             </div>
-            <!-- Downloads -->
+             <!-- Status -->
             <div class="flex layout vertical start-center">
+                <span class="strong-text mb-20">Pending</span>
+            </div>
+            <!-- Downloads -->
+            <div class="flex layout vertical center start-center">
               <span class="light-text mb-20">30</span>
             </div>
             <!-- Actions -->
