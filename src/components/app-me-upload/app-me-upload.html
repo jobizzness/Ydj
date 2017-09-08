@@ -1,0 +1,113 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="../../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+
+<link rel="import" href="../../shared-styles.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-upload">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block
+      }
+    #dialog {
+        display: block;
+        padding: 0 8px;
+        border-top: 3px solid var(--app-accent-lighter);
+        margin: 0;
+        width: 60vw;
+        min-height: 60vh;
+        max-height: 100vh;
+      }
+      .inputs{
+	    max-width: 42em;
+	    margin: 2em auto;
+	    background: white;
+	    padding: 24px;
+      }
+      .inputs>*{
+      	margin-bottom: 24px;
+      }
+      iron-autogrow-textarea {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        border: 0;
+        margin: 1em 0 0;
+        padding: 0;
+        font-size: 1em;
+        }
+       paper-input{
+        --paper-input-container-focus-color: var(--app-accent-color);
+    	}
+    	 paper-dropdown-menu {
+	  	--paper-dropdown-menu-input:{
+        		--paper-input-container-focus-color: var(--app-accent-color);
+	  	}
+	    display: block;
+	  }
+    </style>
+
+    
+    	<section class="inputs">
+    		<vaadin-upload id="upload" accept="image/*" max-files="1" on-upload-before="_handleUpload" required>
+<!--             <div class="file-list">
+              <div class="receipt-wrapper">
+                <img src$="[[_receiptURL]]" alt="Receipt" hidden$="[[!_showReceipt(expense._attachments.*)]]">
+              </div>
+            </div> -->
+          </vaadin-upload>
+    		<paper-input label="Product Name:" name="name" id="name"></paper-input>
+	      	<!-- Category -->
+	      	<paper-dropdown-menu label="Select a category">
+			  <paper-listbox slot="dropdown-content" selected="1">
+			    <paper-item>Select Your Country</paper-item>
+			    <paper-item>Malaysia</paper-item>
+			    <paper-item>carcharodontosaurus</paper-item>
+			    <paper-item>diplodocus</paper-item>
+			  </paper-listbox>
+			</paper-dropdown-menu>
+			<div class="layout horizontal justified">
+				<paper-input label="Enter Price USD:" name="name" id="name"></paper-input>
+				<paper-input label="Enter Discount (optional):" name="name" id="name"></paper-input>
+			</div>
+		</section>
+  </template>
+
+  <script>
+    class AppMeUpload extends Polymer.Element {
+
+      static get is() { return 'app-me-upload'; }
+
+      static get properties() { return {
+          
+        }}
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMeUpload.is, AppMeUpload);
+  </script>
+</dom-module>

@@ -70,18 +70,19 @@
     paper-button.disabled {
       color: white;
     }
-    </style>
-
-    <style is="custom-style">
  
-</style>
+  </style>
 
     <app-goodies-editor id="goodiesEditor"></app-goodies-editor>
 
     <div class="cards">      
       <section class="layout horizontal">
         <span class="flex"></span>
-        <a><paper-button raised class="rounded-btn action-btn" on-tap="_create"><iron-icon icon="my-icons:upload" style="margin-right: 26px;"></iron-icon>Upload</paper-button></a>
+        <a href="/me/upload">
+          <paper-button raised class="rounded-btn action-btn">
+              <iron-icon icon="my-icons:upload" style="margin-right: 26px;"></iron-icon>Upload
+          </paper-button>
+        </a>
       </section>
       <!-- Panel -->
       <section class="card with--panel">
@@ -179,7 +180,7 @@
       ready() {
         super.ready();
         Polymer.RenderStatus.afterNextRender(this, function() {
-          Polymer.importHref(this.resolveUrl('../app-goodies-editor/app-goodies-editor.html'), null, null, true);
+          //Polymer.importHref(this.resolveUrl('../app-goodies-editor/app-goodies-editor.html'), null, null, true);
         });
       }
 
