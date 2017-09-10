@@ -10,6 +10,7 @@
 <link rel="import" href="../../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 
 <link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../chartist-element/chartist-element.html">
 <!--
 `<Name>` is Description
 
@@ -57,10 +58,49 @@
 	  	}
 	    display: block;
 	  }
+
+    paper-button.custom {
+        max-height: 30px;
+        margin-bottom: 50px;
+      --paper-button-ink-color: var(--paper-primary-color);
+      /* These could also be individually defined for each of the
+        specific css classes, but we'll just do it once as an example */
+      --paper-button-flat-keyboard-focus: {
+      background-color: var(--paper-primary-color);
+      color: white !important;
+    };
+    --paper-button-raised-keyboard-focus: {
+      background-color: var(--paper-primary-color) !important;
+      color: white !important;
+    };
+  }
+    paper-button.custom:hover {
+    background-color: var(--app-primary-color);
+    }
+    paper-button.grey {
+      background-color: var(--paper-grey-500);
+      color: white;
+    }
+
+    paper-button.blue {
+      background-color: var(--app-accent-lighter);
+      color: white;
+    }
+     paper-button.red {
+      background-color: var(--app-accent-color);
+      color: white;
+    }
+    paper-button.disabled {
+      color: white;
+    }
+
     </style>
 
     
     	<section class="inputs">
+      <!-- <section class="card"> -->
+        <h1>Upload an item</h1><br>
+      <!-- </section> -->
     		<vaadin-upload id="upload" accept="image/*" max-files="1" on-upload-before="_handleUpload" required>
 <!--             <div class="file-list">
               <div class="receipt-wrapper">
@@ -68,20 +108,44 @@
               </div>
             </div> -->
           </vaadin-upload>
-    		<paper-input label="Product Name:" name="name" id="name"></paper-input>
+    		<paper-input label="Item name:" name="name" id="name"></paper-input>
 	      	<!-- Category -->
-	      	<paper-dropdown-menu label="Select a category">
+	      	<paper-dropdown-menu label="Select a category:">
 			  <paper-listbox slot="dropdown-content" selected="1">
-			    <paper-item>Select Your Country</paper-item>
-			    <paper-item>Malaysia</paper-item>
-			    <paper-item>carcharodontosaurus</paper-item>
-			    <paper-item>diplodocus</paper-item>
+			    <paper-item>Print templates</paper-item>
+			    <paper-item>Graphics</paper-item>
+          <paper-item>Web &amp; Apps</paper-item>
+			    <paper-item>Branding</paper-item>
+          <paper-item>Plug-ins</paper-item>
+          <paper-item>Fonts</paper-item>
+          <paper-item>3D assets</paper-item>
 			  </paper-listbox>
-			</paper-dropdown-menu>
+			</paper-dropdown-menu><br>
+      <paper-checkbox>Allow users to download for free</paper-checkbox>
 			<div class="layout horizontal justified">
-				<paper-input label="Enter Price USD:" name="name" id="name"></paper-input>
-				<paper-input label="Enter Discount (optional):" name="name" id="name"></paper-input>
+				<paper-input label="Enter your price (USD):" name="name" id="name"></paper-input>
+				<paper-input label="Enter discount (optional):" name="name" id="name"></paper-input>
 			</div>
+      <div class="layout horizontal justified">
+        <paper-input label="You will earn (USD):" name="name" id="name"></paper-input>
+        <p><a href="#">What are the chargeable fees?</a></p>
+      </div>
+      <div class="layout horizontal justified">
+        <paper-input class="flex-3" label="disabled input" disabled value="Your PayPal account (verified)"></paper-input>
+        <p><a href="#">Edit account</a></p>
+      </div>
+
+      <!-- Editor insert -->
+
+      <div class="flex layout horizontal end-justified">     
+        <paper-button toggles raised class="red">Publish</paper-button>
+        <paper-button toggles raised class="grey">Preview</paper-button>   
+        <paper-button toggles raised class="blue">Save</paper-button><br>        
+      </div>
+      <div class="flex layout horizontal end-justified">
+        <p>By clicking Publish, you agree to our Creativeprenuer <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+      </div>
+
 		</section>
   </template>
 
