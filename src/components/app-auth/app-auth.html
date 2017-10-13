@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../app-store.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
 <!-- App Components -->
@@ -18,18 +19,16 @@
             handle-as="json"
             on-response="handleAuthResponse"
             on-error="handleAuthError"></iron-ajax>
-        <iron-ajax
-                id="authUser"
-                method="GET"
-                content-type="application/json"
-                headers="[[header]]"
-                handle-as="json"
-                on-response="handleUserResponse"
-                on-error="handleUserError"></iron-ajax>
+    <iron-ajax
+            id="authUser"
+            method="GET"
+            headers="[[header]]"
+            on-response="handleUserResponse"
+            on-error="handleUserError"></iron-ajax>
     </template> 
 
     <script>
-        class AppAuth extends Polymer.Element {
+        class AppAuth extends ReduxMixin(Polymer.Element) {
 
             static get is() { return 'app-auth'; }
 
@@ -46,6 +45,8 @@
                         observer: '_userChanged',
 
                     },
+
+                    code: String,
                     /**
                     * True if the client is authenticated, and false if the client is not
                     * authenticated.
@@ -62,26 +63,33 @@
                     */
                     header:{
                         type: Object
+                    },
+
+                    app:{
+                        type: Object,
+                        statePath: 'app'
                     }
                 }}
 
             constructor() {
                 super();
-                this.app = env;
             }
 
             ready() {
                 super.ready();
 
-                var tokenData = this._retrieveTokens();
+                //Just incase the user has thier access token
+                if(this.code){
+                    this._storeTokens({access_token: this.code});
+                }
+
+                let tokenData = this._retrieveTokens();
+
                 //Checks if the auth object is available on the local storage
                 if(tokenData){
                     this._setHeaders(tokenData.access_token);
-
-                    // We must wait for the request so lets make sure its syncronous
-                    this.$.authUser.sync = true;
+                    env.token = tokenData.access_token;
                     this._fetchUser();
-                    this._done();
                 }else{
                     this._setUser(null);
                     this._done();
@@ -91,6 +99,16 @@
                 });
             }
 
+            static get actions(){
+                return {
+                    setBusy(busy) {
+                      return {
+                        type: C.SET_APP_BUSY,
+                        payload: busy
+                      };
+                    }
+                  }
+            };
             /**
              * Fires when the user object changes.
              * @param {newVal}
@@ -106,8 +124,9 @@
 
             _done(){
                 console.info('App is ready!');
-                 this.dispatchEvent(new CustomEvent('set', {detail:{}}, { bubbles: false}));
+                 this.dispatchEvent(new CustomEvent('app-ready', { bubbles: true, composed: true}));
             }
+
             /**
              * Creates a new user account using an email / password combination.
              *
@@ -115,9 +134,10 @@
              * @param  {!String} password Password corresponding to the user account.
              * @return {Promise} Promise that handles success and failure.
              */
-	        signInWithUserNameAndPassword(username, password) {
-	          return this._handleSignIn(username, password);
-	        }
+            signInWithUserNameAndPassword(username, password) {
+              return this._handleSignIn(username, password);
+            }
+
             /**
              *
              */
@@ -129,23 +149,25 @@
              *
              */
             _handleSignIn(username, password){
+                this.dispatch('setBusy', true);
                 this.$.loginTunnel.body = this._getCredentials(username, password);
-                this.$.loginTunnel.url = this.app.app_domain + '/oauth/token';
+                this.$.loginTunnel.url = this.app.env.app_domain + '/oauth/token';
                 return this.$.loginTunnel.generateRequest();
             }
 
             /**
              */
-		    _getCredentials(username, password) {
-		        return JSON.stringify({
-		            'grant_type': 'password',
-		            'client_id': this.app.clientId,
-		            'client_secret': this.app.clientSecret,
-		            'username': username,
-		            'password': password,
-		            'scope': '',
-		        });
-		    }
+            _getCredentials(username, password) {
+                return JSON.stringify({
+                    'grant_type': 'password',
+                    'client_id': this.app.env.clientId,
+                    'client_secret': this.app.env.clientSecret,
+                    'username': username,
+                    'password': password,
+                    'scope': '',
+                });
+            }
+
             onAuthStateChanged(callback) {
                 return this.addEventListener('user-changed', callback);
             }
@@ -156,30 +178,34 @@
              * @param event
              * @return {*|!IronRequestElement}
              */
-		    handleAuthResponse(event) {
+            handleAuthResponse(event) {
 
-		        var response = event.detail.response;
-		        if (response.access_token) {
+                let response = event.detail.response;
+                if (response.access_token) {
                     this._storeTokens(response);
-		            this._setHeaders(response.access_token);
+                    this._setHeaders(response.access_token);
                     this._fetchUser();
-		        }
-		    }
+                }
+            }
+
             _fetchUser() {
-                this.$.authUser.url = this.app.app_domain+'/api/user';
+                this.dispatch('setBusy', true);
+                this.$.authUser.url = this.app.env.app_domain+'/api/user';
                 return this.$.authUser.generateRequest();
             }
+
             /**
              * Sets Authentication headers + our access token
              * @param token
              * @private
              */
             _setHeaders(token){
-		        this.header = {
-		            'Accept': 'application/json',
+                this.header = {
+                    'Accept': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
             }
+
             /**
              * Once we have a user we can keep them logged in by
              * storing the access token to our local storage
@@ -190,6 +216,7 @@
                 this.$.store.data = data;
 
             }
+
             /**
              * if we need to make a request for a logged in user
              * we would need their access token from local storage
@@ -199,20 +226,58 @@
             _retrieveTokens() {
               return this.$.store.getTokens();
             }
+
             /**
              *
              * @param event
              */
-		    handleAuthError(event) {
-		        this.error = event.detail.request.xhr.response;
-		    }
+            handleAuthError(event) {
+                this.error = event.detail.request.xhr.response;
+                this.dispatch('setBusy', false);
+            }
+
+            handleUserError(e){
+                this.signOut();
+                this._done();
+                this.dispatch('setBusy', false);
+            }
+            
+            registerWithUsernameAndPassword(email, password, name){
+
+              let tunnel = document.createElement('iron-ajax');
+              tunnel.url = `${this.app.env.app_domain}/api/auth/register`;
+              tunnel.method = "POST";
+              tunnel.body = JSON.stringify({email: email, password: password, name: name});
+              tunnel.contentType = 'application/json';
+              tunnel.addEventListener('response', ( e ) => this._onRegistrationComplete(tunnel.lastResponse, {email: email, password: password}));
+              tunnel.addEventListener('error', ( e ) => this._onRegistrationFailed(tunnel.lastError));
+              tunnel.generateRequest();
+            }
+
+            _onRegistrationComplete(e, creds){
+              //this.handleUserResponse(e);
+              this._handleSignIn(creds.email, creds.password);
+            }
+
+            _onRegistrationFailed(){
+
+            }
+
             /**
              *
              * @param event
              */
-		    handleUserResponse(event) {
-                this._setUser(JSON.parse(event.detail.response));
-                this.dispatchEvent(new CustomEvent('user-changed', {detail: {user: this.user}}));
+            handleUserResponse(event) {
+                
+                let user = event.detail.response;
+                try {
+                    user = (JSON.parse(user));
+                } catch (e) {
+                    console.log('json is weird');
+                }
+                this._setUser(user);
+                this.dispatch('setBusy', false);
+                this._done()
             }
 
         }

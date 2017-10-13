@@ -5,7 +5,7 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../components/app-goodies-editor/app-goodies-editor.html">
-<link rel="import" href="../../src/app-overview.html">
+
 
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
@@ -180,7 +180,7 @@
       ready() {
         super.ready();
         Polymer.RenderStatus.afterNextRender(this, function() {
-          //Polymer.importHref(this.resolveUrl('../app-goodies-editor/app-goodies-editor.html'), null, null, true);
+          Polymer.importHref(this.resolveUrl('../app-goodies-editor/app-goodies-editor.html'), null, null, true);
         });
       }
 

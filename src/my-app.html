@@ -4,21 +4,42 @@
 This is our main app element. Without this our app will not function.
 -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="components/app-env/app-env.html">
+<link rel="import" href="constants.html">
+<link rel="import" href="app-store.html">
 <link rel="import" href="components/app-auth/app-auth.html">
 
-<link rel="lazy-import" href="app-overview.html">
 <dom-module id="my-app">
 
   <template>
-    <app-auth signed-in="{{loggedIn}}" id="auth" user="{{user}}" on-set="_allSet"></app-auth>
-    <app-overview user="[[user]]" logged-in="[[loggedIn]]" id="app"></app-overview>
+    <app-auth signed-in="{{loggedIn}}" id="auth" on-app-ready="_done"></app-auth>
+    <app-overview id="app"></app-overview>
   </template>
 
   <script>
-    class MyApp extends Polymer.Element {
+
+    class MyApp extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'my-app'; }
+
+      static get properties (){
+        return {
+          user: {
+            type: Object,
+            statePath: 'user'
+          }
+        };
+      }
+
+      static get actions (){
+        return {
+            setUser(user) {
+              return {
+                type: C.SET_USER,
+                payload: user
+              };
+            }
+          };
+        }
 
      /**
       * Runs when this @component is loaded.
@@ -26,12 +47,12 @@ This is our main app element. Without this our app will not function.
       */
       ready(){
         super.ready();
-        //When Auth changes we will handle it.
-        this.$.auth.onAuthStateChanged((e) => this._handleAuthChanged(e.detail.value));
 
-        //Login or Logout Listeners
+        //Auth events
+        this.$.auth.onAuthStateChanged((e) => this._handleAuthChanged(e.detail.value));
         window.addEventListener('login', e => this._login(e));
         window.addEventListener('signout', e => this._signOut(e));
+        window.addEventListener('register', e => this._register(e));
 
       }
 
@@ -41,7 +62,9 @@ This is our main app element. Without this our app will not function.
        * @private
        */
       _handleAuthChanged(user){
-        this.$.app.loggedIn = (this.user) ? true : false;
+        this.dispatch('setUser', user);
+        if(!user) return;
+        this.$.app.takeMeHome();
       }
 
       /**
@@ -50,27 +73,33 @@ This is our main app element. Without this our app will not function.
        * @private
        */
       _login(e){
+        if(!e.detail) return;
         let creds = e.detail;
-
-        //I can validate the user input here.
-        if(e.detail){
-          this.$.auth.signInWithUserNameAndPassword(creds.username, creds.password);
-          return;
-        }
+        this.$.auth.signInWithUserNameAndPassword(creds.username, creds.password);
       }
 
-
+      /**
+       * Sign the current user out
+       * @param event
+       * @private
+       */
       _signOut(e){
         this.$.auth.signOut();
       }
 
       /**
-       * App must be ready so lets import overview page.
+       * Register a new user from username and password
        * @param event
        * @private
        */
-      _allSet(e){
-        Polymer.importHref(this.resolveUrl('app-overview.html'), null, null, true);
+      _register(e){
+        let creds = e.detail;
+        this.$.auth.registerWithUsernameAndPassword(creds.email, creds.password, creds.name);
+      }
+
+      _done(e){
+        var resolvedPageUrl = this.resolveUrl('app-overview.html');
+        Polymer.importHref(resolvedPageUrl, null, null, true);
       }
     }
 

@@ -22,6 +22,7 @@ based on your level.
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-search/paper-search-panel.html">
+<link rel="import" href="app-store.html">
 
 <!-- App Components -->
 <link rel="import" href="shared-styles.html">
@@ -193,7 +194,7 @@ based on your level.
                   <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
                 </template>
                 <header-actions>
-                  <dom-if if="{{_shouldRenderAuthElements(smallScreen, loggedIn)}}">
+                  <dom-if if="{{_shouldRenderAuthElements(smallScreen, user)}}">
                     <template>
                       <a href="/login"><app-button border>Log In</app-button></a>
                       <a href="/register"><app-button shaded>Sign Up</app-button></a>
@@ -201,7 +202,7 @@ based on your level.
                   </dom-if>
 
                   <!-- User Actions -->
-                  <template is="dom-if" if="{{_shouldRenderUserElements(smallScreen, loggedIn)}}">
+                  <template is="dom-if" if="{{_shouldRenderUserElements(smallScreen, user)}}">
                     <user-actions class="layout horizontal">
                       <!-- User Notification Icons -->
                       <ul class="notification-icons layout horizontal">
@@ -304,7 +305,7 @@ based on your level.
   </template>
 
   <script>
-    class AppOverview extends Polymer.Element {
+    class AppOverview extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-overview'; }
 
@@ -312,27 +313,30 @@ based on your level.
           rootPattern: String,
           routeData: Object,
           subroute: String,
+          
           nav:{
             type:Object,
             computed: 'navigation()'
           },
+
           page: {
             type: String,
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
-          user:{
-            observer: '_authChanged',
-            notify:true,
-            type:Object
+
+          user: {
+            type: Object,
+            statePath: 'user'
           },
+
           _shouldRenderHeader: {
             computed: '_computeShouldRenderHeader(page)',
             type:Boolean,
             observer: '_headerChanged'
             
-          }
-        ,          
+          },
+
         _shouldRenderBottomHeader: {
             computed: '_computeShouldRenderBottomHeader(page)',
             type:Boolean,
@@ -347,6 +351,7 @@ based on your level.
           '_routePageChanged(routeData.page)'
         ];
       }
+
 
       constructor() {
         super();
@@ -383,6 +388,7 @@ based on your level.
         switch(page){
           case 'login':
           case 'signup':
+            console.log(this.user);
             if(this.user){
               this.set("route.path", '/');
             }
@@ -445,6 +451,7 @@ based on your level.
               {name: '3D', slug: 'category/3d'}
             ]}
       }
+
       _headerChanged(){
         this.$.layout.resetLayout();
       }
@@ -465,7 +472,7 @@ based on your level.
         }
 
       }
-      _takeMeHome(){
+      takeMeHome(){
         this.page = 'home';
       }
       _computeShouldRenderBottomHeader(page){
@@ -478,7 +485,7 @@ based on your level.
       }
 
       _loadUserResources(){
-        this._takeMeHome();
+        this.takeMeHome();
       }
 
       signOut(){

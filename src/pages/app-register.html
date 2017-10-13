@@ -25,10 +25,12 @@
         @apply(--layout-center-center);
         min-height: 100vh;
       }
+
       paper-input iron-icon{
         margin-right: 8px;
         --iron-icon-fill-color: rgba(0, 0, 0, 0.52);
       }
+
       paper-input{
         --paper-input-container-focus-color: var(--app-accent-color);
       }
@@ -38,6 +40,7 @@
         z-index: 1;
       	width: 100%;
       }
+
       .login-card{
         background: white;
         margin: 16px;
@@ -53,25 +56,31 @@
         box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
         -moz-box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
       }
+
       .logo{
       	max-width: 140px;
       }
+
       .inputs{
       	max-width: 500px;
       	margin:0 auto;
       }
+
       .space-top-bottom{
   	    margin: 2.3em 0;
       }
+
       #login-btn{
   	    background: var(--app-accent-color);
     	   color: white;
       }
+
       .link{
       	color: var(--app-link-color);
         font-style: italic;
         text-decoration: underline;
       }
+
       .link:hover{
       	color: var(--app-accent-color);
       }
@@ -79,26 +88,32 @@
       .social-icons{
         margin: 0;        
       }
+
       .social-icons>li{
         list-style: none;
         display: block;
         padding:6px;
       }
+
       .social-icons>li>a{
         display: block;
       }
+
       .social-icons>li img{
         width: 40px;
       }
+
       .registration-banner{
         height: 100%;
         width: 100%;
         background-color: #eee;
        
       }
+
       #form{
         padding: 0 2.3em;
       }
+
       .background{
         position: absolute;
         top:0;
@@ -107,14 +122,17 @@
         height: 100%;
         opacity: 0;
       }
+
       /*Mobile*/
       @media (max-width: 768px) {
       	.login{
       		padding: 16px !important;
       	}
+
         .background{
           opacity: 1;
         }
+
         .login-card{
           display: block;
           margin:0;
@@ -135,39 +153,53 @@
             <p>Let’s inspire and grow with one another. Create a free account now and join our community of designers from around the world!</p>
           </div>
   				<div class="inputs">
-  					<!-- Inputs -->
-              <paper-input label="FULL NAME" name="name" id="name">
-                <iron-icon icon="mail" prefix></iron-icon>
-              </paper-input>
-              <paper-input label="EMAIL" name="username" id="username">
-                <iron-icon icon="mail" prefix></iron-icon>
-              </paper-input>
-              <paper-input label="PASSWORD" type="password" name="password" id="password">
-                <iron-icon icon="communication:vpn-key" prefix></iron-icon>
-              </paper-input>
-              <!-- Controls -->
-              <div class="layout horizontal center space-top-bottom">
-              	<a href="/login" class="link">Already have an account? Login here.</a>
-              	<span class="flex"></span>
-              	<paper-button raised id="login-btn">Create Account</paper-button>
-              </div>
-              <!-- Social Login -->
-              <div  class="layout horizontal space-top-bottom">
-              	<span>Or sign up with:</span>
-              	<span class="flex"></span>
-                <ul class="layout horizontal social-icons">
-                  <li>
-                    <a href="#"><img src="/images/icons/facebook.svg"></a>
-                  </li>
-                  <li>
-                    <a href="#"><img src="/images/icons/twitter.svg"></a>
-                  </li>
-                  <li>
-                    <a href="#"><img src="/images/icons/google-plus.svg"></a>
-                  </li>
-                </ul>
-              	
-              </div>
+
+				    <!-- Inputs -->
+            <paper-input label="FULL NAME" name="name" id="name"
+                required auto-validate 
+                error-message="Name is required">
+              <iron-icon icon="mail" prefix></iron-icon>
+            </paper-input>
+
+            <paper-input label="EMAIL" 
+                name="username" 
+                id="email"
+                required auto-validate 
+                error-message="Enter correct Email"
+                type="email">
+              <iron-icon icon="mail" prefix></iron-icon>
+            </paper-input>
+
+            <paper-input label="PASSWORD" type="password" name="password" id="password"
+                required auto-validate 
+                error-message="Name is required">
+              <iron-icon icon="communication:vpn-key" prefix></iron-icon>
+            </paper-input>
+
+            <!-- Controls -->
+            <div class="layout horizontal center space-top-bottom">
+            	<a href="/login" class="link">Already have an account? Login here.</a>
+            	<span class="flex"></span>
+            	<paper-button raised id="login-btn" on-click="singup" disabled="[[busy]]">Create Account</paper-button>
+            </div>
+
+            <!-- Social Login -->
+            <div  class="layout horizontal space-top-bottom">
+            	<span>Or sign up with:</span>
+            	<span class="flex"></span>
+              <ul class="layout horizontal social-icons">
+                <li>
+                  <a href="#"><img src="/images/icons/facebook.svg"></a>
+                </li>
+                <li>
+                  <a href="#"><img src="/images/icons/twitter.svg"></a>
+                </li>
+                <li>
+                  <a href="#"><img src="/images/icons/google-plus.svg"></a>
+                </li>
+              </ul>
+            </div>
+
   				</div> 
       	</form>
     	</div>
@@ -177,12 +209,15 @@
   </template>
 
   <script>
-    class AppRegister extends Polymer.Element {
+    class AppRegister extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-register'; }
 
       static get properties() {return {
-          
+          busy: {
+            type: Boolean,
+            statePath: 'app.busy'
+          }
         }}
 
       constructor() {
@@ -192,11 +227,15 @@
       ready() {
         super.ready();
 
-        Polymer.RenderStatus.afterNextRender(this, function() {
+        Polymer.RenderStatus.afterNextRender(this, function () {
           
         });
       }
 
+      singup(e){
+        let creds = {name: this.$.name.value,  password: this.$.password.value, email: this.$.email.value};
+        window.dispatchEvent(new CustomEvent('register', {detail: creds}, {bubbles: true, composed: true}));
+      }
     }
 
     window.customElements.define(AppRegister.is, AppRegister);

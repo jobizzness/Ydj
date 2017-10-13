@@ -88,7 +88,6 @@
         width: 40px;
       }
 
-
        /*Mobile*/
       @media (max-width: 425px) {
       	.login{
@@ -123,7 +122,7 @@
               <div class="layout horizontal center space-top-bottom">
               	<a href="#" class="link">Forgot password</a>
               	<span class="flex"></span>
-              	<paper-button raised id="login-btn" on-tap="signIn">Login</paper-button>
+              	<paper-button raised id="login-btn" on-tap="signIn" disabled="[[busy]]">Login</paper-button>
               </div>
               <!-- Social Login -->
               <div  class="layout horizontal space-top-bottom">
@@ -150,12 +149,16 @@
   </template>
 
   <script>
-    class AppLogin extends Polymer.Element {
+    class AppLogin extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-login'; }
 
       static get properties() {return {
-          
+        busy: {
+            type: Boolean,
+            statePath: 'app.busy'
+          }
+
         }}
 
       constructor() {
@@ -175,7 +178,6 @@
          * and then fire out an event to get them signed in.
          */
       signIn () {
-        console.info('okay! i heard you.')
         window.dispatchEvent(new CustomEvent('login', {detail:{username: this.$.username.value , password: this.$.password.value}}, {bubbles: true, composed: true}));
       }
 

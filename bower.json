@@ -33,7 +33,10 @@
     "vaadin-upload": "^2.0.0",
     "shibui-dropdown-menu": "ShibuiElements/shibui-dropdown-menu#^1.1.0",
     "paper-radio-button": "^2.0.0",
-    "google-youtube": "^1.3.0"
+    "google-youtube": "^1.3.0",
+    "paper-search": "Collaborne/paper-search#^2.0.9",
+    "iron-location": "^2.0.1",
+    "polymer-redux": "^1.0.4"
   },
   "resolutions": {
     "polymer": "^2.0.1",
