@@ -3,7 +3,7 @@
 <link rel="import" href="components/app-env/app-env.html">
 
 <script>
-	const initialState = {
+	const initial = {
 		app: {
 			env: {
 		    	app_domain: env.app_domain,
@@ -17,7 +17,7 @@
 		user: null,
 		products: []
 
-	}
+	};
 
 	//App Namespace
 	const App = {};
@@ -51,32 +51,31 @@
 	 * @param {state, action}
 	 */
 	App.setBusy = (state = null, action) => {
-		return {
-			...state,
-	        app: { 
-	        	...state.app, 
-	        	busy: action.payload
-	        }
-    	}
-  	};
+		let newState = Object.assign({}, state);
+		newState.app.busy = action.payload;
+		return newState;
+	};
+
 
 	/*
 	 * sets the current user object.
 	 * @param {state, action}
 	 */
 	App.setToken = (state = null, action) => {
-		return {
-			...state,
-	        app: { 
-	        	...state.app, 
-	        	env: {
-	        		...state.app.env,
-	        		token: action.payload
-	        	}
-	        }
-    	}
+		let newState = Object.assign({}, state);
+		newState.app.env.token = action.payload;
+		return newState;
   	};
 
-	const store = Redux.createStore(App.reducer);
+	const store = Redux.createStore(App.reducer, initial,
+
+	    // The best part 8)
+	    Redux.compose(
+	      window.devToolsExtension
+	        ? window.devToolsExtension()
+	        : v => v
+	    )
+		);
+	// Create the Polymer mixin
 	const ReduxMixin = PolymerRedux(store);
 </script>

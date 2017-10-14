@@ -9,6 +9,7 @@
     "src/pages/app-category.html",
     "src/pages/app-user.html",
     "src/pages/app-me.html",
+    "src/app-overview.html",
     "src/pages/app-cart.html",
     "src/components/app-me-account/app-me-account.html",
     "src/components/app-me-goodies/app-me-goodies.html",
@@ -25,26 +26,16 @@
   ],
   "extraDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/*.js"
+    "bower_components/webcomponentsjs/*.js",
     "node_modules/redux/dist/redux.min.js"
   ],
   "lint": {
     "rules": ["polymer-2"]
   },
-   "builds": [{
-     "bundle": true,
-    "name": "es5-unbundled",
-    "js": {"minify": true, "compile": true},
-    "css": {"minify": true},
-    "html": {"minify": true},
-    "addServiceWorker": true,
-    "addPushManifest": true
-  },{
-    "name": "es6-unbundled",
-    "js": {"minify": true},
-    "css": {"minify": true},
-    "html": {"minify": true},
-    "addServiceWorker": false,
-    "addPushManifest": false
-  }]
+   "builds": [
+    {
+      "name": "fallback-es5",
+      "preset": "es5-bundled"
+    }
+  ]
 }
