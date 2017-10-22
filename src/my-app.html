@@ -56,16 +56,16 @@ This is our main app element. Without this our app will not function.
 
       }
 
-      /**
-       * When auth changes we will tell everyone.
-       * @param user
-       * @private
-       */
-      _handleAuthChanged(user){
-        this.dispatch('setUser', user);
-        if(!user) return;
-        this.$.app.takeMeHome();
-      }
+        /*
+         * When auth changes we will tell everyone.
+         * @param user
+         * @private
+         */
+        _handleAuthChanged(user){
+            
+            this.dispatch('setUser', user);
+            if(!user) return this.$.app.navigate({uri:'/'});
+        }
 
       /**
        * Will attempt to log the user in when the credentials are provided.

@@ -4,20 +4,20 @@
 
 <script>
 	const initial = {
-		app: {
-			env: {
-		    	app_domain: env.app_domain,
-		        production: env.production,
-		     	clientSecret: env.clientSecret,
-		        clientId: env.clientId,
-		        token: ''
-			},
-			busy: false
-		},
-		user: null,
-		products: []
-
-	};
+      app: {
+          notification: [],
+          busy: false,
+          history: []
+      },
+      env: {
+          app_domain: env.app_domain,
+          production: env.production,
+          clientSecret: env.clientSecret,
+          clientId: env.clientId
+      },
+      user: null,
+      products: []
+  };
 
 	//App Namespace
 	const App = {};
@@ -63,7 +63,7 @@
 	 */
 	App.setToken = (state = null, action) => {
 		let newState = Object.assign({}, state);
-		newState.app.env.token = action.payload;
+		newState.env.token = action.payload;
 		return newState;
   	};
 
