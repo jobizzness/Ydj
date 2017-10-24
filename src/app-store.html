@@ -28,11 +28,17 @@
 
 		switch(action.type){
 			case C.SET_USER:
-				return App.setUser(state, action); break;
+				return App.setUser(state, action);
+				break;
 			case C.SET_APP_BUSY:
-				return App.setBusy(state, action); break;
+				return App.setBusy(state, action);
+				break;
 			case C.SET_USER_TOKEN:
-				return App.setToken(state, action); break;
+				return App.setToken(state, action);
+				break;
+      case C.MAKE_SELLER:
+          return App.makeSeller(state, action);
+          break;
 			default:
 			return state;
 		}
@@ -44,8 +50,18 @@
 	 */
 	App.setUser = (state = null, action) => Object.assign({}, state, {
         user: action.payload
-  	});
-
+  });
+	
+  /*
+   * sets the current user object.
+   * @param {state, action}
+   */
+  App.makeSeller = (state = null, action) => {
+      let newState = Object.assign({}, state);
+      newState.user.is_seller = true;
+      return newState;
+  };
+  
 	/*
 	 * sets the current user object.
 	 * @param {state, action}

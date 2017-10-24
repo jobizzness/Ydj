@@ -41,7 +41,7 @@ based on your level.
   <link rel="lazy-import" href="pages/app-user.html" group="">
   <link rel="lazy-import" href="pages/app-category.html" group="category">
   <link rel="lazy-import" href="pages/app-me.html" group="me">
-  <link rel="lazy-import" href="my-view404.html" group="">
+  <link rel="lazy-import" href="lazy-resources.html" group="lazy-resources">
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment app-button user-actions">
       :host {
@@ -209,19 +209,19 @@ based on your level.
                         <li>
                           <a href="/notifications">
                             <iron-icon src="/images/icons/heart.svg"></iron-icon>
-                            <app-badge>1</app-badge>
+                            <app-badge hidden></app-badge>
                           </a>
                         </li>
                         <li>
                           <a href="/messages">
                             <iron-icon src="/images/icons/envelope.svg"></iron-icon>
-                            <app-badge>20</app-badge>
+                            <app-badge hidden></app-badge>
                           </a>
                         </li>
                         <li>
                           <a href="/cart">
                             <iron-icon src="/images/icons/cart.svg"></iron-icon>
-                            <app-badge>7</app-badge>
+                            <app-badge hidden></app-badge>
                           </a>
                         </li>
                       </ul>
@@ -231,14 +231,18 @@ based on your level.
                           <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
                           <div class="user-info">
                             <span class="username">[[user.nickname]]</span>
-                            <span class="user-balance">$745.00</span>
+                            <span class="user-balance">[[user.balance]]</span>
                           </div>
                         </a>
-                        <a href="/me/dashboard">Dashboard</a>
-                        <a href="/me/account">My Account</a>
-                        <a href="/me/store">My Store</a>
-                        <a href="/me/goodies">My Purchases</a>
-                        <a href="/me/earnings">My Earnings</a>
+                        <template is="dom-if" if="[[is_seller]]">
+                          <a href="/me/dashboard">Dashboard</a>
+                          <a href="/me/account">My Account</a>
+                          <a href="/me/store">My Store</a>
+                          <a href="/me/earnings">My Earnings</a>
+                        </template>
+                        <template is="dom-if" if="[[!is_seller]]">
+                          <a href="/me/goodies">My Purchases</a>
+                        </template>
                         <a on-click="signOut">Sign out</a>
                       </shibui-dropdown-menu>
                     </user-actions>
@@ -329,7 +333,10 @@ based on your level.
             type: Object,
             statePath: 'user'
           },
-
+          is_seller: {
+              type: Boolean,
+              statePath: 'user.is_seller'
+          },
           _shouldRenderHeader: {
             computed: '_computeShouldRenderHeader(page)',
             type:Boolean,
@@ -361,6 +368,25 @@ based on your level.
         this.rootPattern = (new URL(this.rootPath)).pathname;
       }
 
+      ready() {
+          super.ready();
+
+          Polymer.RenderStatus.afterNextRender(this, function() {
+              // If we have a user the lazy import the
+              // user components
+              if(this.user){
+                  this.importLazyGroup('me').then(() => {});
+              }
+              this.importLazyGroup('lazy-resources').then(() => {
+                  // All the resources are loaded so we will reset the layout
+                  //this.$.layout.resetLayout();
+                  // If the user is not logged in the
+                  // lazy load the login component
+                  //if(!this.user) setTimeout(() => {Polymer.importHref(this.resolveUrl('../../pages/dapp-login/dapp-login.html'), null, null, true)}, 100);
+              });
+          });
+      }
+      
       _routePageChanged(page) {
         // Polymer 2.0 will call with `undefined` on initialization.
         // Ignore until we are properly called with a string.
