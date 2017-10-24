@@ -10,7 +10,7 @@
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
 <link rel="import" href="../app-avatar/app-avatar.html">
-
+<link rel="import" href="app-me-account-data.html">
 <!--
 `<Name>` is Description
 
@@ -65,20 +65,57 @@
 	  #paypalEmail{
 	  	max-width: 500px;
 	  }
+    #closeBtn{
+      color: #5c9cfb;
+    }
     </style>
+    <!--
+      User account service.
+      tell me if you need anything. i have open APIs
+    -->
+    <app-me-account-data id="dbRef"></app-me-account-data>
+    
     <div class="cards">
 			<!-- General Account -->
-			<section class="layout horizontal start-center">
-				<a><paper-button raised class="rounded-btn action-btn" on-tap="_make" style="font-size: 14px;">I AM A Creativeprenuer</paper-button></a>
-			</section>
+      <template is="dom-if" if="[[!is_seller]]">
+        <section class="card">
+          <div class="layout horizontal">
+            <span class="flex"></span>
+            <paper-icon-button
+                    icon="my-icons:close"
+                    id="closeBtn"
+                    aria-label="Close dialog"></paper-icon-button>
+          </div>
+            <div class="layout vertical center-center">
+              <p>Are you a Creativepreneuer? Start selling today on YDJ Marketplace</p>
+              <paper-button raised
+                            class="action-btn"
+                            on-tap="_makeSeller"
+                            style="font-size: 14px;">Start Selling
+              </paper-button>
+            </div>
+          <!--Close Button-->
+          <!--<a><paper-button raised class="rounded-btn action-btn" on-tap="_make" style="font-size: 14px;">I AM A Creativeprenuer</paper-button></a>-->
+        </section>
+      </template>
 		<section class="card">
 			<h1 class="card-title">General Account Information</h1>
 			<div class="layout vertical">
 				<div class="layout horizontal spaceout">
-					<paper-input label="Your Name" name="name" id="name" value="Lai Lian Lee">
-		                <iron-icon icon="person" prefix></iron-icon>
-		              </paper-input>
-		          	<paper-input label="Your Email" type="email" name="email" id="email" value="lailian@triplebytes.com">
+					<paper-input label="Your Name"
+                       name="name"
+                       id="name"
+                       value="[[user.name]]"
+                      disabled="[[app.busy]]"
+                      >
+              <iron-icon icon="person" prefix></iron-icon>
+          </paper-input>
+		          	<paper-input
+                        label="Your Email"
+                        type="email"
+                        name="email"
+                        id="email"
+                        value="[[user.email]]">
 		            	<iron-icon icon="main" prefix></iron-icon>
 		          	</paper-input>
 
@@ -87,15 +124,20 @@
 		          		<paper-button raised primary id="changeAvatar">Change Image</paper-button>
 		          	</div>
 		        </div>
-	          	<!-- Location -->
-	          	<paper-dropdown-menu label="Country">
-				  <paper-listbox slot="dropdown-content" selected="1">
-				    <paper-item>Select Your Country</paper-item>
-				    <paper-item>Malaysia</paper-item>
-				    <paper-item>carcharodontosaurus</paper-item>
-				    <paper-item>diplodocus</paper-item>
-				  </paper-listbox>
-				</paper-dropdown-menu>	
+        <!-- Location -->
+        <paper-dropdown-menu label="Country">
+            <paper-listbox slot="dropdown-content" selected="1">
+              <paper-item>Select Your Country</paper-item>
+              <paper-item>Malaysia</paper-item>
+              <paper-item>carcharodontosaurus</paper-item>
+              <paper-item>diplodocus</paper-item>
+            </paper-listbox>
+				</paper-dropdown-menu>
+        <paper-input label="Your Name"
+                     name="name"
+                     value="[[user.nickname]]">
+          <iron-icon icon="person" prefix></iron-icon>
+        </paper-input>
 			</div>
 		</section>
 		<!-- Mailing Subscription -->
@@ -115,7 +157,7 @@
 						 type="email" 
 						 name="email" 
 						 id="paypalEmail" 
-						 value="lailian@triplebytes.com">
+						 value="[[user.email]]">
 	            	<iron-icon icon="main" prefix></iron-icon>
 	          	</paper-input>
 			</div>
@@ -128,31 +170,41 @@
             	<iron-icon icon="main" prefix></iron-icon>
           	</paper-input>
           	<!-- Delete Button -->
-          	<paper-button class="danger-trans delete"><iron-icon icon="my-icons:sad"></iron-icon> Delete Account</paper-button>
+          	<paper-button class="danger-trans delete"  disabled="[[app.busy]]">
+              <iron-icon icon="my-icons:sad"></iron-icon> Delete Account</paper-button>
 		</section>
 
 		<!-- Controls -->
 		<section>
-			<paper-button primary>Update</paper-button>
+			<paper-button primary disabled="[[app.busy]]">Update</paper-button>
 		</section>
 	</div>	
   </template>
 
   <script>
-    class AppMeAccount extends Polymer.Element {
+    class AppMeAccount extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-me-account'; }
 
-      static get properties() {
-        return {
-          
-        };
-      }
+      static get properties() { return{
+          user: {
+              type: Object,
+              statePath: 'user'
+          },
+          is_seller: {
+              type: Boolean,
+              statePath: 'user.is_seller'
+          }
+      }}
 
       constructor() {
         super();
       }
 
+      _makeSeller(){
+          this.$.dbRef.makeSeller();
+      }
+      
       ready() {
         super.ready();
 

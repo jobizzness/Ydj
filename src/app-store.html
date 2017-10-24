@@ -4,20 +4,20 @@
 
 <script>
 	const initial = {
-		app: {
-			env: {
-		    	app_domain: env.app_domain,
-		        production: env.production,
-		     	clientSecret: env.clientSecret,
-		        clientId: env.clientId,
-		        token: ''
-			},
-			busy: false
-		},
-		user: null,
-		products: []
-
-	};
+      app: {
+          notification: [],
+          busy: false,
+          history: []
+      },
+      env: {
+          app_domain: env.app_domain,
+          production: env.production,
+          clientSecret: env.clientSecret,
+          clientId: env.clientId
+      },
+      user: null,
+      products: []
+  };
 
 	//App Namespace
 	const App = {};
@@ -28,11 +28,17 @@
 
 		switch(action.type){
 			case C.SET_USER:
-				return App.setUser(state, action); break;
+				return App.setUser(state, action);
+				break;
 			case C.SET_APP_BUSY:
-				return App.setBusy(state, action); break;
+				return App.setBusy(state, action);
+				break;
 			case C.SET_USER_TOKEN:
-				return App.setToken(state, action); break;
+				return App.setToken(state, action);
+				break;
+      case C.MAKE_SELLER:
+          return App.makeSeller(state, action);
+          break;
 			default:
 			return state;
 		}
@@ -44,8 +50,18 @@
 	 */
 	App.setUser = (state = null, action) => Object.assign({}, state, {
         user: action.payload
-  	});
-
+  });
+	
+  /*
+   * sets the current user object.
+   * @param {state, action}
+   */
+  App.makeSeller = (state = null, action) => {
+      let newState = Object.assign({}, state);
+      newState.user.is_seller = true;
+      return newState;
+  };
+  
 	/*
 	 * sets the current user object.
 	 * @param {state, action}
@@ -63,7 +79,7 @@
 	 */
 	App.setToken = (state = null, action) => {
 		let newState = Object.assign({}, state);
-		newState.app.env.token = action.payload;
+		newState.env.token = action.payload;
 		return newState;
   	};
 

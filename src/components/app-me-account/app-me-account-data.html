@@ -1,0 +1,121 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../app-store.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-account-data">
+  
+  <script>
+      class AppMeAccountData extends ReduxMixin(Polymer.Element) {
+
+          static get is() {
+              return 'app-me-account-data';
+          }
+
+          static get properties() {
+              return {
+                  error: String,
+
+                  loading:{
+                      type: Boolean,
+                      notify: true,
+                      value: () => true
+                  },
+
+                  env: {
+                      type: Object,
+                      statePath: 'env',
+                      observer: 'init'
+                  },
+                  
+                  user: {
+                      type: Object,
+                      statePath: 'user'
+                  }
+              }
+          }
+
+          static get actions(){
+              return {
+                  makeSeller(){
+                      return {
+                          type: C.MAKE_SELLER,
+                          payload: true
+                      };
+                  },
+                  setBusy(busy) {
+                      return {
+                          type: C.SET_APP_BUSY,
+                          payload: busy
+                      };
+                  }
+              }
+          }
+          
+          static get observers() {
+              return []
+          }
+
+          static get listeners() {
+              return []
+          }
+
+          constructor() {
+              super();
+          }
+
+          init() {
+              if(this.firstLoad) return;
+
+              this.tunnel = document.createElement('iron-ajax');
+              this.tunnel.headers = {
+                  Authorization : `Bearer ${this.env.token}`,
+                  Accept: 'application/json'
+              };
+              this.tunnel.contentType = 'application/json';
+
+              Polymer.RenderStatus.afterNextRender(this, function() {
+                //Register events here
+                
+              });
+              this.firstLoad = true;
+          }
+          
+          makeSeller(){
+              if(this.user.is_seller) return;
+              this.tunnel.url = `${this.env.app_domain}/api/seller/make`;
+              this.tunnel.method = "GET";
+              this.dispatch('setBusy', true);
+              let request = this.tunnel.generateRequest();
+
+              request.completes.then((req) => {
+                  //We got our request
+                  this.dispatch('setBusy', false);
+                  this.dispatch('makeSeller');
+              }, (rejected) => {
+                  // failed request, argument is an object
+                  let req = rejected.request;
+                  let error = rejected.error;
+                  this.dispatch('setBusy', false);
+
+              });
+          }
+      }
+
+      window.customElements.define(AppMeAccountData.is, AppMeAccountData);
+  </script>
+</dom-module>

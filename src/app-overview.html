@@ -22,6 +22,7 @@ based on your level.
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-search/paper-search-panel.html">
+<link rel="import" href="../../../bower_components/lazy-imports/lazy-imports-mixin.html">
 <link rel="import" href="app-store.html">
 
 <!-- App Components -->
@@ -33,15 +34,14 @@ based on your level.
 <link rel="import" href="components/user-actions/user-actions.html">
 <link rel="import" href="components/app-avatar/app-avatar.html">
 
-<!-- Pages -->
-<link rel="lazy-import" href="pages/app-home.html">
-<link rel="lazy-import" href="pages/app-goodies.html">
-<link rel="lazy-import" href="pages/app-login.html">
-<link rel="lazy-import" href="pages/app-user.html">
-<link rel="lazy-import" href="pages/app-me.html">
-<link rel="lazy-import" href="my-view404.html">
-
 <dom-module id="app-overview">
+  <link rel="lazy-import" href="pages/app-home.html" group="home">
+  <link rel="lazy-import" href="pages/app-goodies.html" group="goodies">
+  <link rel="lazy-import" href="pages/app-login.html" group="login">
+  <link rel="lazy-import" href="pages/app-user.html" group="">
+  <link rel="lazy-import" href="pages/app-category.html" group="category">
+  <link rel="lazy-import" href="pages/app-me.html" group="me">
+  <link rel="lazy-import" href="lazy-resources.html" group="lazy-resources">
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment app-button user-actions">
       :host {
@@ -209,19 +209,19 @@ based on your level.
                         <li>
                           <a href="/notifications">
                             <iron-icon src="/images/icons/heart.svg"></iron-icon>
-                            <app-badge>1</app-badge>
+                            <app-badge hidden></app-badge>
                           </a>
                         </li>
                         <li>
                           <a href="/messages">
                             <iron-icon src="/images/icons/envelope.svg"></iron-icon>
-                            <app-badge>20</app-badge>
+                            <app-badge hidden></app-badge>
                           </a>
                         </li>
                         <li>
                           <a href="/cart">
                             <iron-icon src="/images/icons/cart.svg"></iron-icon>
-                            <app-badge>7</app-badge>
+                            <app-badge hidden></app-badge>
                           </a>
                         </li>
                       </ul>
@@ -231,14 +231,18 @@ based on your level.
                           <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
                           <div class="user-info">
                             <span class="username">[[user.nickname]]</span>
-                            <span class="user-balance">$745.00</span>
+                            <span class="user-balance">[[user.balance]]</span>
                           </div>
                         </a>
-                        <a href="/me/dashboard">Dashboard</a>
-                        <a href="/me/account">My Account</a>
-                        <a href="/me/store">My Store</a>
-                        <a href="/me/goodies">My Purchases</a>
-                        <a href="/me/earnings">My Earnings</a>
+                        <template is="dom-if" if="[[is_seller]]">
+                          <a href="/me/dashboard">Dashboard</a>
+                          <a href="/me/account">My Account</a>
+                          <a href="/me/store">My Store</a>
+                          <a href="/me/earnings">My Earnings</a>
+                        </template>
+                        <template is="dom-if" if="[[!is_seller]]">
+                          <a href="/me/goodies">My Purchases</a>
+                        </template>
                         <a on-click="signOut">Sign out</a>
                       </shibui-dropdown-menu>
                     </user-actions>
@@ -305,7 +309,7 @@ based on your level.
   </template>
 
   <script>
-    class AppOverview extends ReduxMixin(Polymer.Element) {
+    class AppOverview extends ReduxMixin(Polymer.LazyImportsMixin(Polymer.Element)) {
 
       static get is() { return 'app-overview'; }
 
@@ -329,7 +333,10 @@ based on your level.
             type: Object,
             statePath: 'user'
           },
-
+          is_seller: {
+              type: Boolean,
+              statePath: 'user.is_seller'
+          },
           _shouldRenderHeader: {
             computed: '_computeShouldRenderHeader(page)',
             type:Boolean,
@@ -355,11 +362,31 @@ based on your level.
 
       constructor() {
         super();
+          this.firstLoad = true;
         // Get root pattern for app-route, for more info about `rootPath` see:
         // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
         this.rootPattern = (new URL(this.rootPath)).pathname;
       }
 
+      ready() {
+          super.ready();
+
+          Polymer.RenderStatus.afterNextRender(this, function() {
+              // If we have a user the lazy import the
+              // user components
+              if(this.user){
+                  this.importLazyGroup('me').then(() => {});
+              }
+              this.importLazyGroup('lazy-resources').then(() => {
+                  // All the resources are loaded so we will reset the layout
+                  //this.$.layout.resetLayout();
+                  // If the user is not logged in the
+                  // lazy load the login component
+                  //if(!this.user) setTimeout(() => {Polymer.importHref(this.resolveUrl('../../pages/dapp-login/dapp-login.html'), null, null, true)}, 100);
+              });
+          });
+      }
+      
       _routePageChanged(page) {
         // Polymer 2.0 will call with `undefined` on initialization.
         // Ignore until we are properly called with a string.
@@ -379,44 +406,41 @@ based on your level.
 
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
-        this._middleware(page);
-        var resolvedPageUrl = this.resolveUrl('pages/app-' + page + '.html');
-        Polymer.importHref(resolvedPageUrl, null, this._showPage404.bind(this), true);
+        page = this._middleware(page);
+          // Load page import on demand then register
+          // then service worker if this is the first app load
+          this.importLazyGroup(page).then(() => {
+              if(this.firstLoad)
+                  this.registerWorker();
+          });
+          this.firstLoad = false;
       }
 
       _middleware(page){
         switch(page){
           case 'login':
           case 'signup':
-            console.log(this.user);
             if(this.user){
-              this.set("route.path", '/');
+              return 'home';
             }
+            return page;
             break;
           case 'me':
           case 'cart':
           case 'logout':
           case 'messages':
             if(!this.user){
-              this.set("route.path", '/login');
+              return 'login';
             }
+            return page;
             break;
+        case 'home':
+        case 'goodies':
+        case 'category':
+            return page;
+          default:
+              return page;
         }
-      }
-
-      /**
-       * This will fire when Auth changes
-       * @param user
-       * @private
-       */
-      _authChanged(user, old){
-        if(!user && old){
-          //You just logged Out
-          this.set("route.path", '/');
-          return;
-        }
-        this._userIsLoggedIn();
-        //okay you are in
       }
 
       _computeShouldRenderHeader(page){
@@ -491,6 +515,18 @@ based on your level.
       signOut(){
         window.dispatchEvent(new CustomEvent('signout', {detail: {kicked: true, bubble:false}}));
       }
+
+        /**
+         * Registers `service-worker.js` file if supported
+         * by our current browser.
+         * @param {void}
+         * @return {void}
+         */
+        registerWorker(){
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service-worker.js', {scope: this.rootPath});
+            }
+        }
     }
 
     window.customElements.define(AppOverview.is, AppOverview);
