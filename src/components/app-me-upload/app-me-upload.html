@@ -10,7 +10,8 @@
 <link rel="import" href="../../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 
 <link rel="import" href="../../shared-styles.html">
-<link rel="import" href="../chartist-element/chartist-element.html">
+<link rel="import" href="../../app-store.html">
+<link rel="import" href="../app-me-store/app-me-store-service.html">
 <!--
 `<Name>` is Description
 
@@ -150,26 +151,67 @@
   </template>
 
   <script>
-    class AppMeUpload extends Polymer.Element {
+    class AppMeUpload extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-me-upload'; }
 
-      static get properties() { return {
-          
-        }}
+      static get properties() {
+        return {
+            product: {
+                type: Object,
+                value: () => {}
+            },
+            env:{
+                type: Object,
+                statePath: 'env',
+                observer: 'init'
+            },
+            busy:{
+                type: Boolean,
+                statePath: 'user.products_fetching'
+            }
+        }
+      }
 
+      static get actions (){
+          return {
+              setBusy(busy) {
+                  return {
+                      type: C.SET_USER_PRODUCTS_FETCHING,
+                      payload: busy
+                  };
+              }
+          };
+      }
+      
       constructor() {
         super();
       }
 
-      ready() {
-        super.ready();
+        init() {
+          if(this.loaded) return;
+          this.$.upload.target = this.env.app_domain + '/api/media';
+          this.$.upload.headers = {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + this.env.token
+          };
 
-        Polymer.RenderStatus.afterNextRender(this, function() {
-          
-        });
+          window.addEventListener('on-product-edit', (e) => this.close());
+
+          this.$.upload.addEventListener('upload-before', (e) => this._onBeforeUpload(e));
+          this.$.upload.addEventListener('upload-success', (e) => this._onUploaded(e));
+          this.loaded = true;
+        }
+        
+        _onUploaded(e){
+          this.push('product.images', parseInt(e.detail.xhr.response));
+        }
+
+        _onBeforeUpload(){
+            if(this.opened) return;
+            this.opened = true;
       }
-
+      
     }
 
     window.customElements.define(AppMeUpload.is, AppMeUpload);

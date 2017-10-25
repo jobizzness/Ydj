@@ -64,7 +64,7 @@ This is our main app element. Without this our app will not function.
         _handleAuthChanged(user){
             
             this.dispatch('setUser', user);
-            if(!user) return this.$.app.navigate({uri:'/'});
+            return this.$.app.navigate({uri:'/'});
         }
 
       /**

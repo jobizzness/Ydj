@@ -22,7 +22,7 @@ based on your level.
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-search/paper-search-panel.html">
-<link rel="import" href="../../../bower_components/lazy-imports/lazy-imports-mixin.html">
+<link rel="import" href="../bower_components/lazy-imports/lazy-imports-mixin.html">
 <link rel="import" href="app-store.html">
 
 <!-- App Components -->
@@ -38,6 +38,7 @@ based on your level.
   <link rel="lazy-import" href="pages/app-home.html" group="home">
   <link rel="lazy-import" href="pages/app-goodies.html" group="goodies">
   <link rel="lazy-import" href="pages/app-login.html" group="login">
+  <link rel="lazy-import" href="pages/app-register.html" group="register">
   <link rel="lazy-import" href="pages/app-user.html" group="">
   <link rel="lazy-import" href="pages/app-category.html" group="category">
   <link rel="lazy-import" href="pages/app-me.html" group="me">
@@ -241,6 +242,7 @@ based on your level.
                           <a href="/me/earnings">My Earnings</a>
                         </template>
                         <template is="dom-if" if="[[!is_seller]]">
+                          <a href="/me/account">My Account</a>
                           <a href="/me/goodies">My Purchases</a>
                         </template>
                         <a on-click="signOut">Sign out</a>
@@ -419,7 +421,7 @@ based on your level.
       _middleware(page){
         switch(page){
           case 'login':
-          case 'signup':
+          case 'register':
             if(this.user){
               return 'home';
             }
@@ -500,12 +502,7 @@ based on your level.
         this.page = 'home';
       }
       _computeShouldRenderBottomHeader(page){
-       if(page === 'me'){
-         return false;
-       }
-//
-//        this._headerChanged();
-        return true;
+        return  (page != 'me');
       }
 
       _loadUserResources(){
@@ -516,17 +513,27 @@ based on your level.
         window.dispatchEvent(new CustomEvent('signout', {detail: {kicked: true, bubble:false}}));
       }
 
-        /**
-         * Registers `service-worker.js` file if supported
-         * by our current browser.
-         * @param {void}
-         * @return {void}
-         */
-        registerWorker(){
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('service-worker.js', {scope: this.rootPath});
-            }
-        }
+      /**
+       * @desc Navigate to a diffrent route
+       * @param Object $event - The event with the route location
+       * @return void
+       */
+      navigate(e){
+          let location = e.uri;
+          this.set('route.path', location);
+      }
+        
+      /**
+       * Registers `service-worker.js` file if supported
+       * by our current browser.
+       * @param {void}
+       * @return {void}
+       */
+      registerWorker(){
+          if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.register('service-worker.js', {scope: this.rootPath});
+          }
+      }
     }
 
     window.customElements.define(AppOverview.is, AppOverview);
