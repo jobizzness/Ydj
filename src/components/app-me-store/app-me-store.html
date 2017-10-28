@@ -9,6 +9,7 @@
 
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../../app-store.html">
 <!--
 `<Name>` is Description
 
@@ -84,113 +85,117 @@
           </paper-button>
         </a>
       </section>
-      <!-- Panel -->
-      <section class="card with--panel">
-        <section class="layout horizontal around-justified layout">
-          <div class="flex-3">
-            <panel>
-              <span class="panel-title">Item Name</span>
-            </panel>
-          </div>
-          <div class="flex">
-            <panel>
-              <span class="panel-title">Item Price</span>
-            </panel>
-          </div>
-          <div class="flex vertical center start-center">
-            <panel>
-              <span class="panel-title">Status</span>
-            </panel>
-          </div>
-          <div class="flex">
-            <panel>
-              <span class="panel-title">Downloads</span>
-            </panel>
-          </div>
-          <div class="flex">
-            <panel>
-              <span class="panel-title">Actions</span>
-            </panel>
-          </div>
-        </section>
-
-        <!-- Goodies List -->
-        <template is="dom-repeat" items="[[items]]">
-          <section class="layout horizontal around-justified layout">
-            <div class="flex-3">
-              <!-- Items Names -->
-              <div class="item-details">
-                <a href="#" class="flex">
-                <iron-image preload style="background-color: #eee;width: 100%;height: 100%;min-height: 70px;" 
-                            fade sizing="cover" 
-                            src="http://lorempixel.com/400/700/abstract/[[index]]"></iron-image>
-                </a>
-                <div class="flex-3 layout vertical">
-                  <a href="#" class="strong-text"><span>Photographer business cards</span></a>
-                  <span class="light-text">Created: 4 March, 2017</span>
-                </div>
+      <template is="dom-if" if="[[hasItems]]">
+          <!-- Panel -->
+          <section class="card with--panel">
+            <section class="layout horizontal around-justified layout">
+              <div class="flex-3">
+                <panel>
+                  <span class="panel-title">Item Name</span>
+                </panel>
               </div>
-            </div>
-            <!-- Price -->
-            <div class="flex layout vertical center start-center">
-                <span class="strong-text mb-20">$100</span>
-            </div>
-             <!-- Status -->
-            <div class="flex layout vertical start-center">
-                <span class="strong-text mb-20">Pending</span>
-            </div>
-            <!-- Downloads -->
-            <div class="flex layout vertical center start-center">
-              <span class="light-text mb-20">30</span>
-            </div>
-            <!-- Actions -->
-            <div class="flex layout vertical center center-justified">
-              <paper-checkbox style="margin-bottom:12px;" >Delete</paper-checkbox>
-              <paper-button toggles raised class="custom grey">Edit</paper-button>
-            </div>
-          </section>
-        </template>
-      </section>
+              <div class="flex">
+                <panel>
+                  <span class="panel-title">Item Price</span>
+                </panel>
+              </div>
+              <div class="flex vertical center start-center">
+                <panel>
+                  <span class="panel-title">Status</span>
+                </panel>
+              </div>
+              <div class="flex">
+                <panel>
+                  <span class="panel-title">Downloads</span>
+                </panel>
+              </div>
+              <div class="flex">
+                <panel>
+                  <span class="panel-title">Actions</span>
+                </panel>
+              </div>
+            </section>
+    
+            <!-- Goodies List -->
+            <template is="dom-repeat" items="[[products]]" as="product">
+              <section class="layout horizontal around-justified layout">
+                <div class="flex-3">
+                  <!-- Items Names -->
+                  <div class="item-details">
+                    <a href="#" class="flex">
+                    <iron-image preload style="background-color: #eee;width: 100%;height: 100%;min-height: 70px;"
+                                fade sizing="cover"
+                                src$="[[_getMedia(product.media)]]"></iron-image>
+                    </a>
+                    <div class="flex-3 layout vertical">
+                      <a href="#" class="strong-text"><span>[[product.title]]</span></a>
+                      <span class="light-text">Created: [[product.published_at]]</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Price -->
+                <div class="flex layout vertical center start-center">
+                    <span class="strong-text mb-20">[[product.price]]</span>
+                </div>
+                 <!-- Status -->
+                <div class="flex layout vertical start-center">
+                    <span class="strong-text mb-20">Pending</span>
+                </div>
+                <!-- Downloads -->
+                <div class="flex layout vertical center start-center">
+                  <span class="light-text mb-20">0</span>
+                </div>
+                <!-- Actions -->
+                <div class="flex layout horizontal center-center">
+                  <paper-icon-button icon="my-icons:edit" on-click="delete"></paper-icon-button>
+                  <paper-icon-button icon="my-icons:trash" on-click="edit"></paper-icon-button>
+                </div>
+              </section>
+            </template>
+         </section>
+      </template>
     </div>
   </section>
-  <div class="flex layout horizontal end-justified">
-    <paper-button toggles raised class="red">Delete all</paper-button>
-    <paper-button toggles raised class="green">Delete selected</paper-button>
-  </div>
   </template>
 
   <script>
-    class AppMeStore extends Polymer.GestureEventListeners(Polymer.Element) {
+    class AppMeStore extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-me-store'; }
 
-      static get properties() {return {
-          items:{
-            type: Array,
-            value: function(){
-              return [{},{},{},{}]
-            }
-          }
-        }}
-
+      static get properties() {
+          return {
+            products: {
+                type: Array,
+                statePath: 'user.products'
+            },
+            hasItems:{
+                type: Boolean,
+                computed: '_computeHasItems(products)'
+            },
+        }
+      }
+      
+      
       constructor() {
         super();
       }
-
+      
+      _computeHasItems(products){
+          return (products.length > 0);
+      }
+      _getMedia(media){
+          if(media.length < 1) return;
+          return media[0].src;
+      }
       ready() {
         super.ready();
         Polymer.RenderStatus.afterNextRender(this, function() {
-          Polymer.importHref(this.resolveUrl('../app-goodies-editor/app-goodies-editor.html'), null, null, true);
+          document.dispatchEvent(new CustomEvent('fetch-user-products', {}));
         });
       }
 
-
-      /**
-       *
-       */
-       _create(){
-          this.$.goodiesEditor.open({});
-       }
+      
     }
 
     window.customElements.define(AppMeStore.is, AppMeStore);

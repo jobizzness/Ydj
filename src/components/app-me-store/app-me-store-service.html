@@ -43,13 +43,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           static get listeners() {
               return []
           }
-
+          static get actions(){
+              return{
+                  addProduct(product){
+                      return {
+                          type: C.ADD_USER_PRODUCT,
+                          payload: product
+                      };
+                  },
+                  addUserProducts(products){
+                      return {
+                          type: C.ADD_USER_PRODUCTS,
+                          payload: products
+                      };
+                  },
+                  setBusy(busy) {
+                      return {
+                          type: C.SET_USER_PRODUCTS_FETCHING,
+                          payload: busy
+                      };
+                  }
+              }
+          }
           constructor() {
               super();
+              this.hasMore = true;
+              this.busy = false;
+              this.set = 1;
           }
 
           init() {
               if(this.firstLoad) return;
+              //Lock this resource
+              this.firstLoad = true;
               
               this.tunnel = document.createElement('iron-ajax');
               this.tunnel.headers = {
@@ -58,16 +84,93 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               };
               this.tunnel.contentType = 'application/json';
               
+              this.setAttribute('product-categories', []);
+              
               Polymer.RenderStatus.afterNextRender(this, function () {
-                  document.addEventListener('product-upload', (e) => this._uploadProduct(e));
-                  document.addEventListener('product-update', (e) => this._uploadProduct(e));
+                  document.addEventListener('product-publish', (e) => this._onProductPublish(e));
+                  //document.addEventListener('product-update', (e) => this._uploadProduct(e));
+                  document.addEventListener('fetch-user-products', (e) => this._loadMoreProducts(e));
               });
-              this.firstLoad = true;
+              
+              this._getProductCategories();
+              
           }
 
-          _uploadProduct(event){
-              'Lets save this product';
-              console.log(event);
+          _getProductCategories(){
+
+              this.tunnel.url = `${this.env.app_domain}/api/category`;
+              this.tunnel.method = "GET";
+              
+              let request = this.tunnel.generateRequest();
+
+              request.completes.then((req) => {
+                  
+                  this.dispatchEvent(new CustomEvent('product-categories-changed', {detail: req.parseResponse()}));
+
+              }, (rejected) => {
+                  // TODO dispatch new error occurred
+                  let req = rejected.request;
+                  let error = rejected.error;
+
+
+              });
+          }
+
+          _onProductPublish({detail:product}){
+            if(!product) return;
+              let mode = product.id ? 'PATCH' : 'POST';
+              this.tunnel.url = `${this.env.app_domain}/api/product`;
+              this.tunnel.method = mode;
+              this.tunnel.body = product;
+
+              let request = this.tunnel.generateRequest();
+
+              request.completes.then((req) => {
+                  
+                  let data = req.parseResponse();
+                  
+                  if(mode === 'POST'){
+                      document.dispatchEvent(new CustomEvent('product-published', {detail:data}));
+                      this.dispatch('addProduct', data);
+                      return;
+                  }
+                  //this.dispatch('updateProduct', data);
+                  document.dispatchEvent(new CustomEvent('product-updated', {detail:data}));
+                  //TODO dispatch to the store a product was updated
+
+              }, (rejected) => {
+                  // TODO dispatch new error occurred
+                  let req = rejected.request;
+                  let error = rejected.error;
+
+              });
+              
+          }
+
+          _loadMoreProducts(){
+
+              if(!this.hasMore || this.busy) return;
+
+              this.busy = true;
+              this.tunnel.url = `${this.env.app_domain}/api/user/self/products?page=${this.set}`;
+              let request = this.tunnel.generateRequest();
+
+              request.completes.then((req) => {
+                  //We got our request
+                  let res = req.parseResponse();
+                  this.busy = false;
+                  this.hasMore = res.page_info.has_more;
+                  this.set = this.set +1;
+                  this.dispatch('addUserProducts', res.data);
+
+              }, (rejected) => {
+                  // failed request, argument is an object
+                  let req = rejected.request;
+                  let error = rejected.error;
+                  this.busy = false;
+
+              });
+
           }
       }
 

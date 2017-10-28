@@ -3,6 +3,7 @@
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
 <link rel="import" href="../chartist-element/chartist-element.html">
+<link rel="import" href="../../app-store.html">
 <!--
 `<Name>` is Description
 
@@ -190,7 +191,7 @@
       <main class="flex-2">
         <section class="banner">
           <div class="banner-heading">
-            <h1 class="title">Howdy, Lian.</h1>
+            <h1 class="title">Howdy, [[user.nickname]].</h1>
             <p class="summary-text">Here's a summary of your store.</p>
           </div>
         </section>
@@ -198,7 +199,7 @@
           <div class="layout horizontal summary-data">
             <div class="card flex" style="background-color: #E91E63;">
               <span class="summary-title">My Total Earnings:</span>
-              <span>$140.80</span>
+              <span>$00.00</span>
             </div>
             <div class="card flex" style="background-color: #03A9F4;">
               <span class="summary-title">Amount withdrawn</span>
@@ -206,7 +207,7 @@
             </div>
             <div class="card flex" style="background-color: #673AB7;">
               <span class="summary-title">Balance</span>
-              <span>$140.80</span>
+              <span>$00.00</span>
             </div>
           </div>
           <!-- Todays Visitors -->
@@ -219,64 +220,42 @@
             <div class="layout vertical center-center">
             <div class="circle-outter">
               <div class="circle-inner layout horizontal center-center">
-                <span>25</span>
+                <span>0</span>
               </div>
             </div>
             </div>
           </div>
           <!-- Sales Chart -->
-          <div class="card sales-chart">
-            <div class="layout horizontal card-header">
-                <iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
-                <span class="small-title">Sales</span>
-            </div>
-            <div id="chartSales" class="charts"></div>     
-          </div>
-          <div class="card">
-            <div class="layout horizontal card-header">
-              <iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>
-              <span class="small-title">Engagement</span>
-            </div>
-            <div id="chartEng" class="charts"></div>
-          </div>
-           <!-- Messages -->
-            <div class="card">
-              <div class="layout horizontal card-header">
-                <iron-icon icon="my-icons:mail" class="title-icon"></iron-icon>
-                <span class="small-title">Messages</span>
-              </div>
-              <messages>
-                <template is="dom-repeat" items="[[messages]]">
-                  <message>
-                    <message-header class="layout horizontal">
-                      <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
-                      <div>
-                        <span class="message-owners-name">Mary Jane</span>
-                        <span class="message-owner-status online"><span class="status-icon"></span>Online</span>
-                      </div>
-                      <span class="flex"></span>
-                      <span class="message-time">1 min ago</span>
-                    </message-header>
-                    <message-body>Semoga dadi milyuner rika ya!</message-body>   
-                  </message>
-                </template>
-              </messages>
-            </div>
+          <!--<div class="card sales-chart">-->
+            <!--<div class="layout horizontal card-header">-->
+                <!--<iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>-->
+                <!--<span class="small-title">Sales</span>-->
+            <!--</div>-->
+            <!--<div id="chartSales" class="charts"></div>     -->
+          <!--</div>-->
+          <!--<div class="card">-->
+            <!--<div class="layout horizontal card-header">-->
+              <!--<iron-icon icon="my-icons:monitor" class="title-icon"></iron-icon>-->
+              <!--<span class="small-title">Engagement</span>-->
+            <!--</div>-->
+            <!--<div id="chartEng" class="charts"></div>-->
+          <!--</div>-->
         </section>
       </main>
     </div>
   </template>
 
   <script>
-    class AppDashboard extends Polymer.Element {
+    class AppDashboard extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-dashboard'; }
 
       static get properties() {
         return {
-          messages:{
-            value: [{},{},{},{}]
-          }
+            user: {
+                type:Object,
+                statePath: 'user'
+            }
         };
       }
 

@@ -6,6 +6,7 @@
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../app-store.html">
+<link rel="import" href="../components/app-me-store/app-me-store-service.html">
 
 <!-- Lazy components -->
 <link rel="lazy-import" href="../components/app-me-account/app-me-account.html">
@@ -69,10 +70,16 @@
             route="[[route]]"
             pattern="/:slug"
             data="{{routeData}}"></app-route>
+    
+    <app-me-store-service
+            on-product-categories-changed="_setCategories">
+    </app-me-store-service>
+  
     <!--
-      App Store Service
+      User account service.
+      tell me if you need anything. i have open APIs
     -->
-    <app-me-store-service></app-me-store-service>
+    <app-me-account-data id="dbRef"></app-me-account-data>
     
     <div class="content">
 	    <section class="container">
@@ -86,7 +93,7 @@
             <app-me-messages name="me-messages"></app-me-messages>
             <app-me-credits name="me-credits"></app-me-credits>
             <app-me-store name="me-store"></app-me-store>
-            <app-me-upload name="me-upload"></app-me-upload>
+            <app-me-upload name="me-upload" categories="[[categories]]"></app-me-upload>
             <app-me-withdrawals name="me-withdrawals"></app-me-withdrawals>
           </iron-selector>
           
@@ -170,7 +177,10 @@
         Polymer.importHref(resolvedPageUrl, null, null, true);
       }
 
-    
+      _setCategories({detail:categories}){
+        this.categories = categories;
+      }
+      
       ready() {
         super.ready();
         Polymer.RenderStatus.afterNextRender(this, function() {

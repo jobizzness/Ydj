@@ -1,0 +1,149 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="app-cropper.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-avatar-editor">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment cropper">
+      #dialog {
+        display: block;
+        padding: 0 8px;
+        border-top: 3px solid var(--app-accent-lighter);
+        margin: 0;
+        width: 60vw;
+        min-height: 60vh;
+        max-height: 100vh;
+        overflow: auto;
+      }
+      /*.container {*/
+        /*max-width: 640px;*/
+        /*margin: 20px auto;*/
+      /*}*/
+      img {
+        max-width: 100%;
+      }
+      .cropper-view-box,
+      .cropper-face {
+        border-radius: 50%;
+      }
+      
+    </style>
+    <paper-dialog id="dialog" no-cancel-on-esc-key="false" opened="{{opened}}">
+      <div class="container">
+        <h1>Crop a round image</h1>
+        <h3>Image</h3>
+        <div>
+          <img id="image" alt="Picture">
+        </div>
+        <p>
+          <button type="button" on-click="_crop" id="button">Save</button>
+        </p>
+        <div id="result"></div>
+      </div>
+    </paper-dialog>
+  
+  </template>
+  
+  <script>
+      class AppAvatarEditor extends Polymer.Element {
+
+          static get is() {
+              return 'app-avatar-editor';
+          }
+
+          static get properties() {
+              return {}
+          }
+
+          static get observers() {
+              return []
+          }
+
+          static get listeners() {
+              return []
+          }
+
+          constructor() {
+              super();
+          }
+          
+          open(url){
+              this.opened = true;
+              this.$.image.src = url;
+              this.init();
+          }
+          
+          init(){
+              var image = this.$.image;
+              var button = this.$.button;
+              this.result = this.$.result;
+              this.croppable = true;
+              this.cropper = new Cropper(image, {
+                  aspectRatio: 1,
+                  viewMode: 1,
+                  ready: function () {
+                      //this.croppable = true;
+                  }
+              });
+          }
+          
+          _crop(){
+              let croppedCanvas;
+              let roundedCanvas;
+              let croppedImage;
+              
+              if (!this.croppable) {
+                  return;
+              }
+
+              croppedCanvas = this.cropper.getCroppedCanvas();
+              roundedCanvas = this.getRoundedCanvas(croppedCanvas);
+              croppedImage = roundedCanvas.toDataURL();
+              document.dispatchEvent(new CustomEvent('avatar-uploaded', {detail:{avatar:croppedImage}}));
+              
+              this.opened = false;
+              this.cropper.destroy();
+          }
+          
+          ready() {
+              super.ready();
+              Polymer.RenderStatus.afterNextRender(this, function () {
+
+              });
+          }
+
+          getRoundedCanvas(sourceCanvas) {
+              var canvas = document.createElement('canvas');
+              var context = canvas.getContext('2d');
+              var width = sourceCanvas.width;
+              var height = sourceCanvas.height;
+              canvas.width = width;
+              canvas.height = height;
+              context.imageSmoothingEnabled = true;
+              context.drawImage(sourceCanvas, 0, 0, width, height);
+              context.globalCompositeOperation = 'destination-in';
+              context.beginPath();
+              context.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, 2 * Math.PI, true);
+              context.fill();
+              return canvas;
+          }
+          
+      }
+
+      window.customElements.define(AppAvatarEditor.is, AppAvatarEditor);
+  </script>
+</dom-module>

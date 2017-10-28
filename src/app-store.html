@@ -24,7 +24,7 @@
 
 	// App Reducer 
 	App.reducer =  (state = null, action) => {
-		if(!state) return initialState;
+		if(!state) return initial;
 
 		switch(action.type){
 			case C.SET_USER:
@@ -38,6 +38,15 @@
 				break;
       case C.MAKE_SELLER:
           return App.makeSeller(state, action);
+          break;
+      case C.ADD_PRODUCTS:
+          return App.addProducts(state, action);
+          break;
+      case C.ADD_USER_PRODUCT:
+          return App.addUserProduct(state, action);
+          break;
+      case C.ADD_USER_PRODUCTS:
+          return App.addUserProducts(state, action);
           break;
 			default:
 			return state;
@@ -61,6 +70,29 @@
       newState.user.is_seller = true;
       return newState;
   };
+
+  App.addUserProducts = (state = null, action) => {
+
+      let products = [];
+      if(state.user.products) {
+          products = state.user.products.slice(0);
+      }
+      action.payload.forEach( (item) => products.push(item));
+      let newState = Object.assign({}, state);
+      newState.user.products = products;
+      return newState;
+
+  };
+
+  App.addUserProduct = (state = null, action) => {
+      //let products = state.products.slice(0);
+      let newState = Object.assign({}, state);
+      let products = state.user.products.slice(0);
+      products.unshift(action.payload);
+      newState.user.products = products;
+
+      return newState;
+  };
   
 	/*
 	 * sets the current user object.
@@ -72,7 +104,17 @@
 		return newState;
 	};
 
-
+  /*
+   * We have new products so lets
+   * push it to our products array
+   * @param {state, action}
+   */
+  App.addProducts = (state = null, action) => {
+      let products = state.products.slice(0);
+      action.payload.forEach( (item) => products.push(item));
+      return Object.assign({}, state, {products: products});
+  };
+  
 	/*
 	 * sets the current user object.
 	 * @param {state, action}

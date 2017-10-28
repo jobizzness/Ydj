@@ -12,7 +12,8 @@
 <link rel="import" href="../my-icons.html">
 <link rel="import" href="../components/app-product-item/app-product-item.html">
 <link rel="import" href="../components/app-products/app-products.html">
-
+<link rel="import" href="../components/app-products-service/app-products-service.html">
+<link rel="import" href="../app-store.html">
 <!--
 `<Name>` is Description
 
@@ -104,7 +105,9 @@
     </style>
     <!-- Media Query -->
     <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
-
+    
+    <app-products-service id="dbRef"></app-products-service>
+    
     <main class="layout vertical">
       <!-- App Hero -->
     	<app-hero class="layout vertical center-center" style="background: url(/images/home_banner.jpg)">
@@ -174,9 +177,11 @@
       <!-- Bottom Banner -->
       <app-hero class="layout horizontal center-center" id="banner-1">
         <div class="hero-info layout vertical center-center">
-          <h1>Become a Creativepreneuer!</h1>
-          <p>Create what you love and enjoy big sales earnings when you sell your item on YDJ Marketplace.</p>
-          <a href="#"><paper-button raised class="blue-btn">Start selling now!</paper-button></a>
+          <template is="dom-if" if="[[!user.is_seller]]">
+            <h1>Become a Creativepreneuer!</h1>
+            <p>Create what you love and enjoy big sales earnings when you sell your item on YDJ Marketplace.</p>
+            <a href="/me/account"><paper-button raised class="blue-btn">Start selling now!</paper-button></a>
+          </template>
         </div>
         <!-- Background Image -->
         <iron-image sizing="cover" 
@@ -188,7 +193,7 @@
   </template>
 
   <script>
-    class AppHome extends Polymer.Element {
+    class AppHome extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-home'; }
 
@@ -196,7 +201,11 @@
         return {
           products: {
             type: Array,
-            value: [{},{},{},{},{},{},{},{},{},{},{}]
+            statePath: 'products'
+          },
+          user: {
+            type: Object,
+            statePath: 'user'
           }
         };
       }
