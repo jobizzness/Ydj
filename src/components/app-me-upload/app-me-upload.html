@@ -11,7 +11,7 @@
 
 <link rel="import" href="../../shared-styles.html">
 <link rel="import" href="../../app-store.html">
-<link rel="import" href="../app-me-store/app-me-store-service.html">
+
 <!--
 `<Name>` is Description
 
@@ -96,52 +96,83 @@
     }
 
     </style>
-
     
     	<section class="inputs">
       <!-- <section class="card"> -->
         <h1>Upload an item</h1><br>
       <!-- </section> -->
-    		<vaadin-upload id="upload" accept="image/*" max-files="1" on-upload-before="_handleUpload" required>
+    		<vaadin-upload id="assets" accept="image/*" max-files="1" on-upload-before="_handleAssetsUpload" required>
+          <span slot="drop-label">Assets ZIP file</span>
 <!--             <div class="file-list">
               <div class="receipt-wrapper">
                 <img src$="[[_receiptURL]]" alt="Receipt" hidden$="[[!_showReceipt(expense._attachments.*)]]">
               </div>
             </div> -->
           </vaadin-upload>
-    		<paper-input label="Item name:" name="name" id="name"></paper-input>
+        <vaadin-upload id="upload"
+                       accept="image/*"
+                       max-files="3"
+                       on-upload-success="_onUploaded"
+                       on-upload-before="_onBeforeUpload"
+                       required>
+          <span slot="drop-label">Preview</span>
+          <!--             <div class="file-list">
+                        <div class="receipt-wrapper">
+                          <img src$="[[_receiptURL]]" alt="Receipt" hidden$="[[!_showReceipt(expense._attachments.*)]]">
+                        </div>
+                      </div> -->
+        </vaadin-upload>
+        
+        <!-- Product Title -->
+    		<paper-input label="Item name:"
+                     name="name"
+                     value="{{product.title}}"
+                     id="name"
+                     required></paper-input>
+    
+        <!-- Description -->
+        <paper-textarea label="Item Descriotion:"
+                        value="{{product.description}}"
+                        id="desctiption"></paper-textarea>
 	      	<!-- Category -->
 	      	<paper-dropdown-menu label="Select a category:">
-			  <paper-listbox slot="dropdown-content" selected="1">
-			    <paper-item>Print templates</paper-item>
-			    <paper-item>Graphics</paper-item>
-          <paper-item>Web &amp; Apps</paper-item>
-			    <paper-item>Branding</paper-item>
-          <paper-item>Plug-ins</paper-item>
-          <paper-item>Fonts</paper-item>
-          <paper-item>3D assets</paper-item>
-			  </paper-listbox>
+            <paper-listbox slot="dropdown-content"
+                           attr-for-selected="item-slug"
+                           selected="{{product.category}}"
+                           fallback-selection="None">
+              <template is="dom-repeat" items="[[categories]]" as="item">
+                <paper-item item-slug="[[item.slug]]">[[item.name]]</paper-item>
+              </template>
+            </paper-listbox>
 			</paper-dropdown-menu><br>
-      <paper-checkbox>Allow users to download for free</paper-checkbox>
+      
+        <!-- Dowload it for free? -->
+      <paper-checkbox id="freebee" selected="{{product.is_free}}">Allow users to download for free</paper-checkbox>
+      
+        <!-- Pricing -->
 			<div class="layout horizontal justified">
-				<paper-input label="Enter your price (USD):" name="name" id="name"></paper-input>
-				<paper-input label="Enter discount (optional):" name="name" id="name"></paper-input>
+				<paper-input label="Enter your price (USD):" type="number" on-value-changed="_priceChanged" name="name"
+                     id="price"></paper-input>
+				<paper-input label="Enter discount (optional):" name="name" id="discount"></paper-input>
 			</div>
+        
+        <!-- Earning -->
       <div class="layout horizontal justified">
-        <paper-input label="You will earn (USD):" name="name" id="name"></paper-input>
+        <paper-input label="You will earn (USD):" disabled name="earn" type="number" id="earn"></paper-input>
         <p><a href="#">What are the chargeable fees?</a></p>
       </div>
+      
       <div class="layout horizontal justified">
-        <paper-input class="flex-3" label="disabled input" disabled value="Your PayPal account (verified)"></paper-input>
-        <p><a href="#">Edit account</a></p>
+        <!--<paper-input class="flex-3" label="disabled input" disabled value="Your PayPal account (verified)"></paper-input>-->
+        <!--<p><a href="#">Edit account</a></p>-->
       </div>
 
       <!-- Editor insert -->
 
       <div class="flex layout horizontal end-justified">     
-        <paper-button toggles raised class="red">Publish</paper-button>
+        <!--<paper-button toggles raised class="red">Publish</paper-button>-->
         <paper-button toggles raised class="grey">Preview</paper-button>   
-        <paper-button toggles raised class="blue">Save</paper-button><br>        
+        <paper-button toggles raised class="blue" on-click="_publish">Publish</paper-button><br>
       </div>
       <div class="flex layout horizontal end-justified">
         <p>By clicking Publish, you agree to our Creativeprenuer <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
@@ -159,7 +190,9 @@
         return {
             product: {
                 type: Object,
-                value: () => {}
+                value: {
+                    media_list: []
+                },
             },
             env:{
                 type: Object,
@@ -169,6 +202,9 @@
             busy:{
                 type: Boolean,
                 statePath: 'user.products_fetching'
+            },
+            categories:{
+                type: Array
             }
         }
       }
@@ -186,30 +222,43 @@
       
       constructor() {
         super();
+        this.mode = 'create';
       }
 
-        init() {
-          if(this.loaded) return;
-          this.$.upload.target = this.env.app_domain + '/api/media';
-          this.$.upload.headers = {
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + this.env.token
-          };
+      init() {
+        if(this.loaded) return; this.loaded = true;
+        
+        this.$.upload.target = this.env.app_domain + '/api/media';
+        this.$.upload.headers = {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + this.env.token
+        };
+        
+        
+        document.addEventListener('product-edit', (e) => this.open(e));
+          document.addEventListener('product-published', (e) => this._onProductPublished(e));
+      }
+        
+      _onUploaded(e){
+        this.push('product.media_list', parseInt(e.detail.xhr.response));
+      }
 
-          window.addEventListener('on-product-edit', (e) => this.close());
-
-          this.$.upload.addEventListener('upload-before', (e) => this._onBeforeUpload(e));
-          this.$.upload.addEventListener('upload-success', (e) => this._onUploaded(e));
-          this.loaded = true;
+      _onProductPublished(e){
+        this.product = {
+            media_list: []
         }
         
-        _onUploaded(e){
-          this.push('product.images', parseInt(e.detail.xhr.response));
-        }
-
-        _onBeforeUpload(){
-            if(this.opened) return;
-            this.opened = true;
+        this.$.upload.files = [];
+      }
+      
+      _publish(){
+            document.dispatchEvent(new CustomEvent('product-publish', {detail: this.product}));
+      }
+      open({detail:product}){
+            if(product.id){
+                this.mode = 'edit'
+            }
+            
       }
       
     }

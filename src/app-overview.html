@@ -214,12 +214,6 @@ based on your level.
                           </a>
                         </li>
                         <li>
-                          <a href="/messages">
-                            <iron-icon src="/images/icons/envelope.svg"></iron-icon>
-                            <app-badge hidden></app-badge>
-                          </a>
-                        </li>
-                        <li>
                           <a href="/cart">
                             <iron-icon src="/images/icons/cart.svg"></iron-icon>
                             <app-badge hidden></app-badge>
@@ -229,7 +223,7 @@ based on your level.
                       <!-- User Info & Avatar -->
                       <shibui-dropdown-menu id="dropMenu">
                         <a slot="trigger" class="avatar-wrapper layout horizontal">
-                          <app-avatar src="/images/defualt-profiles.png" width="40px" height="40px"></app-avatar>
+                          <app-avatar src="[[user.avatar]]" width="40px" height="40px"></app-avatar>
                           <div class="user-info">
                             <span class="username">[[user.nickname]]</span>
                             <span class="user-balance">[[user.balance]]</span>

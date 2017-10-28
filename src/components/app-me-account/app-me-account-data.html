@@ -62,6 +62,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           type: C.SET_APP_BUSY,
                           payload: busy
                       };
+                  },
+                  setUser(user) {
+                      return {
+                          type: C.SET_USER,
+                          payload: user
+                      };
                   }
               }
           }
@@ -90,9 +96,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               Polymer.RenderStatus.afterNextRender(this, function() {
                 //Register events here
-                
+                document.addEventListener('avatar-uploaded', (e) => this._onAvatarUpload(e));
               });
               this.firstLoad = true;
+          }
+          
+          updateUser(data){
+              if(!data) return;
+              
+              this.tunnel.url = `${this.env.app_domain}/api/user/any`;
+              this.tunnel.method = "PATCH";
+              this.tunnel.body = data;
+              this.dispatch('setBusy', true);
+              let request = this.tunnel.generateRequest();
+
+              request.completes.then((req) => {
+                  this.dispatch('setBusy', false);
+                  this.dispatch('setUser', req.parseResponse());
+                  //console.log(req)
+
+              }, (rejected) => {
+                  // TODO dispatch new error occurred
+                  let req = rejected.request;
+                  let error = rejected.error;
+                  this.dispatch('setBusy', false);
+
+              });
+          }
+          
+          _onAvatarUpload({detail:{avatar}}){
+              if(!avatar) return;
+              this.updateUser({
+                avatar_image: avatar
+              });
           }
           
           makeSeller(){
