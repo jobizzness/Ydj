@@ -1,0 +1,125 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-sell">
+  <template>
+    <style include="">
+      :host {
+        display: block;
+      }
+      .gradient-1 {
+        background: rgba(115,102,255,1);
+        background: linear-gradient(to right, rgba(115,102,255,1) 0%, rgba(255,108,171,1) 100%);
+      }
+
+      .gradient-2 {
+        background: rgba(110,226,245,1);
+        background: linear-gradient(to right, rgba(110,226,245,1) 0%, rgba(100,84,240,1) 100%);
+      }
+
+      .gradient-3 {
+        background: rgba(238,77,95,1);
+        background: linear-gradient(to right, rgba(238,77,95,1) 0%, rgba(255,207,165,1) 100%);
+      }
+
+      .page-content {
+        max-height: 100%;
+        padding: 0 50px;
+      }
+
+      .page-heading {
+        display: block;
+        width: 60px;
+        height: 5px;
+        margin-bottom: 26px;
+        background-color: #212121;
+        border: none;
+        float: none;
+      }
+    </style>
+  
+
+    <!-- Section 1 -->
+    <div class="layout vertical center-center" id="category-banner">
+      <div class="hero-info layout vertical gradient-2">
+        <h2 class="title">Why Sell With Us?</h2>
+        <p>All the perks you could benefit from selling with us.</p>
+      </div>
+    </div>
+  
+    <div class="page-content">
+      <hr class="page-heading">
+      <h4>Global Online Presence</h4>
+      <img src="images/icons/icon-user-avatar.jpg" alt="Designer user avatar icon">
+      <p>As you showcase your work in our marketplace, your products will be seen in our ever increasing and highly engaged global audience.</p>
+    
+      <h4>Sell At Your Own Price</h4>
+      <img src="images/icons/icon-own-price.jpg" alt="Dollar sign icon">
+      <p>You gain absolute freedom to set and change your own product prices at anytime.</p>
+    
+      <h4>Higher Pay-out For Each Sales</h4>
+      <img src="images/icons/icon-higher-payout.jpg" alt="Money bag icon">
+      <p>You value your work. We value your time and creativity. At YDJM, you will get to earn 75% percent commission on every sale.</p>
+    
+      <h4>Free Marketing</h4>
+      <img src="images/icons/icon-marketing.jpg" alt="Data graph icon">
+      <p>We use the best online marketing strategy to promote your work. From SEO, UX auditing, social media and email marketing, we strive to continuously promote you and your products.</p>
+    
+      <h4>Zero Listing Fee</h4>
+      <img src="images/icons/icon-free.jpg" alt="Free! icon">
+      <p>Whether you creating or updating your items, there are no charges for listing your items for sale on the platform.</p>
+    </div>
+    </section>
+  </template>
+  
+  <script>
+      class AppSell extends Polymer.Element {
+
+          static get is() {
+              return 'app-sell';
+          }
+
+          static get properties() {
+              return {}
+          }
+
+          static get observers() {
+              return []
+          }
+
+          static get listeners() {
+              return []
+          }
+
+          constructor() {
+              super();
+          }
+
+          ready() {
+              super.ready();
+
+              Polymer.RenderStatus.afterNextRender(this, function () {
+
+              });
+          }
+
+      }
+
+      window.customElements.define(AppSell.is, AppSell);
+  </script>
+</dom-module>

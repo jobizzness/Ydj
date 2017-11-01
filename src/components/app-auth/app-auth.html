@@ -246,6 +246,8 @@
             */
            handleAuthError(event) {
                this.error = event.detail.request.xhr.response;
+               document.dispatchEvent(new CustomEvent('app-toast',
+                   {detail:{msg:'Oops! An error occured, Please try again.'}}));
                this.dispatch('setBusy', false);
            }
 
@@ -255,11 +257,11 @@
                this.dispatch('setBusy', false);
            }
 
-           registerWithUsernameAndPassword(email, password, name){
+           registerWithUsernameAndPassword(email, password, username){
                let tunnel = document.createElement('iron-ajax');
                tunnel.url = `${this.app.app_domain}/api/auth/register`;
                tunnel.method = "POST";
-               tunnel.body = JSON.stringify({email: email, password: password, name: name});
+               tunnel.body = JSON.stringify({email: email, password: password, nickname: username});
                tunnel.contentType = 'application/json';
                tunnel.addEventListener('response', ( e ) => this._onRegistrationComplete(tunnel.lastResponse, {email: email, password: password}));
                tunnel.addEventListener('error', ( e ) => this._onRegistrationFailed(tunnel.lastError));
@@ -271,7 +273,8 @@
            }
 
            _onRegistrationFailed(){
-
+               document.dispatchEvent(new CustomEvent('app-toast',
+                   {detail:{msg:'Oops! An error occured, Please try again.'}}));
            }
 
            /**

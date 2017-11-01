@@ -1,0 +1,112 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-about">
+  <template>
+    <style include="">
+      :host {
+        display: block;
+      }
+      .gradient-1 {
+        background: rgba(115,102,255,1);
+        background: linear-gradient(to right, rgba(115,102,255,1) 0%, rgba(255,108,171,1) 100%);
+      }
+
+      .gradient-2 {
+        background: rgba(110,226,245,1);
+        background: linear-gradient(to right, rgba(110,226,245,1) 0%, rgba(100,84,240,1) 100%);
+      }
+
+      .gradient-3 {
+        background: rgba(238,77,95,1);
+        background: linear-gradient(to right, rgba(238,77,95,1) 0%, rgba(255,207,165,1) 100%);
+      }
+
+      .page-content {
+        max-height: 100%;
+        padding: 0 50px;
+      }
+
+      .page-heading {
+        display: block;
+        width: 60px;
+        height: 5px;
+        margin-bottom: 26px;
+        background-color: #212121;
+        border: none;
+        float: none;
+      }
+    </style>
+  
+    <section class="main">
+      <!-- Section 1 -->
+      <app-hero class="layout vertical center-center" id="category-banner">
+        <div class="hero-info layout vertical gradient-1">
+          <h2 class="title">About YDJ Marketplace</h2>
+          <p>This is a marketplace where you will find uniquely created design assets.</p>
+        </div>
+      </app-hero>
+    
+      <div class="page-content">
+        <hr class="page-heading">
+        <h4>What We Are Made Of?</h4>
+        <p>YDJ Marketplace is an online marketplace that sells digital design assets. These digital goods are created by a design community brought together by our core company YDJ (YourDesignJuice.com).</p>
+      
+        <p>Our community members create and exchange digital design assets through the platform mainly for use in design and marketing projects. Assets include vector graphics, packaging design mockups, document templates, website templates, 3D assets, fonts and other miscellaneous design goods.</p>
+      
+        <p>We understand too well that design plays an important role in every business. Our passionate and dedicate team are always striving to provide you with design assets that are of the highest quality, up-to-date and easily customizable.</p>
+      </div>
+    </section>
+  </template>
+  
+  <script>
+      class AppAbout extends Polymer.Element {
+
+          static get is() {
+              return 'app-about';
+          }
+
+          static get properties() {
+              return {}
+          }
+
+          static get observers() {
+              return []
+          }
+
+          static get listeners() {
+              return []
+          }
+
+          constructor() {
+              super();
+          }
+
+          ready() {
+              super.ready();
+
+              Polymer.RenderStatus.afterNextRender(this, function () {
+
+              });
+          }
+
+      }
+
+      window.customElements.define(AppAbout.is, AppAbout);
+  </script>
+</dom-module>

@@ -75,11 +75,7 @@
             on-product-categories-changed="_setCategories">
     </app-me-store-service>
   
-    <!--
-      User account service.
-      tell me if you need anything. i have open APIs
-    -->
-    <app-me-account-data id="dbRef"></app-me-account-data>
+
     
     <div class="content">
 	    <section class="container">
@@ -92,8 +88,8 @@
             <app-me-favorites name="me-favorites"></app-me-favorites>
             <app-me-messages name="me-messages"></app-me-messages>
             <app-me-credits name="me-credits"></app-me-credits>
-            <app-me-store name="me-store"></app-me-store>
-            <app-me-upload name="me-upload" categories="[[categories]]"></app-me-upload>
+            <app-me-store name="me-store" selected="{{selectedProduct}}" on-product-create="_create"></app-me-store>
+            <app-me-upload name="me-upload" categories="[[categories]]" id="productEditor"></app-me-upload>
             <app-me-withdrawals name="me-withdrawals"></app-me-withdrawals>
           </iron-selector>
           
@@ -104,7 +100,7 @@
               <a href="/me/dashboard" name="dashboard" class="acc-nav--item">Dashboard</a>
               <a href="/me/account" name="me-account" class="acc-nav--item">My Account</a>
               <a href="/me/store" name="me-store" class="acc-nav--item">My Store</a>
-              <a href="/me/upload" name="me-upload" class="acc-nav--item">Upload Item</a>
+              <a href="/me/upload" name="me-upload" class="acc-nav--item" on-click="_create">Upload Item</a>
               <a href="/me/goodies" name="me-goodies" class="acc-nav--item">My Purchases</a>
               <a href="/me/earnings" name="me-earnings" class="acc-nav--item">My Earnings</a>
               <a href="/me/withdrawals" name="me-withdrawals" class="acc-nav--item">My Withdrawals</a>
@@ -147,7 +143,8 @@
 
       static get observers(){
       	return [
-      		'routeChanged(routeData.slug)'
+      		'routeChanged(routeData.slug)',
+            'productSelected(selectedProduct)'
       	]
       }
 
@@ -171,6 +168,10 @@
       			this.page = 'dashboard';
       	}
       }
+
+      _create(){
+          this.$.productEditor.open({detail:{}});
+      }
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         var resolvedPageUrl = this.resolveUrl('../components/app-' + page + '/app-' + page + '.html');
@@ -179,6 +180,12 @@
 
       _setCategories({detail:categories}){
         this.categories = categories;
+      }
+
+      productSelected(selectedProduct){
+       if(selectedProduct) {
+           this.$.productEditor.open({detail:selectedProduct});
+       }
       }
       
       ready() {

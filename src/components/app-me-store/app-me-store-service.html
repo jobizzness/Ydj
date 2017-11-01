@@ -88,7 +88,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               
               Polymer.RenderStatus.afterNextRender(this, function () {
                   document.addEventListener('product-publish', (e) => this._onProductPublish(e));
-                  //document.addEventListener('product-update', (e) => this._uploadProduct(e));
+                  document.addEventListener('product-update', (e) => this._uploadProduct(e));
                   document.addEventListener('fetch-user-products', (e) => this._loadMoreProducts(e));
               });
               
@@ -120,6 +120,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if(!product) return;
               let mode = product.id ? 'PATCH' : 'POST';
               this.tunnel.url = `${this.env.app_domain}/api/product`;
+              
+              if(product.id){
+                  this.tunnel.url += '/' + product.slug;
+              }
               this.tunnel.method = mode;
               this.tunnel.body = product;
 
@@ -132,6 +136,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   if(mode === 'POST'){
                       document.dispatchEvent(new CustomEvent('product-published', {detail:data}));
                       this.dispatch('addProduct', data);
+                      document.dispatchEvent(new CustomEvent('app-toast',
+                          {detail:{msg:'Product was published successfully!'}}));
                       return;
                   }
                   //this.dispatch('updateProduct', data);
@@ -139,14 +145,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   //TODO dispatch to the store a product was updated
 
               }, (rejected) => {
-                  // TODO dispatch new error occurred
+                  document.dispatchEvent(new CustomEvent('app-toast',
+                      {detail:{msg:'Oops! An error occured, Please try again.'}}));
+                  
                   let req = rejected.request;
                   let error = rejected.error;
 
               });
               
           }
-
+        
+          
           _loadMoreProducts(){
 
               if(!this.hasMore || this.busy) return;

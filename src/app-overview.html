@@ -22,6 +22,7 @@ based on your level.
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-search/paper-search-panel.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/lazy-imports/lazy-imports-mixin.html">
 <link rel="import" href="app-store.html">
 
@@ -39,7 +40,11 @@ based on your level.
   <link rel="lazy-import" href="pages/app-goodies.html" group="goodies">
   <link rel="lazy-import" href="pages/app-login.html" group="login">
   <link rel="lazy-import" href="pages/app-register.html" group="register">
-  <link rel="lazy-import" href="pages/app-user.html" group="">
+  <link rel="lazy-import" href="pages/app-user.html" group="profile">
+  <link rel="lazy-import" href="pages/app-sell.html" group="sell">
+  <link rel="lazy-import" href="pages/terms-seller.html" group="terms-seller">
+  <link rel="lazy-import" href="pages/terms-buyer.html" group="terms-buyer">
+  <link rel="lazy-import" href="pages/app-about.html" group="about">
   <link rel="lazy-import" href="pages/app-category.html" group="category">
   <link rel="lazy-import" href="pages/app-me.html" group="me">
   <link rel="lazy-import" href="lazy-resources.html" group="lazy-resources">
@@ -159,6 +164,10 @@ based on your level.
         margin: 8px;
         color: #333333;
         border: solid 1px #509fff;
+      }
+      .yellow-button {
+        text-transform: none;
+        color: #eeff41;
       }
     </style>
 
@@ -285,23 +294,31 @@ based on your level.
             role="main">
           <app-login name="login"></app-login>
           <app-home name="home"></app-home>
-          <app-goodies name="goodies"></app-goodies>
+          <app-goodies name="goodies" product="[[product]]" route="[[subroute]]"></app-goodies>
           <app-register name="register"></app-register>
-          <app-category name="category"></app-category>
-          <app-user name="user" route="[[subroute]]"></app-user>
+          <app-category name="category" route="[[subroute]]"></app-category>
+          <app-user name="profile" route="[[subroute]]"></app-user>
           <app-me name="me" route="[[subroute]]"></app-me>
           <app-messages name="messages"></app-messages>
           <app-notifications name="notifications"></app-notifications>
           <app-cart name="cart"></app-cart>
+          <app-about name="about"></app-about>
+          <app-sell name="sell"></app-sell>
+          <terms-seller name="terms-seller"></terms-seller>
+          <terms-buyer name="terms-buyer"></terms-buyer>
           <app-404 name="view404"></app-404>
         </iron-pages>
-
+        
         <!-- Footer -->
           <footer>
             <app-footer></app-footer>
           </footer>
       </app-header-layout>
     </app-drawer-layout>
+  
+    <paper-toast id="toast" duration="0">
+      <paper-button on-click="toggleToast" class="yellow-button">Okay!</paper-button>
+    </paper-toast>
   </template>
 
   <script>
@@ -355,7 +372,12 @@ based on your level.
         ];
       }
 
-
+      static get listeners(){
+          return {
+              'product-updated'       : '_onProductUpdate',
+          }
+      }
+      
       constructor() {
         super();
           this.firstLoad = true;
@@ -367,6 +389,9 @@ based on your level.
       ready() {
           super.ready();
 
+          document.addEventListener('product-selected', (e) =>this._onProductSelect(e));
+          document.addEventListener('app-toast', (e) =>this.announce(e));
+          
           Polymer.RenderStatus.afterNextRender(this, function() {
               // If we have a user the lazy import the
               // user components
@@ -398,13 +423,38 @@ based on your level.
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
+
+          this._listScrollTop = document.scrollTop;
+
+          // Check if we need to scroll back
+          // back to a previous position
+          this._computeScroller();
       }
 
+        /**
+         * @desc Shows the login page
+         * @param string $page - the page the user wants to access
+         * @return string - success - $page or failure - $redirect
+         */
+        _computeScroller() {
+            // Scroll to the top of the page when navigating to a non-list page. For list view,
+            // scroll to the last saved position only if the category has not changed.
+            let scrollTop = 0;
+            //if (this.page === 'feed') {
+                //scrollTop = this._listScrollTop;
+            //} else {
+                // Reset the list view scrollTop if the category changed.
+                //this._listScrollTop = 0;
+            //}
+            Polymer.AppLayout.scroll({ top: scrollTop, behavior: 'silent' });
+        }
+        
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         page = this._middleware(page);
           // Load page import on demand then register
           // then service worker if this is the first app load
+          
           this.importLazyGroup(page).then(() => {
               if(this.firstLoad)
                   this.registerWorker();
@@ -412,6 +462,14 @@ based on your level.
           this.firstLoad = false;
       }
 
+        announce({detail:data}){
+          this.$.toast.text = data.msg;
+          this.$.toast.open();
+        }
+        
+      toggleToast(){
+            this.$.toast.toggle();
+      }
       _middleware(page){
         switch(page){
           case 'login':
@@ -431,6 +489,7 @@ based on your level.
             return page;
             break;
         case 'home':
+        case 'profile':
         case 'goodies':
         case 'category':
             return page;
@@ -503,6 +562,16 @@ based on your level.
         this.takeMeHome();
       }
 
+      /**
+       * Fired when `element` changes its awesomeness level.
+       *
+       * @event awesome-change
+       * @param {number} newAwesome New level of awesomeness.
+       */
+      _onProductSelect(e){
+          this.product = e.detail.product;
+      }
+      
       signOut(){
         window.dispatchEvent(new CustomEvent('signout', {detail: {kicked: true, bubble:false}}));
       }

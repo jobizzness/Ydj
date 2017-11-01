@@ -98,6 +98,9 @@
           width: 100%;
           padding: 16px;
         }
+        .features{
+          display:block;
+        }
         iron-list{
           padding-top: 8px;
         }
@@ -170,7 +173,7 @@
                       scroll-target="document" 
                       grid id="products-grid">
   		        <template>
-  		          <app-product-item data="[[product]]" on-tap="_viewPost" index="[[index]]"></app-product-item>
+  		          <app-product-item data="[[product]]" on-click="_selectedChanged" index="[[index]]"></app-product-item>
   		        </template>
 	      	</iron-list>
     	</app-products>
@@ -214,6 +217,16 @@
         super();
       }
 
+      _selectedChanged(e){
+          if(!e.target.data) return;
+          document.dispatchEvent(new CustomEvent('product-selected', {
+              bubbles: false, composed: true,
+              detail:{
+                  product: e.target.data,
+              }
+          }))
+      }
+      
       ready() {
         super.ready();
 

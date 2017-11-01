@@ -37,7 +37,8 @@
     "paper-search": "Collaborne/paper-search#^2.0.9",
     "iron-location": "^2.0.1",
     "polymer-redux": "^1.0.4",
-    "lazy-imports": "^2.0.0"
+    "lazy-imports": "^2.0.0",
+    "paper-toast": "^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.1",

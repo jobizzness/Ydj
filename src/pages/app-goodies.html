@@ -4,8 +4,9 @@
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../components/app-button/app-button.html">
-<!-- <link rel="import" href="../components/product-media/product-media.html"> -->
+<link rel="import" href="../components/product-media/product-media.html">
 <link rel="import" href="../components/app-avatar/app-avatar.html">
+<link rel="import" href="../app-store.html">
 
 <!--
 `<Name>` is Description
@@ -107,6 +108,17 @@
         color: var(--app-accent-color);
         margin: 2em auto;
       }
+      
+      iron-image{
+        width:100%;
+        height:500px;
+        background-color: lightgray;
+      }
+
+      product-media{
+        overflow: hidden;
+        height: 500px;
+      }
       /*Mobile*/
       @media (max-width: 425px) {
         .container>*{
@@ -120,12 +132,24 @@
         }
       }
     </style>
-
+    
+    <!-- app-route provides the name of the category. -->
+    <app-route
+            route="[[route]]"
+            pattern="/:slug"
+            data="{{routeData}}"></app-route>
+    
     <article class="content">
           <div class="container">
             <main class="flex-2">
               <!-- Product Viewer -->
-              <product-media media="[[product.media]]"></product-media>
+              <product-media data="[[product.media]]">
+                <template is="dom-repeat" items="[[product.media]]" as="item">
+                  <iron-image sizing="cover"
+                              preload fade
+                              src$="[[item.src]]" class="slide"></iron-image>
+                </template>
+              </product-media>
 
               <section class="post-content">
                 <div class="post-paragraph">
@@ -137,40 +161,15 @@
                   <h3 class="post-title small">Westeros HTML Instructions</h3>
                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in henderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                 </div>
-
-                <!-- Disqus comments -->
-                <h4 style="margin-top:80px;">Comments</h4>
-                <div id="disqus_thread"></div>
-                  <script>
-
-                  /**
-                  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-                  /*
-                  var disqus_config = function () {
-                  this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-                  this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-                  };
-                  */
-                  (function() { // DON'T EDIT BELOW THIS LINE
-                  var d = document, s = d.createElement('script');
-                  s.src = 'https://yourdesignjuice.disqus.com/embed.js';
-                  s.setAttribute('data-timestamp', +new Date());
-                  (d.head || d.body).appendChild(s);
-                  })();
-                  </script>
-                  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-                                             
-                <!-- // Disqus comments -->
-
               </section>
             </main>
+            
             <aside class="flex">
               <section class="card licience">
                 <div class="layout horizontal center-center">
                   <h3 class="small-heading">STANDARD LICENSE</h3>
                   <span class="flex"></span>
-                  <span class="price-tag">$17</span>
+                  <span class="price-tag">[[product.price]]</span>
                 </div>
                 <p>Used by you to create end-product but NOT transferable to third parties.</p>
                 <div class="paypal-logo"><img src="images/pp.jpg"></div>
@@ -199,18 +198,18 @@
                   <div class="information-layout-item">
                     <p class="text-header">Date Posted:</p>
                     <span class="flex"></span>
-                    <p>March 21,2017</p>
+                    <p>[[product.published_at]]</p>
                   </div>
               </section>
               <!-- Author details -->
               <section class="card author-info">
                 <h3 class="small-heading">CREATED BY:</h3>
                 <div class="layout horizontal" style="align-items: center;">
-                    <a href="/user/jones"><app-avatar src="/images/defualt-profiles.png"
+                    <a href="/user/jones"><app-avatar src$="[[product.owner.avatar]]"
                                 width="50px"
                                 height="50px"></app-avatar></a>
                     <div class="layout vertical">
-                      <a href="/user/jones" class="author"><span>Jones&Co</span></a>
+                      <a href="/" class="author"><span>[[product.owner.nickname]]</span></a>
                       <span class="author-title">Creative Studio</span>
                     </div>
                     
@@ -226,13 +225,23 @@
   </template>
 
   <script>
-    class AppGoodies extends Polymer.Element {
+    class AppGoodies extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-goodies'; }
 
       static get properties() {
         return {
-          
+            product:{
+                type: Object,
+                notify: true,
+                observer: '_productChanged',
+                value: () => null
+            },
+            env: {
+                type: Object,
+                statePath: 'env',
+                observer: 'init'
+            }
         };
       }
 
@@ -240,13 +249,49 @@
         super();
       }
 
-      ready() {
-        super.ready();
-
-        Polymer.RenderStatus.afterNextRender(this, function() {
-          
-        });
+      _productChanged(e){
+    
       }
+      
+      /**
+       * Responsible for fetching the data from our
+       * server.
+       * @private
+       * @param {slug}
+       */
+      _getData(slug){
+
+          let tunnel = document.createElement('iron-ajax');
+          tunnel.url = `${env.app_domain}/api/product/${slug}`;
+          tunnel.headers = {
+              Authorization : `Bearer ${this.env.token}`,
+              Accept: 'application/json'
+          };
+          tunnel.method = "GET";
+          tunnel.contentType = 'application/json';
+          let request = tunnel.generateRequest();
+          
+          request.completes.then((req) => {
+              //We got our request
+              this.product = req.parseResponse();
+
+          }, (rejected) => {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+              this.busy = false;
+
+          });
+          
+      }
+
+        init() {
+            Polymer.RenderStatus.afterNextRender(this, function () {
+                if (!this.product) {
+                    this._getData(this.routeData.slug);
+                }
+            })
+        }
 
     }
 

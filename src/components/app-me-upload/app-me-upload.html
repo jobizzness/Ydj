@@ -101,7 +101,7 @@
       <!-- <section class="card"> -->
         <h1>Upload an item</h1><br>
       <!-- </section> -->
-    		<vaadin-upload id="assets" accept="image/*" max-files="1" on-upload-before="_handleAssetsUpload" required>
+    		<vaadin-upload id="assets" accept=".zip" max-files="1" on-upload-before="_handleAssetsUpload" required>
           <span slot="drop-label">Assets ZIP file</span>
 <!--             <div class="file-list">
               <div class="receipt-wrapper">
@@ -147,7 +147,7 @@
 			</paper-dropdown-menu><br>
       
         <!-- Dowload it for free? -->
-      <paper-checkbox id="freebee" selected="{{product.is_free}}">Allow users to download for free</paper-checkbox>
+      <paper-checkbox id="freebee" checked="{{product.is_free}}">Allow users to download for free</paper-checkbox>
       
         <!-- Pricing -->
 			<div class="layout horizontal justified">
@@ -172,7 +172,7 @@
       <div class="flex layout horizontal end-justified">     
         <!--<paper-button toggles raised class="red">Publish</paper-button>-->
         <paper-button toggles raised class="grey">Preview</paper-button>   
-        <paper-button toggles raised class="blue" on-click="_publish">Publish</paper-button><br>
+        <paper-button toggles raised class="blue" on-click="_publish">[[mode]]</paper-button><br>
       </div>
       <div class="flex layout horizontal end-justified">
         <p>By clicking Publish, you agree to our Creativeprenuer <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
@@ -222,7 +222,7 @@
       
       constructor() {
         super();
-        this.mode = 'create';
+        this.mode = 'publish';
       }
 
       init() {
@@ -235,8 +235,8 @@
         };
         
         
-        document.addEventListener('product-edit', (e) => this.open(e));
-          document.addEventListener('product-published', (e) => this._onProductPublished(e));
+        //document.addEventListener('product-edit', (e) => this.open(e));
+        document.addEventListener('product-published', (e) => this._onProductPublished(e));
       }
         
       _onUploaded(e){
@@ -249,15 +249,24 @@
         }
         
         this.$.upload.files = [];
+        this.mode = 'publish';
+        history.pushState(null, null, '/me/store');
       }
       
       _publish(){
-            document.dispatchEvent(new CustomEvent('product-publish', {detail: this.product}));
+          document.dispatchEvent(new CustomEvent('product-publish', {detail: this.product}));
       }
+      
       open({detail:product}){
             if(product.id){
-                this.mode = 'edit'
+                this.product = product;
+                this.mode = 'update';
+                return;
             }
+            this.product = {
+                media_list: []
+            }
+            this.mode = 'publish'
             
       }
       

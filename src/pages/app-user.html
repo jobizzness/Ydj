@@ -205,12 +205,13 @@
 
             static get is() { return 'app-user'; }
 
-            static get properties() {return {
-                    products: {
-                        type: Array,
-                        value: [{},{},{},{},{},{}]
-                      }
-                }}
+            static get properties() {
+                return {
+                  user:{
+                      type: Object
+                  }
+                }
+            }
 
             constructor() {
                 super();

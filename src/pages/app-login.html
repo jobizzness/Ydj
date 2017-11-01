@@ -112,10 +112,22 @@
   			<form is="iron-form" method="post" id="form" class="space-top-bottom">
   				<div class="inputs">
   					<!-- Inputs -->
-              <paper-input label="EMAIL" name="username" id="username">
+              <paper-input label="EMAIL"
+                           name="username"
+                           id="username"
+                           on-keydown="checkForEnter"
+                           required auto-validate
+                           error-message="Email is required">
                 <iron-icon icon="mail" prefix></iron-icon>
               </paper-input>
-              <paper-input label="PASSWORD" type="password" name="password" id="password">
+              <paper-input label="PASSWORD"
+                           type="password"
+                           name="password"
+                           id="password"
+                           on-keydown="checkForEnter"
+                           required auto-validate
+                           error-message="Password is required"
+                           on-keydown="checkForEnter">
                 <iron-icon icon="communication:vpn-key" prefix></iron-icon>
               </paper-input>
               <!-- Controls -->
@@ -130,13 +142,13 @@
               	<span class="flex"></span>
                 <ul class="layout horizontal social-icons">
                   <li>
-                    <a href="#"><img src="/images/icons/facebook.svg"></a>
+                    <a href="https://app.jobizzness.com/login/facebook"><img src="/images/icons/facebook.svg"></a>
                   </li>
                   <li>
-                    <a href="#"><img src="/images/icons/twitter.svg"></a>
+                    <a href="https://app.jobizzness.com/login/twitter"><img src="/images/icons/twitter.svg"></a>
                   </li>
                   <li>
-                    <a href="#"><img src="/images/icons/google-plus.svg"></a>
+                    <a href="https://app.jobizzness.com/login/google"><img src="/images/icons/google-plus.svg"></a>
                   </li>
                 </ul>
               </div>
@@ -165,6 +177,12 @@
         super();
       }
 
+      checkForEnter(e){
+          if (e.keyCode === 13) {
+              this.signIn();
+          }
+      }
+        
       ready() {
         super.ready();
 

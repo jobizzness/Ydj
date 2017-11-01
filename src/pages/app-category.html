@@ -12,6 +12,7 @@
 <link rel="import" href="../my-icons.html">
 <link rel="import" href="../components/app-product-item/app-product-item.html">
 <link rel="import" href="../components/app-products/app-products.html">
+<link rel="import" href="../components/app-products-service/app-products-service.html">
 
 <!--
 `<Name>` is Description
@@ -71,7 +72,15 @@
         }
       }
     </style>
-
+	
+		<app-products-service id="dbRef" category="[[routeData.slug]]" products="{{products}}"></app-products-service>
+  
+    <!-- app-route provides the name of the category. -->
+    <app-route
+            route="[[route]]"
+            pattern="/:slug"
+            data="{{routeData}}"></app-route>
+    
     <!-- Media Query -->
     <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
 
@@ -79,7 +88,7 @@
     	<!-- App Hero -->
     	<app-hero class="layout vertical center-center" id="category-banner">
 			<div class="hero-info layout vertical">
-	          <h1 class="title">Print Templates</h1>
+	          <h1 class="title">[[category]]</h1>
 	          <p>Business cards, book covers, brochures, bbuntings, calendars, flyers, invitations, greeting cards, posters... and many more!</p>
 	        </div>
 	        <!-- Background Image -->
@@ -90,11 +99,6 @@
     	</app-hero>
       <!-- Product Listing -->
     	<app-products class="layout vertical">
-    		<app-toolbar class="products-toolbar">
-    			<span class="flex"></span>
-    			<!-- Search Bar -->
-
-    		</app-toolbar>
       		<!-- List here -->
       		<iron-list items="[[products]]" 
                       as="product"
@@ -102,7 +106,7 @@
                       scroll-target="document" 
                       grid id="products-grid">
   		        <template>
-  		          <app-product-item data="[[product]]" on-tap="_viewPost" index="[[index]]"></app-product-item>
+  		          <app-product-item data="[[product]]" on-click="_selectedChanged"></app-product-item>
   		        </template>
 	      	</iron-list>
     	</app-products>
@@ -117,17 +121,48 @@
 
       static get properties() {
         return {
-          products: {
-            type: Object,
-            value: [{},{},{},{},{},{},{},{},{},{},{}]
-          }
+            products:{
+                type:Array
+            }
         };
       }
 
+        static get observers(){
+            return [
+                'computeCategory(routeData)'
+            ]
+        }
+        
       constructor() {
         super();
       }
 
+
+      _selectedChanged(e){
+          if(!e.target.data) return;
+          document.dispatchEvent(new CustomEvent('product-selected', {
+              bubbles: false, composed: true,
+              detail:{
+                  product: e.target.data,
+              }
+          }))
+      }
+      
+      computeCategory(data){
+           let mappings = {
+                'print-templates'   : 'Print Templates',
+                'graphics'          : 'Graphics',
+                'web-apps'          : 'Web & Apps',
+                'branding'          : 'Branding',
+                'plugins'          : 'Plug-Ins',
+                'fonts'             : 'Fonts',
+                '3d'                : '3D'
+            }
+            let slug = data.slug;
+          if(mappings[slug]){
+               this.category = mappings[slug];
+          }
+      }
       ready() {
         super.ready();
 
