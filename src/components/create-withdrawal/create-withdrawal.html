@@ -1,14 +1,9 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../../bower_components/vaadin-upload/vaadin-upload.html">
-<link rel="import" href="../../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
 
 <!-- App Components -->
 <link rel="import" href="../../shared-styles.html">
@@ -49,22 +44,42 @@
 
     <paper-dialog id="dialog" no-cancel-on-esc-key="false" opened="{{opened}}">
     	<section class="inputs">
-        <form is="iron-form" method="post" id="form" class="space-top-bottom">
-            <!-- Inputs -->
-              <paper-input label="Enter Amount" name="amount" id="amount">
+        <iron-form id="form" >
+        <form is="iron-form" method="post" class="space-top-bottom">
+            <!-- Amount -->
+              <paper-input label="Enter Amount" 
+                  name="amount" 
+                  id="amount" 
+                  error-message="Ammount is required" 
+                  required
+                  auto-validate
+                  type="number">
                 <span prefix>$</span>
               </paper-input>
-              <paper-input label="Verify Email" name="email" id="email">
+
+              <paper-input label="Verify Email" 
+                            name="email" 
+                            error-message="Invalid Email!" 
+                            required
+                            id="email">
                 <iron-icon icon="mail" prefix></iron-icon>
               </paper-input>
-              <paper-input label="password" type="password" name="password" id="password">
+
+
+              <paper-input label="password" 
+                          type="password" 
+                          required
+                          error-message="Enter your password" 
+                          name="password" 
+                          id="password">
                 <iron-icon icon="communication:vpn-key" prefix></iron-icon>
               </paper-input>
               <!-- Controls -->
               <div class="layout horizontal center">
-                <paper-button raised on-tap="_send" primary style="margin: 16px 0;">Send Request</paper-button>
+                <paper-button raised on-click="_send" primary style="margin: 16px 0;" disabled="[[busy]]">Send Request</paper-button>
               </div>
         </form>
+      </iron-form>
     	</section>
 	</paper-dialog>
 
@@ -85,8 +100,30 @@
         super();
       }
 
+      _send(){
+        if(this.$.form.validate()){
+
+          let data = {
+            email: this.$.email.value,
+            password: this.$.password.value,
+            amount: parseFloat(this.$.amount.value)
+          }
+
+          this.dispatchEvent(new CustomEvent('make-withdrawal', {detail:data}));
+
+
+        }
+      }
+
+      clear(){
+            this.$.email.value = '';
+          this.$.password.value = '';
+           this.$.amount.value = '';
+      }
+
       ready() {
         super.ready();
+
 
         Polymer.RenderStatus.afterNextRender(this, function() {
           

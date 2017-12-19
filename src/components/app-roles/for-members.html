@@ -1,0 +1,29 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="app-roles-behavior.html">
+
+<dom-module id="for-members">
+
+    <script>
+        /**
+         * `for-members` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class ForMembers extends AppRolesMixin(Polymer.Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'for-members';
+            }
+
+
+
+        }
+
+        window.customElements.define(ForMembers.is, ForMembers);
+    </script>
+</dom-module>

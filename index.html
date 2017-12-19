@@ -55,6 +55,11 @@
     <!-- Importing redux -->
     <script src="node_modules/redux/dist/redux.min.js"></script>
 
+    <script type="text/javascript">
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js', {scope: '/'});
+          }
+    </script>
     <link rel="import" href="src/my-app.html">
 
     <style>
@@ -62,7 +67,6 @@
         margin: 0;
         font-family: 'Roboto', 'Noto', sans-serif;
         line-height: 1.5;
-        overflow: hidden;
         min-height: 100vh;
         background-color: white;
       }

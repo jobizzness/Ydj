@@ -1,0 +1,33 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="app-roles-behavior.html">
+
+<dom-module id="for-sellers">
+
+    <script>
+        /**
+         * `for-sellers` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class ForSellers extends AppRolesMixin(Polymer.Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'for-sellers';
+            }
+
+
+            computeIf(user, andIf, orIf) {
+                super.computeIf(this.is_seller, andIf, orIf)
+            }
+
+
+        }
+
+        window.customElements.define(ForSellers.is, ForSellers);
+    </script>
+</dom-module> 

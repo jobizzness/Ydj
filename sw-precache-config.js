@@ -11,10 +11,55 @@
 /* eslint-env node */
 
 module.exports = {
-  staticFileGlobs: [
-    '/index.html',
-    '/manifest.json',
-    '/bower_components/webcomponentsjs/*',
-  ],
-  navigateFallback: 'index.html',
+    staticFileGlobs: [
+        'manifest.json',
+        'images/**/*.{css,png,jpg,gif,svg}',
+        'src/**/**/**/**/.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}',
+        'bower_components/webcomponentsjs/webcomponents-lite.min.js',
+        'bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js',
+        'bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js',
+        'bower_components/app-storage/app-indexeddb-mirror/common-worker.html'
+    ],
+    ignoreUrlParametersMatching: [
+        /app-indexeddb-mirror/,
+        /https:\/\/api\.afrodapp\.com\/api\/?(.*)/
+    ],
+    skipWaiting: true,
+    clientsClaim: true,
+    runtimeCaching: [
+        {
+            urlPattern: /https:\/\/afrodapp-v1\.s3\.eu-west-2\.amazonaws\.com\/media\/\/?(.*)/,
+            handler: 'cacheFirst',
+            options: {
+                cache: {
+                    maxEntries: 200,
+                    name: 'media'
+                }
+            }
+        },
+
+        {
+            urlPattern: /\/bower_components\/webcomponentsjs\/.*.js/,
+            handler: 'cacheFirst',
+            options: {
+                cache: {
+                    name: 'webcomponentsjs-polyfills-cache'
+                }
+            }
+        },
+
+        {
+            urlPattern: /\/data\/.*json/,
+            handler: 'cacheFirst',
+            options: {
+                cache: {
+                    maxEntries: 100,
+                    name: 'data-cache'
+                }
+            }
+        }
+
+    ]
+
+
 };

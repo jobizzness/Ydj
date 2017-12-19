@@ -7,12 +7,15 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+<script src="https://js.braintreegateway.com/web/dropin/1.8.1/js/dropin.min.js"></script>
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../components/shop-cart-item/shop-cart-item.html">
+<link rel="import" href="../app-store.html">
+<link rel="import" href="../components/shop-cart-modal/shop-cart-modal.html">
 
 <dom-module id="app-cart">
 
@@ -51,24 +54,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #757575;
         font-size: 12px;
       }
+      .checkout-btn{
+        color: white;
+        background: #5c9cfb;
+        border-radius: 25px;
+        font-size: 15px;
+        padding: 9px 16px;
+      }
       @media (max-width: 767px) {
         .subtotal {
           margin: 0 0 0 24px;
         }
       }
     </style>
-
+    
     <div class="main-frame">
       <div class="subsection" hidden$="[[_hasItems]]">
         <p class="empty-cart">Your <iron-icon icon="my-icons:cart"></iron-icon> is empty.</p>
       </div>
-      <header>
+      <header hidden$="[[!_hasItems]]">
         <h1>Your Cart</h1>
-        <span>([[_getPluralizedQuantity(cart.length)]])</span>
+        <span>([[_getPluralizedQuantity(cart.items.length)]])</span>
       </header>
       <div class="subsection card with--panel" hidden$="[[!_hasItems]]">
         <section class="layout horizontal">
-          <div class="flex-2">
+          <div class="flex-3">
             <panel>
               <span class="panel-title">Item Name</span>
             </panel>
@@ -78,21 +88,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span class="panel-title">Item Price</span>
             </panel>
           </div>
-          <div class="flex">
-            <panel>
-              <span class="panel-title">Qty:</span>
-            </panel>
-          </div>
-          <div class="flex">
+          <div class="flex" style="max-width: 125px">
             <panel>
               <span class="panel-title">Actions</span>
             </panel>
           </div>
         </section>
         <div class="list">
-          <dom-repeat items="[[cart]]" as="entry">
+          <dom-repeat items="[[cart.items]]" as="entry">
             <template>
-              <shop-cart-item entry="[[entry]]"></shop-cart-item>
+              <shop-cart-item entry="[[entry]]" on-delete="_delete"></shop-cart-item>
             </template>
           </dom-repeat>
         </div>
@@ -107,56 +112,144 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
           <div class="flex">
             <panel>
-              <span class="panel-title">Total: $200</span>
+              <span class="panel-title">Total: $[[cart.total]]</span>
             </panel>
           </div>
           <div class="flex">
             <panel>
-              <span class="panel-title">Checkout</span>
+                <paper-button
+                        class="checkout-btn"
+                        on-click="checkout"
+                        raised
+                >Checkout</paper-button>
             </panel>
           </div>
         </section>
+        <div id="payment"></div>
       </div>
     </div>
 
   </template>
 
+<script src="https://js.braintreegateway.com/web/3.25.0/js/client.min.js"></script>
+
   <script>
 
-    class AppCart extends Polymer.Element {
+    class AppCart extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-cart'; }
 
-      static get properties() { return {
-
-        total: Number,
-
-        cart: Array,
-
-        visible: {
-          type: Boolean,
-          observer: '_visibleChanged'
-        },
-
-        _hasItems: {
-          type: Boolean,
-          computed: '_computeHasItem(cart.length)'
-        }
-
-      }}
-
-
-      ready(){
-        super.ready();
-        this.cart = [{},{}];
+      static get properties() {
+          return {
+    
+            total: Number,
+    
+            cart: {
+                type: Array,
+                statePath: 'user.cart',
+                value: () => null
+            },
+    
+            visible: {
+              type: Boolean,
+              observer: '_visibleChanged'
+            },
+    
+            _hasItems: {
+              type: Boolean,
+              computed: '_computeHasItem(cart)'
+            },
+    
+            env: {
+                type: Object,
+                statePath: 'env',
+                observer: 'init'
+            }
+    
+          }
       }
+
+      static get actions(){
+          return {
+              updateCart(cart){
+                  return {
+                      type: C.SET_CART,
+                      payload: cart
+                  }
+              }
+          }
+      }
+      
+      init(){
+          this.tunnel = document.createElement('iron-ajax');
+          this.tunnel.headers = {
+              Authorization : `Bearer ${this.env.token}`,
+              Accept: 'application/json'
+          };
+          this.tunnel.contentType = 'application/json';
+          
+          document.addEventListener('add-to-cart', (e) => this._addToCart(e));
+          
+      }
+
+      _addToCart(e){
+          const product = e.detail;
+
+          if(!product) return;
+          
+          this.tunnel.url = `${env.app_domain}/api/cart/${product.slug}`;
+          this.tunnel.method = "POST";
+
+          let request = this.tunnel.generateRequest();
+
+          request.completes.then((req) => {
+
+              this.dispatch('updateCart', req.parseResponse());
+
+              document.dispatchEvent(new CustomEvent('added-to-cart', {
+                  detail:{},
+                  composed:false,
+                  bubbles:false
+              }));
+
+          }, (rejected) => {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+              this.busy = false;
+
+          });
+      }
+      
       _formatTotal(total) {
         return isNaN(total) ? '' : '$' + total.toFixed(2);
       }
 
-      _computeHasItem(cartLength) {
-        console.log(cartLength);
-        return cartLength > 0;
+      _delete(e){
+        let item = e.detail;
+        
+        this.tunnel.url = `${env.app_domain}/api/cart/${item.slug}`;
+        this.tunnel.method = "DELETE";
+
+        let request = this.tunnel.generateRequest();
+
+        request.completes.then((req) => {
+            
+            this.dispatch('updateCart', req.parseResponse());
+            //show that modal hehehe
+
+        }, (rejected) => {
+            // failed request, argument is an object
+            let req = rejected.request;
+            let error = rejected.error;
+            this.busy = false;
+
+        });
+        
+      }
+      
+      _computeHasItem(cart) {
+          return !cart ? false : cart.items.length > 0;
       }
 
       _getPluralizedQuantity(quantity) {
@@ -169,6 +262,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.dispatchEvent(new CustomEvent('change-section', {
             bubbles: true, composed: true, detail: { title: 'Your cart' }}));
         }
+      }
+      
+      checkout(e){
+
+          // start loading
+          document.dispatchEvent(new CustomEvent('app-load', {detail:{}}));
+          
+          this.sendCheckoutRequest();
+          
+      }
+      
+      sendCheckoutRequest(){
+          this.tunnel.url = `${env.app_domain}/api/checkout/`;
+          this.tunnel.method = "GET";
+
+          let request = this.tunnel.generateRequest();
+
+          request.completes.then((res) => {
+
+            let link = res.parseResponse().response.redirect_link;
+              window.location.href = link;
+              // time to go to paypal
+              
+
+          }, (rejected) => {
+              // failed request, argument is an object
+
+              document.dispatchEvent(new CustomEvent('app-load', {detail:{}}));
+              
+              let req = rejected.request;
+              let error = rejected.error;
+              this.busy = false;
+
+          });
       }
 
     }

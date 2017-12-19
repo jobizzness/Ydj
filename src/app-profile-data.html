@@ -1,0 +1,99 @@
+
+<dom-module id="app-profile-data">
+
+	<script>
+
+	class AppProfileData extends ReduxMixin(Polymer.Element){
+
+		static get is(){return 'app-profile-data';}
+
+		static get properties() {
+			return {
+				
+				profileUsername: {
+					type: String,
+					reflectToAttribute: true,
+					observer: '_usernameChanged'
+				},
+
+				designer: {
+					type: Object,
+					value: null,
+					notify: true
+				},
+
+		    env: {
+		        type: Object,
+		        statePath: 'env',
+		        observer: 'init'
+		    }
+			}
+		}
+
+		_usernameChanged(username, old) {
+      if (!username || username == old) return;
+      this.designer = null;
+      this.tunnel.url = `/api/user/profile/${username}`;
+      this._getProfile(username);
+    }
+		
+
+		init(){
+
+      this.tunnel = document.createElement('iron-ajax');
+      this.tunnel.method = "GET";
+      this.tunnel.contentType = 'application/json';
+      this.loaded = true;
+		}
+
+      /**
+       * Responsible for fetching the data from our
+       * server.
+       * @private
+       */
+      _getProfile(username){
+          this.tunnel.url = this.env.app_domain + `/api/profile/${username}`;
+
+          let request = this.tunnel.generateRequest();
+
+          request.completes.then((req) => {
+              //We got our request
+							this.designer = req.parseResponse();
+
+              console.log(this.designer);
+              this._getUserProducts(username);
+
+          }, (rejected) => {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+              this.busy = false;
+
+          });
+      }
+
+      _getUserProducts(username){
+				this.tunnel.url = this.env.app_domain + `/api/products/designer/${username}`;
+				let request = this.tunnel.generateRequest();
+				
+          request.completes.then((req) => {
+              //We got our request
+              this.designer.store = req.parseResponse();
+              this.notifyPath('designer.store');
+
+          }, (rejected) => {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+              this.busy = false;
+
+          });
+				
+			}
+	}
+
+	window.customElements.define(AppProfileData.is, AppProfileData);
+
+
+	</script>
+</dom-module>

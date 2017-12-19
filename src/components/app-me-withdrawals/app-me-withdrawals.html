@@ -7,6 +7,7 @@
 <!-- App Components -->
 <link rel="import" href="../../components/create-withdrawal/create-withdrawal.html">
 <link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../../app-store.html">
 
 <!--
 `<Name>` is Description
@@ -25,7 +26,7 @@
       }
     </style>
 
-    <create-withdrawal id="withdraw"></create-withdrawal>
+    <create-withdrawal id="withdraw" on-make-withdrawal="_makeWithdrawal" error="[[error]]" busy="[[busy]]"></create-withdrawal>
 
 	 <div class="cards">
 
@@ -66,13 +67,13 @@
 	        </section>
 
 	        <!-- Earnings List -->
-	        <template is="dom-repeat" items="[[items]]">
+	        <template is="dom-repeat" items="[[items]]" as="item">
 	          <section class="layout horizontal earnings">
-	            <div class="flex"><span class="light-text">April 2, 2017</span></div>
-	            <div class="flex-2"><span class="strong-text">PP1710234456</span></div>
-	            <div class="flex layout vertical start-center"><span class="light-text">billing123@paypal.com</span></div>
-	            <div class="flex layout vertical start-center"><span class="strong-text">$120.20</span></div>
-	            <div class="flex layout vertical start-center"><span class="light-text">Pending</span></div>
+	            <div class="flex"><span class="light-text">[[item.date]]</span></div>
+	            <div class="flex-2"><span class="strong-text">[[item.code]]</span></div>
+	            <div class="flex layout vertical start-center"><span class="light-text">[[item.withdrawer]]</span></div>
+	            <div class="flex layout vertical start-center"><span class="strong-text">$[[item.amount]]</span></div>
+	            <div class="flex layout vertical start-center"><span class="light-text">[[item.status]]</span></div>
 	          </section>
 	        </template>
 	   	</section>
@@ -80,15 +81,20 @@
   </template>
 
   <script>
-    class AppMeWithdrawals extends Polymer.Element {
+    class AppMeWithdrawals extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-me-withdrawals'; }
 
        static get properties() {
         return {
-          items:{
-          	value: [{},{},{},{}]
-          }
+          	items:{
+          		value: null
+			},
+			env: {
+				type: Object,
+				statePath: 'env',
+				observer: 'init'
+			},
         };
       }
 
@@ -96,18 +102,77 @@
         super();
       }
 
-      ready() {
-        super.ready();
+			init() {
+				if (this.firstLoad) return;
 
-        Polymer.RenderStatus.afterNextRender(this, function() {
-          
-        });
-      }
+				this.tunnel = document.createElement('iron-ajax');
+				this.tunnel.headers = {
+					Authorization: `Bearer ${this.env.token}`,
+					Accept: 'application/json'
+				};
+				this.tunnel.method = "GET";
+				this.tunnel.contentType = 'application/json';
 
-      _make(){
-      	console.log('make a new withdrawal');
-      	this.$.withdraw.opened = true;
-      }
+				this._getProducts();
+
+				this.firstLoad = true;
+			}
+
+
+			_makeWithdrawal(e){
+				this.tunnel.url = `${this.env.app_domain}/api/withdrawal`;
+				this.tunnel.method = "POST";
+				this.tunnel.body = e.detail;
+				this.busy = true;
+
+				let request = this.tunnel.generateRequest();
+
+				request.completes.then((req) => {
+					//We got our request
+					let res = req.parseResponse();
+					this.busy = false;
+					this.$.withdraw.opened = false;
+					this.$.withdraw.clear();
+					this._getProducts();
+
+				}, (rejected) => {
+					// failed request, argument is an object
+					let req = rejected.request;
+					this.error = rejected.error;
+					document.dispatchEvent(new CustomEvent('app-toast',{detail:{msg:'Oops! An error occured, Please try again.'}}));
+					this.busy = false;
+
+				});
+			}
+
+			_getProducts() {
+
+					this.tunnel.url = `${this.env.app_domain}/api/withdrawal`;
+					this.tunnel.method = "GET";
+
+					let request = this.tunnel.generateRequest();
+
+					request.completes.then((req) => {
+						//We got our request
+						let res = req.parseResponse();
+						this.busy = false;
+						this.hasMore = res.page_info.has_more;
+						this.set = this.set + 1;
+
+						this.items = res.data;
+
+					}, (rejected) => {
+						// failed request, argument is an object
+						let req = rejected.request;
+						let error = rejected.error;
+						this.busy = false;
+
+					});
+				}
+
+	      _make(){
+	      	this.$.withdraw.opened = true;
+	      }
 
     }
 

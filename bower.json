@@ -38,7 +38,10 @@
     "iron-location": "^2.0.1",
     "polymer-redux": "^1.0.4",
     "lazy-imports": "^2.0.0",
-    "paper-toast": "^2.0.0"
+    "paper-toast": "^2.0.0",
+    "tinymce": "^4.7.1",
+    "wysiwyg-e": "miztroh/wysiwyg-e#^2.0.6",
+    "iron-form": "^2.0.1"
   },
   "resolutions": {
     "polymer": "^2.0.1",

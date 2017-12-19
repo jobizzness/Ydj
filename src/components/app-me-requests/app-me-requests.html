@@ -1,0 +1,219 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../components/app-request-item/app-request-item.html">
+<link rel="import" href="../../app-store.html">
+
+<dom-module id="app-me-requests">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block
+            }
+        
+            .panel-title {
+                padding-left: 22px;
+            }
+        
+            .mb-20 {
+                margin-bottom: 20px;
+            }
+
+        </style>
+
+            <div class="cards">
+                <!-- General Account -->
+                <section class="card with--panel">
+                    <section class="layout horizontal">
+                        <div class="flex-3">
+                            <panel>
+                                <span class="panel-title">Item Name</span>
+                            </panel>
+                        </div>
+                        <div class="flex">
+                            <panel>
+                                <span class="panel-title">Item Price</span>
+                            </panel>
+                        </div>
+                        <div class="flex">
+                            <panel>
+                                <span class="panel-title">Actions</span>
+                            </panel>
+                        </div>
+                    </section>
+            
+                    <!-- Goodies List -->
+                    <template is="dom-repeat" items="[[items]]" as="item">
+                        <app-request-item data="[[item]]" on-selected="_selectedChanged"></app-request-item>
+                    </template>
+                </section>
+            </div>
+
+    </template>
+
+    <script>
+        /**
+         * `app-me-requests` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class AppMeRequests extends ReduxMixin(Polymer.Element){
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'app-me-requests';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    items: {
+                        type: Array,
+                    },
+                    env: {
+                        type: Object,
+                        statePath: 'env',
+                        observer: 'init'
+                    },
+                    selected: {
+                        type: Object
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            _selectedChanged({detail:{action, payload}}){
+                this.selected = payload;
+                this[action]();
+            }
+
+            approve(){
+                let data = {
+                    level: 'happy',
+                    message: 'Are you sure you want to approve this item?'
+                }
+                this.onConfirmed(data, (e) => {
+                    if(e.detail === true){
+                        this._processApprove();
+                    }
+                    document.removeEventListener('on-app-confirm', (e) => {});
+                });
+            }
+
+            delete(){
+
+                let data = {
+                    level: 'danger',
+                    message: 'Are you sure you want to reject this item?'
+                }
+                this.onConfirmed(data, (e) => {
+                    if (e.detail === true) {
+                        this._processReject()
+                    }
+                    document.removeEventListener('on-app-confirm', (e) => {});
+                });
+            }
+            
+            _processReject(){
+                this.tunnel.url = `${this.env.app_domain}/api/product-status/reject`;
+                this._makeChangeRequestCall();
+                
+            }
+
+            _processApprove(){
+                this.tunnel.url = `${this.env.app_domain}/api/product-status/approve`;
+                this._makeChangeRequestCall();
+            }
+
+            _makeChangeRequestCall(){
+                this.tunnel.method = "POST";
+                this.tunnel.body = this.selected;
+                
+                let request = this.tunnel.generateRequest();
+                
+                request.completes.then((req) => {
+                    
+                    let i = this.items.findIndex((item) => {
+                        return item.id == this.selected.id;
+                    });
+
+                    if (i > -1) {
+                        this.splice('items', i, 1);
+                    }
+
+                }, (rejected) => {
+                    // failed request, argument is an object
+                    let req = rejected.request;
+                    let error = rejected.error;
+
+                });
+            }
+
+            onConfirmed(data, callback){
+                document.dispatchEvent(new CustomEvent('app-confirm', {detail:data}));
+                return document.addEventListener('on-app-confirm', (e) => callback(e));
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            init() {
+                if (this.firstLoad) return;
+
+                this.tunnel = document.createElement('iron-ajax');
+                this.tunnel.headers = {
+                    Authorization: `Bearer ${this.env.token}`,
+                    Accept: 'application/json'
+                };
+                this.tunnel.method = "GET";
+                this.tunnel.contentType = 'application/json';
+
+                this._getProducts();
+
+                this.firstLoad = true;
+            }
+
+             _getProducts() {
+
+                    this.tunnel.url = `${this.env.app_domain}/api/requests`;
+                    this.tunnel.method = "GET";
+
+                    let request = this.tunnel.generateRequest();
+
+                    request.completes.then((req) => {
+                        //We got our request
+                        let res = req.parseResponse();
+                        this.busy = false;
+                        this.hasMore = res.page_info.has_more;
+                        this.set = this.set + 1;
+
+
+                        this.items = res.data;
+
+                    }, (rejected) => {
+                        // failed request, argument is an object
+                        let req = rejected.request;
+                        let error = rejected.error;
+                        this.busy = false;
+
+                    });
+                }
+
+        }
+
+        window.customElements.define(AppMeRequests.is, AppMeRequests);
+    </script>
+</dom-module>

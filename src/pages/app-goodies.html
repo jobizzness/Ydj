@@ -7,6 +7,7 @@
 <link rel="import" href="../components/product-media/product-media.html">
 <link rel="import" href="../components/app-avatar/app-avatar.html">
 <link rel="import" href="../app-store.html">
+<link rel="import" href="../pages/app-cart.html">
 
 <!--
 `<Name>` is Description
@@ -151,17 +152,7 @@
                 </template>
               </product-media>
 
-              <section class="post-content">
-                <div class="post-paragraph">
-                  <h3 class="post-title">The Pack Contains:</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in henderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                </div>
-                <div class="post-paragraph">
-                  <h3 class="post-title small">Westeros HTML Instructions</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in henderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                </div>
-              </section>
+              <section class="post-content" inner-h-t-m-l="[[product.description]]"></section>
             </main>
             
             <aside class="flex">
@@ -169,31 +160,31 @@
                 <div class="layout horizontal center-center">
                   <h3 class="small-heading">STANDARD LICENSE</h3>
                   <span class="flex"></span>
-                  <span class="price-tag">[[product.price]]</span>
+                  <span class="price-tag">$[[product.price]]</span>
                 </div>
                 <p>Used by you to create end-product but NOT transferable to third parties.</p>
                 <div class="paypal-logo"><img src="images/pp.jpg"></div>
                 <div class="product-actions">
-                  <a href="#"><app-button border id="download-btn">Download Now</app-button></a>
-                  <a href="#"><app-button border id="addcart-btn">Add to cart</app-button></a>
-                  <a href="#"><app-button border>Add to favorites</app-button></a>
+                 <!--  <a href="#"><app-button border id="download-btn">Download Now</app-button></a> -->
+                  <app-button border id="addcart-btn" on-click="_addToCart">Add to cart</app-button>
+                  <app-button border>Add to favorites</app-button>
                 </div>
               </section>
               <section class="card">
                   <div class="information-layout-item">
                     <p class="text-header">File Type:</p>
                     <span class="flex"></span>
-                    <p>.Ai, .SVG, .PSD</p>
+                    <p>ZIP</p>
                   </div>
                   <div class="information-layout-item">
                     <p class="text-header">File Size:</p>
                     <span class="flex"></span>
-                    <p>1.0 MB</p>
+                    <p>[[product.size]]</p>
                   </div>
                   <div class="information-layout-item">
                     <p class="text-header">Files Included:</p>
                     <span class="flex"></span>
-                    <p>PSD, AI, JPEG, PNG</p>
+                    <p>[[product.extensions]]</p>
                   </div>
                   <div class="information-layout-item">
                     <p class="text-header">Date Posted:</p>
@@ -205,12 +196,12 @@
               <section class="card author-info">
                 <h3 class="small-heading">CREATED BY:</h3>
                 <div class="layout horizontal" style="align-items: center;">
-                    <a href="/user/jones"><app-avatar src$="[[product.owner.avatar]]"
+                    <a href$="/user/[[product.owner.nickname]]"><app-avatar src$="[[product.owner.avatar]]"
                                 width="50px"
                                 height="50px"></app-avatar></a>
                     <div class="layout vertical">
-                      <a href="/" class="author"><span>[[product.owner.nickname]]</span></a>
-                      <span class="author-title">Creative Studio</span>
+                      <a href$="/user/[[product.owner.nickname]]" class="author"><span>[[product.owner.nickname]]</span></a>
+                      <span class="author-title">[[product.owner.company]]</span>
                     </div>
                     
                 </div>
@@ -249,8 +240,16 @@
         super();
       }
 
-      _productChanged(e){
-    
+      _productChanged(product){
+        if(!product || this.routeData.prefix != '/goodies') return;
+
+          fetch(`${this.env.app_domain}/api/product-view/${this.product.slug}`, {
+            headers: {
+              Authorization: `Bearer ${this.env.token}`,
+              Accept: 'application/json'
+            }
+          });
+        
       }
       
       /**
@@ -260,16 +259,9 @@
        * @param {slug}
        */
       _getData(slug){
-
-          let tunnel = document.createElement('iron-ajax');
-          tunnel.url = `${env.app_domain}/api/product/${slug}`;
-          tunnel.headers = {
-              Authorization : `Bearer ${this.env.token}`,
-              Accept: 'application/json'
-          };
-          tunnel.method = "GET";
-          tunnel.contentType = 'application/json';
-          let request = tunnel.generateRequest();
+          this.tunnel.url = `${this.env.app_domain}/api/product/${slug}`;
+          this.tunnel.method = "GET";
+          let request = this.tunnel.generateRequest();
           
           request.completes.then((req) => {
               //We got our request
@@ -285,13 +277,28 @@
           
       }
 
-        init() {
-            Polymer.RenderStatus.afterNextRender(this, function () {
-                if (!this.product) {
-                    this._getData(this.routeData.slug);
-                }
-            })
-        }
+      _addToCart(e){
+        document.dispatchEvent(new CustomEvent('add-to-cart', {
+            detail:this.product,
+            composed:false,
+            bubbles:false
+        }));
+      }
+      
+      init() {
+          Polymer.RenderStatus.afterNextRender(this, function () {
+              if (!this.product) {
+                  this._getData(this.routeData.slug);
+              }
+          });
+
+          this.tunnel = document.createElement('iron-ajax');
+          this.tunnel.headers = {
+              Authorization : `Bearer ${this.env.token}`,
+              Accept: 'application/json'
+          };
+          this.tunnel.contentType = 'application/json';
+      }
 
     }
 

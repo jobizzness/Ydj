@@ -1,7 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-
+<link rel="import" href="../../app-store.html">
 <!-- App components -->
 
 <dom-module id="app-product-item">
@@ -107,6 +107,9 @@
           white-space: nowrap;
           overflow: hidden;
        }
+       .liked{
+             color: #00d7b3;
+       }
 
     </style>
 
@@ -134,9 +137,10 @@
                 <span class="price">[[data.price]]</span>
               </div>
               <div class="shot-buttons layout horizontal">
-                <paper-button class="pink flex"><iron-icon icon="my-icons:eye"></iron-icon><span>0</span></paper-button>
+                <paper-button class="pink flex"><iron-icon icon="my-icons:eye"></iron-icon><span>[[data.views]]</span></paper-button>
                 <paper-button
-                        class="pink flex"><iron-icon icon="my-icons:heart"></iron-icon><span>0</span></paper-button>
+                        class="pink flex"
+                        on-click="like" class$="[[_getLikedClass(data.likes.is_liked)]]"><iron-icon icon="my-icons:heart"></iron-icon><span>[[data.likes.count]]</span></paper-button>
                 <paper-button
                         class="pink flex"><iron-icon icon="my-icons:share"></iron-icon><span>0</span></paper-button>
               </div>
@@ -147,15 +151,19 @@
   </template>
 
   <script>
-      class AppProductItem extends Polymer.Element {
+      class AppProductItem extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-product-item'; }
 
-      static get properties() {return {
-          properties: {
+      static get properties() {
+        return {
             data: Object,
+            env: {
+                type: Object,
+                statePath: 'env'
+            }
         }
-      }}
+      }
 
       constructor() {
         super();
@@ -166,6 +174,21 @@
           return media[0].src;
       }
       
+      like(){
+        fetch(`${this.env.app_domain}/api/favorites/${this.data.slug}`, {
+          headers:{
+            Authorization: `Bearer ${this.env.token}`,
+            Accept: 'application/json'
+          }
+        }).then((res) => (res.json())
+            .then((val) => this.set('data.likes', val))
+        );
+      }
+
+      _getLikedClass(liked){
+        if(liked) return 'liked';
+      }
+
       ready() {
         super.ready();
 

@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../../bower_components/google-youtube/google-youtube.html">
+<!-- <link rel="import" href="../../bower_components/google-youtube/google-youtube.html"> -->
 <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
@@ -25,55 +25,71 @@
       :host {
         display: block;
       }
+
       app-hero{
       	height: 60vh;
       	background-color: white;
       }
+
       google-youtube{
       	--google-youtube-container:{
 	  	    width: 100%;
 	    	  height: 270px;
   	    }
       }
+
       .products-toolbar{
   	    height: 64px;
   	    border: 1px solid #eee;
   	    @apply --layout-horizontal;
   	    @apply --layout-center-center;
       }
+
 	   iron-list{
 	  	  width:100%;
         padding-top:16px;
       }
+
       #products-grid>app-product-item{
         width: 25%;
         padding: 16px;
       }
+
       #banner-1>.hero-info{
         position: absolute;
         z-index: 1;
       }
+
+      app-products{
+        min-height: 1070px;
+      }
+
       #banner-1>.hero-info p{
         margin: 0;
         color: white;
       }
+
       #banner-1>.hero-info h1{
         color:white;
       }
+
       .blue-btn{
         color: white;
         background-color: #03A9F4;
         padding: 16px;
       }
+
       .features{
         min-height: 45vh;
         padding: 16px;
         @apply --layout-horizontal;
       }
+
       .features>*{
         padding:22px;
         text-align: center;
       }
+
       .features>* h5{
         font-size: 1.3rem;
         line-height: 110%;
@@ -81,29 +97,42 @@
         color: #4a4a4a;
         margin: 0.82rem 0 0.656rem 0;
       }
+      
+      app-hero{
+        background-size: cover;
+        background: #958fe2 url(/images/home_banner.jpg);
+        background-repeat: round;
+      }
+
       .large-icon {
         --iron-icon-width: 130px;
         --iron-icon-height: 130px;
         margin-top: 1em;
         margin-bottom:1em;
       }
+
       @media (max-width: 1024px) {
         #products-grid>app-product-item{
           width: 50%;
           padding: 16px;
         }
       }
+
       @media (max-width: 479px) {
+
         #products-grid>app-product-item{
           width: 100%;
           padding: 16px;
         }
+
         .features{
           display:block;
         }
+
         iron-list{
           padding-top: 8px;
         }
+
       }
     </style>
     <!-- Media Query -->
@@ -113,21 +142,21 @@
     
     <main class="layout vertical">
       <!-- App Hero -->
-    	<app-hero class="layout vertical center-center" style="background: url(/images/home_banner.jpg)">
+    	<app-hero class="layout vertical center-center">
     		<div class="layout horizontal space-around hero-info content">
     			<div class="flex layout vertical center-justified">
-    				<h1><!--span class="accent">-->Design and creative assets you’ll love!</h1>
+    				<h1>Design and creative assets you’ll love!</h1>
     				<p>Find any design and graphic resources that you need for your projects. Because we have it!</p>
     			</div>
     			<dom-if if="[[!smallScreen]]">
     				<template>
-		    			<div class="flex layout vertical center-center">
+<!-- 		    			<div class="flex layout vertical center-center">
 		    				<video-card>
 		    					<google-youtube 
 		    						video-id="LXd26Nqg5tQ" 
                     height="270px"></google-youtube>
 		    				</video-card>
-		    			</div>
+		    			</div> -->
 	    			</template>
     			</dom-if>
     		</div>

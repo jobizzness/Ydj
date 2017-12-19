@@ -5,8 +5,8 @@ This is our overview element. Kind of like a middleware that will give you acces
 based on your level.
 -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/lazy-imports/lazy-imports-mixin.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
@@ -14,51 +14,69 @@ based on your level.
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+
+<!-- 
+  Lazy resources  
+-->
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-search/paper-search-panel.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/lazy-imports/lazy-imports-mixin.html">
-<link rel="import" href="app-store.html">
 
-<!-- App Components -->
-<link rel="import" href="shared-styles.html">
+<!-- 
+  App Components
+ -->
+
+
 <link rel="import" href="components/app-logo/app-logo.html">
 <link rel="import" href="components/app-button/app-button.html">
-<link rel="import" href="my-icons.html">
-<link rel="import" href="components/app-footer/app-footer.html">
 <link rel="import" href="components/user-actions/user-actions.html">
 <link rel="import" href="components/app-avatar/app-avatar.html">
+<link rel="import" href="components/app-loader/app-loader.html">
+
+
+<!-- 
+  Critical Components 
+-->
+<link rel="import" href="app-store.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="components/app-footer/app-footer.html">
+<link rel="import" href="my-icons.html">
 
 <dom-module id="app-overview">
+
+  <!-- 
+    Lazy Pages
+   -->
   <link rel="lazy-import" href="pages/app-home.html" group="home">
   <link rel="lazy-import" href="pages/app-goodies.html" group="goodies">
   <link rel="lazy-import" href="pages/app-login.html" group="login">
   <link rel="lazy-import" href="pages/app-register.html" group="register">
-  <link rel="lazy-import" href="pages/app-user.html" group="profile">
+  <link rel="lazy-import" href="pages/app-user.html" group="user">
   <link rel="lazy-import" href="pages/app-sell.html" group="sell">
+  <link rel="lazy-import" href="pages/app-cart.html" group="cart">
+  <link rel="lazy-import" href="pages/app-favorites.html" group="favorites">
   <link rel="lazy-import" href="pages/terms-seller.html" group="terms-seller">
   <link rel="lazy-import" href="pages/terms-buyer.html" group="terms-buyer">
   <link rel="lazy-import" href="pages/app-about.html" group="about">
   <link rel="lazy-import" href="pages/app-category.html" group="category">
   <link rel="lazy-import" href="pages/app-me.html" group="me">
   <link rel="lazy-import" href="lazy-resources.html" group="lazy-resources">
+
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment app-button user-actions">
+      
       :host {
+        display: block;
         --app-primary-color: #212121;
         --app-secondary-color: white;
         --app-link-color: #bbbbbb;
-        /*--app-link-color: #036df4;*/
-        --app-text-color: rgba(0, 0, 0, 0.74);
+        --app-text-color: #212121;
         --app-accent-color:#ff515d;
         --app-accent-lighter: #509fff;
-        display: block;
       }
 
       app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -68,62 +86,52 @@ based on your level.
       app-header {
         color: #fff;
         background-color: var(--app-primary-color);
-        margin-right: 15px;
       }
 
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
-
-      .drawer-list {
-        margin: 0 20px;
-      }
-
-      .drawer-list a {
-        display: block;
-        padding: 0 16px;
-        text-decoration: none;
-        color: var(--app-secondary-color);
-        line-height: 40px;
-      }
-
-      .drawer-list a.iron-selected {
-        color: black;
-        font-weight: bold;
-      }
+      
       .toolbar-bottom{
         background-color: white;
       }
+      
       .toolbar-top{
         height: 90px;
       }
+      
       app-logo{
         padding-top: 5px;
       }
+      
       .logo-link{
         padding: 0 24px;
         display: block;
       }
+      
       iron-selector.app-nav{
         width: 100%;
         @apply(--layout-horizontal);
       }
+      
       iron-selector.app-nav a.link{
         @apply --layout-vertical;
-          color: var(--app-text-color);
-          text-decoration: none;
-          font-weight: 600;
-          outline: none;
-          font-size: 1rem;
-          padding: 22px 24px;
-          cursor: pointer;
-          white-space: nowrap;
-          position: relative;
-          overflow: hidden;
+        color: var(--app-text-color);
+        text-decoration: none;
+        font-weight: 600;
+        outline: none;
+        font-size: 1rem;
+        padding: 22px 24px;
+        cursor: pointer;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
       }
+      
       iron-pages{
         min-height: 100vh;
       }
+      
       iron-selector.app-nav a.link:before{
         position: absolute;
         bottom: 0;
@@ -136,17 +144,21 @@ based on your level.
         transition: transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
         -webkit-transform: translate3d(0, 4px, 0);
         transform: translate3d(0, 4px, 0);
-        background: var(--app-accent-color, #509fff);
+        background: var(--app-accent-lighter, #509fff);
       }
+      
       iron-selector.app-nav a.link:hover:before, iron-selector.app-nav a.link.selected:before{
         transform: translate3d(0, 0, 0);
       }
+      
       header-actions{
         @apply --layout-horizontal;
       }
+      
       header-actions>*{
         margin: 0 8px;
       }
+      
       shibui-dropdown-menu#dropMenu{
         --shibui-dropdown-content:{
           width: 190px;
@@ -165,93 +177,132 @@ based on your level.
         color: #333333;
         border: solid 1px #509fff;
       }
+      
       .yellow-button {
         text-transform: none;
         color: #eeff41;
       }
+
+      #modal{
+        width: 25vw;
+      }
+
+      #modal>.modal-info{
+        margin-top: 0;
+        padding: 24px;
+      }
+
+      .modal-info h1, .modal-info p {
+        color: white;
+      }
+
+      #modal.danger .modal-info{
+        background-image: -webkit-repeating-linear-gradient(135deg,#f04b51,#f04b51 24px,#f2545b 0,#f2545b 48px);
+        background-image: repeating-linear-gradient(135deg,#f04b51,#f04b51 24px,#f2545b 0,#f2545b 48px);
+      }
+
+      #modal.danger paper-button.confirm{
+        background: #eb4b54;
+        color: white;
+      }
+
+      #modal.happy .modal-info{
+        background-image: -webkit-repeating-linear-gradient(135deg,#1dbace,#00BCD4 24px,#0cc5dc 0,#00BCD4 48px);
+        background-image: repeating-linear-gradient(135deg,#1dbace,#00BCD4 24px,#0cc5dc 0,#00BCD4 48px);
+      }
+
+      #modal.happy paper-button.confirm{
+        background: #33c0d7;
+        color: white;
+      }
+
+      #modal.danger paper-button.cancel{
+        background: #eee;
+      }
     </style>
 
     <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
+
     <app-location route="{{route}}"></app-location>
+
     <app-route
         route="{{route}}"
         pattern="[[rootPattern]]:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
+    
+    <shop-cart-modal id="cartModal"></shop-cart-modal>
 
-    <app-drawer-layout fullbleed force-narrow id="layout">
-      <!-- Drawer content -->
-      <app-drawer id="drawer" slot="drawer" align="end" opened>
-        <app-toolbar>Navigation</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="view1">View One</a>
-          <a name="view2" href="view2">View Two</a>
-          <a name="view3" href="view3">View Three</a>
-        </iron-selector>
-      </app-drawer>
+    <app-loader id="loader"></app-loader>
 
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
+
+      <app-header-layout id="layout">
 
           <app-header slot="header" condenses fixed effects="waterfall">
             <template is="dom-if" if="[[_shouldRenderHeader]]">
               <app-toolbar class="toolbar-top content">
-                <a href="/" class="logo-link">
-                  <app-logo height="90" width="150"></app-logo>
-                </a>
-                <span class="flex"></span>
-                <template is="dom-if" if="[[smallScreen]]">
-                  <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-                </template>
-                <header-actions>
-                  <dom-if if="{{_shouldRenderAuthElements(smallScreen, user)}}">
-                    <template>
-                      <a href="/login"><app-button border>Log In</app-button></a>
-                      <a href="/register"><app-button shaded>Sign Up</app-button></a>
-                    </template>
-                  </dom-if>
 
-                  <!-- User Actions -->
-                  <template is="dom-if" if="{{_shouldRenderUserElements(smallScreen, user)}}">
-                    <user-actions class="layout horizontal">
-                      <!-- User Notification Icons -->
-                      <ul class="notification-icons layout horizontal">
-                        <li>
-                          <a href="/notifications">
-                            <iron-icon src="/images/icons/heart.svg"></iron-icon>
-                            <app-badge hidden></app-badge>
+                <!-- Logo -->
+                <a href="/" class="logo-link"><app-logo 
+                    height="90" 
+                    width="150"></app-logo></a>
+                <span class="flex"></span>
+
+                <header-actions>
+                  
+                  <for-guests and-if="[[!smallScreen]]">
+                    <template>
+                      <a href="/login">
+                        <app-button border>Log In</app-button>
+                      </a>
+                      <a href="/register">
+                        <app-button shaded>Sign Up</app-button>
+                      </a>
+                    </template>
+                  </for-guests>
+
+                  <for-members and-if="[[!smallScreen]]">
+                    <template>
+                      <user-actions class="layout horizontal">
+                        <ul class="notification-icons layout horizontal">
+                          <li>
+                            <a href="/favorites">
+                              <iron-icon src="/images/icons/heart.svg"></iron-icon>
+                              <app-badge hidden$="[[favorites.empty]]">[[favorites.items.length]]</app-badge>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/cart">
+                              <iron-icon src="/images/icons/cart.svg"></iron-icon>
+                              <app-badge hidden$="[[cart.empty]]">[[cart.items.length]]</app-badge>
+                            </a>
+                          </li>
+                        </ul>
+
+                        <!-- User Info & Avatar -->
+                        <shibui-dropdown-menu id="dropMenu">
+                          <a slot="trigger" class="avatar-wrapper layout horizontal">
+                            <app-avatar src="[[user.avatar]]" width="40px" height="40px"></app-avatar>
+                            <div class="user-info">
+                              <span class="username">[[user.nickname]]</span>
+                              <span class="user-balance">$[[user.balance]]</span>
+                            </div>
                           </a>
-                        </li>
-                        <li>
-                          <a href="/cart">
-                            <iron-icon src="/images/icons/cart.svg"></iron-icon>
-                            <app-badge hidden></app-badge>
-                          </a>
-                        </li>
-                      </ul>
-                      <!-- User Info & Avatar -->
-                      <shibui-dropdown-menu id="dropMenu">
-                        <a slot="trigger" class="avatar-wrapper layout horizontal">
-                          <app-avatar src="[[user.avatar]]" width="40px" height="40px"></app-avatar>
-                          <div class="user-info">
-                            <span class="username">[[user.nickname]]</span>
-                            <span class="user-balance">[[user.balance]]</span>
-                          </div>
-                        </a>
-                        <template is="dom-if" if="[[is_seller]]">
-                          <a href="/me/dashboard">Dashboard</a>
-                          <a href="/me/account">My Account</a>
-                          <a href="/me/store">My Store</a>
-                          <a href="/me/earnings">My Earnings</a>
-                        </template>
-                        <template is="dom-if" if="[[!is_seller]]">
-                          <a href="/me/account">My Account</a>
-                          <a href="/me/goodies">My Purchases</a>
-                        </template>
-                        <a on-click="signOut">Sign out</a>
-                      </shibui-dropdown-menu>
-                    </user-actions>
-                  </template>
+                          <template is="dom-if" if="[[is_seller]]">
+                            <a href="/me/dashboard">Dashboard</a>
+                            <a href="/me/account">My Account</a>
+                            <a href="/me/store">My Store</a>
+                            <a href="/me/earnings">My Earnings</a>
+                          </template>
+                          <template is="dom-if" if="[[!is_seller]]">
+                            <a href="/me/account">My Account</a>
+                            <a href="/me/goodies">My Purchases</a>
+                          </template>
+                          <a on-click="signOut">Sign out</a>
+                        </shibui-dropdown-menu>
+                      </user-actions>
+                    </template>
+                  </for-members>
                 </header-actions>
               </app-toolbar>
 
@@ -268,21 +319,14 @@ based on your level.
                               </template>
                         </iron-selector>
                         <!-- Search Box -->
-                        <dom-bind>
-                          <template>
                             <paper-search-bar
                               placeholder="Search and you shall find..."
-                              disable-filter-button="true">
-                              
-                            </paper-search-bar>
-                          </template>
-                        </dom-bind>
-
-                        <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+                              disable-filter-button="true"></paper-search-bar>
                       </template>
                     </dom-if>
                   </div>
                 </app-toolbar>
+
             </template>
           </app-header>
           
@@ -297,10 +341,9 @@ based on your level.
           <app-goodies name="goodies" product="[[product]]" route="[[subroute]]"></app-goodies>
           <app-register name="register"></app-register>
           <app-category name="category" route="[[subroute]]"></app-category>
-          <app-user name="profile" route="[[subroute]]"></app-user>
+          <app-user name="user" route="[[subroute]]"></app-user>
           <app-me name="me" route="[[subroute]]"></app-me>
-          <app-messages name="messages"></app-messages>
-          <app-notifications name="notifications"></app-notifications>
+          <app-favorites name="favorites"></app-favorites>
           <app-cart name="cart"></app-cart>
           <app-about name="about"></app-about>
           <app-sell name="sell"></app-sell>
@@ -314,11 +357,23 @@ based on your level.
             <app-footer></app-footer>
           </footer>
       </app-header-layout>
-    </app-drawer-layout>
+
   
     <paper-toast id="toast" duration="0">
       <paper-button on-click="toggleToast" class="yellow-button">Okay!</paper-button>
     </paper-toast>
+
+    <paper-dialog id="modal" modal class="danger">
+      <div class="layout vertical modal-info">
+        <h1>Just checking</h1>
+        <p>[[modalMesssage]]</p>
+      </div>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus class="confirm" on-click="_onModalConfirm">Sure</paper-button>
+        <paper-button dialog-confirm autofocus class="cancel" on-click="_onModalCancel">Nope</paper-button>
+      </div>
+    </paper-dialog>
+      
   </template>
 
   <script>
@@ -341,11 +396,17 @@ based on your level.
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
-
+          
+          cart:{
+              type: Object,
+              statePath: 'user.cart'
+          },
+          
           user: {
             type: Object,
-            statePath: 'user'
+            statePath: 'user',
           },
+
           is_seller: {
               type: Boolean,
               statePath: 'user.is_seller'
@@ -374,7 +435,7 @@ based on your level.
 
       static get listeners(){
           return {
-              'product-updated'       : '_onProductUpdate',
+              'product-updated': '_onProductUpdate',
           }
       }
       
@@ -391,16 +452,22 @@ based on your level.
 
           document.addEventListener('product-selected', (e) =>this._onProductSelect(e));
           document.addEventListener('app-toast', (e) =>this.announce(e));
-          
+          document.addEventListener('app-confirm', (e) => this._confirm(e));
+
+
           Polymer.RenderStatus.afterNextRender(this, function() {
+              
               // If we have a user the lazy import the
               // user components
               if(this.user){
                   this.importLazyGroup('me').then(() => {});
               }
+              
               this.importLazyGroup('lazy-resources').then(() => {
                   // All the resources are loaded so we will reset the layout
-                  //this.$.layout.resetLayout();
+                  Polymer.Async.timeOut.run(() => {
+                      this.$.layout.resetLayout();
+                  }, 1);
                   // If the user is not logged in the
                   // lazy load the login component
                   //if(!this.user) setTimeout(() => {Polymer.importHref(this.resolveUrl('../../pages/dapp-login/dapp-login.html'), null, null, true)}, 100);
@@ -419,16 +486,12 @@ based on your level.
         // Deault to 'home' in that case.
         this.page = page || 'home';
 
-        // Close a non-persistent drawer when the page & route are changed.
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
 
-          this._listScrollTop = document.scrollTop;
+        this._listScrollTop = document.scrollTop;
 
-          // Check if we need to scroll back
-          // back to a previous position
-          this._computeScroller();
+        // Check if we need to scroll back
+        // back to a previous position
+        this._computeScroller();
       }
 
         /**
@@ -452,6 +515,7 @@ based on your level.
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         page = this._middleware(page);
+          
           // Load page import on demand then register
           // then service worker if this is the first app load
           
@@ -462,14 +526,15 @@ based on your level.
           this.firstLoad = false;
       }
 
-        announce({detail:data}){
-          this.$.toast.text = data.msg;
-          this.$.toast.open();
-        }
+      announce({detail:data}){
+        this.$.toast.text = data.msg;
+        this.$.toast.open();
+      }
         
       toggleToast(){
             this.$.toast.toggle();
       }
+      
       _middleware(page){
         switch(page){
           case 'login':
@@ -478,23 +543,21 @@ based on your level.
               return 'home';
             }
             return page;
-            break;
           case 'me':
-          case 'cart':
-          case 'logout':
-          case 'messages':
             if(!this.user){
               return 'login';
             }
             return page;
-            break;
         case 'home':
-        case 'profile':
+        case 'user':
         case 'goodies':
+        case 'cart':
         case 'category':
+        case 'favorites':
+        case 'terms-seller':
             return page;
           default:
-              return page;
+              return '404';
         }
       }
 
@@ -532,7 +595,9 @@ based on your level.
       }
 
       _headerChanged(){
-        this.$.layout.resetLayout();
+          Polymer.Async.timeOut.run(() => {
+              this.$.layout.resetLayout();
+          }, 1);
       }
 
       _shouldRenderUserElements(smallScreen, loggedIn){
@@ -586,6 +651,23 @@ based on your level.
           this.set('route.path', location);
       }
         
+      _confirm(e) {
+
+          const data = e.detail;
+          this.modalMesssage = data.message;
+          this.$.modal.classList.remove("danger");
+          this.$.modal.classList.remove("happy");
+          this.$.modal.classList.add(data.level);
+          this.$.modal.open();
+      }
+
+      _onModalConfirm(e){
+        document.dispatchEvent(new CustomEvent('on-app-confirm', { detail: true }));
+      }
+
+      _onModalCancel(e) {
+        document.dispatchEvent(new CustomEvent('on-app-confirm', { detail: false }));
+      }
       /**
        * Registers `service-worker.js` file if supported
        * by our current browser.
@@ -593,9 +675,7 @@ based on your level.
        * @return {void}
        */
       registerWorker(){
-          if ('serviceWorker' in navigator) {
-              navigator.serviceWorker.register('service-worker.js', {scope: this.rootPath});
-          }
+
       }
     }
 

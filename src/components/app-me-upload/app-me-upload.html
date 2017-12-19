@@ -9,6 +9,7 @@
 <link rel="import" href="../../../bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 
+
 <link rel="import" href="../../shared-styles.html">
 <link rel="import" href="../../app-store.html">
 
@@ -60,23 +61,9 @@
 	    display: block;
 	  }
 
-    paper-button.custom {
-        max-height: 30px;
-        margin-bottom: 50px;
-      --paper-button-ink-color: var(--paper-primary-color);
-      /* These could also be individually defined for each of the
-        specific css classes, but we'll just do it once as an example */
-      --paper-button-flat-keyboard-focus: {
-      background-color: var(--paper-primary-color);
-      color: white !important;
-    };
-    --paper-button-raised-keyboard-focus: {
-      background-color: var(--paper-primary-color) !important;
-      color: white !important;
-    };
-  }
-    paper-button.custom:hover {
-    background-color: var(--app-primary-color);
+    paper-button.green {
+      color: #ffffff;
+      background: #09c3b2;
     }
     paper-button.grey {
       background-color: var(--paper-grey-500);
@@ -87,21 +74,24 @@
       background-color: var(--app-accent-lighter);
       color: white;
     }
-     paper-button.red {
-      background-color: var(--app-accent-color);
-      color: white;
-    }
-    paper-button.disabled {
-      color: white;
-    }
 
+    wysiwyg-e{
+      width: 100%;
+      min-height: 50vh;
+      --wysiwyg-toolbar-background: var(--app-accent-lighter);
+    }
     </style>
     
     	<section class="inputs">
       <!-- <section class="card"> -->
         <h1>Upload an item</h1><br>
       <!-- </section> -->
-    		<vaadin-upload id="assets" accept=".zip" max-files="1" on-upload-before="_handleAssetsUpload" required>
+    		<vaadin-upload id="assetInput"
+                       accept=".zip"
+                       max-files="1"
+                       on-upload-success="_onAssetUploaded"
+                       on-upload-before="_onAssetBeforeUpload"
+                       required>
           <span slot="drop-label">Assets ZIP file</span>
 <!--             <div class="file-list">
               <div class="receipt-wrapper">
@@ -109,11 +99,11 @@
               </div>
             </div> -->
           </vaadin-upload>
-        <vaadin-upload id="upload"
+        <vaadin-upload id="mediaInput"
                        accept="image/*"
                        max-files="3"
-                       on-upload-success="_onUploaded"
-                       on-upload-before="_onBeforeUpload"
+                       on-upload-success="_onMediaUploaded"
+                       on-upload-before="_onMediaBeforeUpload"
                        required>
           <span slot="drop-label">Preview</span>
           <!--             <div class="file-list">
@@ -126,14 +116,18 @@
         <!-- Product Title -->
     		<paper-input label="Item name:"
                      name="name"
+                     auto-validate
                      value="{{product.title}}"
+                     error-message="please enter a valid title"
                      id="name"
                      required></paper-input>
-    
-        <!-- Description -->
-        <paper-textarea label="Item Descriotion:"
-                        value="{{product.description}}"
-                        id="desctiption"></paper-textarea>
+        <paper-textarea 
+          required
+          auto-validate
+          value="{{product.description}}"
+          error-message="please enter a valid description"
+          label="Description"></paper-textarea>
+        
 	      	<!-- Category -->
 	      	<paper-dropdown-menu label="Select a category:">
             <paper-listbox slot="dropdown-content"
@@ -145,13 +139,20 @@
               </template>
             </paper-listbox>
 			</paper-dropdown-menu><br>
-      
+        
+        <paper-input label="Files Included (PSD,AI,JPEG,PNG):"
+                     name="assets_extentions"
+                     value="{{product.extensions}}"
+                     id="assets_extentions"
+                     required></paper-input>
         <!-- Dowload it for free? -->
       <paper-checkbox id="freebee" checked="{{product.is_free}}">Allow users to download for free</paper-checkbox>
       
         <!-- Pricing -->
 			<div class="layout horizontal justified">
-				<paper-input label="Enter your price (USD):" type="number" on-value-changed="_priceChanged" name="name"
+				<paper-input label="Enter your price (USD):" type="number" on-value-changed="_priceChanged"
+                     value="{{product.price}}"
+                     name="name"
                      id="price"></paper-input>
 				<paper-input label="Enter discount (optional):" name="name" id="discount"></paper-input>
 			</div>
@@ -170,9 +171,9 @@
       <!-- Editor insert -->
 
       <div class="flex layout horizontal end-justified">     
-        <!--<paper-button toggles raised class="red">Publish</paper-button>-->
-        <paper-button toggles raised class="grey">Preview</paper-button>   
-        <paper-button toggles raised class="blue" on-click="_publish">[[mode]]</paper-button><br>
+        <paper-button toggles raised class="green" on-click="_save">[[mode]]</paper-button>
+        <!-- <paper-button toggles raised class="grey" on-click="_preview" disabled$="[[!canPublish]]">Preview</paper-button>    -->
+        <paper-button toggles raised class="blue" on-click="_publish" disabled$="[[!canPublish]]">publish</paper-button><br>
       </div>
       <div class="flex layout horizontal end-justified">
         <p>By clicking Publish, you agree to our Creativeprenuer <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
@@ -193,6 +194,7 @@
                 value: {
                     media_list: []
                 },
+                observer: 'productChanged'
             },
             env:{
                 type: Object,
@@ -222,25 +224,51 @@
       
       constructor() {
         super();
-        this.mode = 'publish';
+        this.mode = 'save';
+        this.canPublish = false;
       }
 
       init() {
         if(this.loaded) return; this.loaded = true;
         
-        this.$.upload.target = this.env.app_domain + '/api/media';
-        this.$.upload.headers = {
+        this.$.mediaInput.target = this.env.app_domain + '/api/media';
+        this.$.mediaInput.headers = {
             'Accept': 'application/json',
             'Authorization': 'Bearer ' + this.env.token
         };
+
+        this.$.assetInput.headers = this.$.mediaInput.headers;
+        this.$.assetInput.target = this.env.app_domain + '/api/asset';
         
-        
-        //document.addEventListener('product-edit', (e) => this.open(e));
         document.addEventListener('product-published', (e) => this._onProductPublished(e));
       }
-        
-      _onUploaded(e){
+
+      productChanged(product){
+          this.canPublish = (Boolean) (product.id);
+      }
+      /**
+       *
+       * @param e
+       * @private
+       */
+      _onMediaUploaded(e){
         this.push('product.media_list', parseInt(e.detail.xhr.response));
+      }
+
+      _preview(){
+        document.dispatchEvent(new CustomEvent('product-preview', { detail: this.product }));
+      }
+
+      _publish(){
+        document.dispatchEvent(new CustomEvent('product-publish', { detail: this.product }));
+      }
+      /**
+       *
+       * @param e
+       * @private
+       */
+      _onAssetUploaded(e){
+        this.set('product.asset_url', e.detail.xhr.response);
       }
 
       _onProductPublished(e){
@@ -249,12 +277,12 @@
         }
         
         this.$.upload.files = [];
-        this.mode = 'publish';
+        this.mode = 'save';
         history.pushState(null, null, '/me/store');
       }
       
-      _publish(){
-          document.dispatchEvent(new CustomEvent('product-publish', {detail: this.product}));
+      _save(){
+          document.dispatchEvent(new CustomEvent('product-save', {detail: this.product}));
       }
       
       open({detail:product}){
@@ -266,7 +294,7 @@
             this.product = {
                 media_list: []
             }
-            this.mode = 'publish'
+            this.mode = 'save'
             
       }
       

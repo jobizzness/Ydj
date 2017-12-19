@@ -1,0 +1,158 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-loader">
+  <template>
+    <style include="">
+      :host {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.91);
+        justify-content: center;
+        align-items: center;
+        z-index: 7;
+        pointer-events: none;
+        opacity: 0;
+      }
+      
+      :host([opened]){
+        pointer-events: initial;
+        opacity: 1;
+        display: flex;
+      }
+
+      .circle {
+        position: absolute;
+        border: 3px solid transparent;
+        border-top-color: var(--app-accent-lighter);
+        border-radius: 50%;
+        -webkit-animation: rotate linear infinite;
+        animation: rotate linear infinite;
+      }
+      .circle.one {
+        height: 50px;
+        width: 50px;
+        left: 50px;
+        top: 50px;
+        -webkit-animation-duration: 0.85s;
+        animation-duration: 0.85s;
+      }
+      .circle.two {
+        height: 75px;
+        width: 75px;
+        top: 38px;
+        left: 38px;
+        -webkit-animation-duration: 0.95s;
+        animation-duration: 0.95s;
+      }
+      .circle.three {
+        height: 100px;
+        width: 100px;
+        top: 25px;
+        left: 25px;
+        -webkit-animation-duration: 1.05s;
+        animation-duration: 1.05s;
+      }
+      .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -90px 0 0 -90px;
+      }
+
+      @-webkit-keyframes rotate {
+        from {
+          -webkit-transform: rotateZ(360deg);
+          transform: rotateZ(360deg);
+        }
+        to {
+          -webkit-transform: rotateZ(0deg);
+          transform: rotateZ(0deg);
+        }
+      }
+      @keyframes rotate {
+        from {
+          -webkit-transform: rotateZ(360deg);
+          transform: rotateZ(360deg);
+        }
+        to {
+          -webkit-transform: rotateZ(0deg);
+          transform: rotateZ(0deg);
+        }
+      }
+
+    </style>
+    
+    <div class="loader">
+      <div class="circle one"></div>
+      <div class="circle two"></div>
+      <div class="circle three"></div>
+    </div>
+  </template>
+  
+  <script>
+      class AppLoader extends Polymer.Element {
+
+          static get is() {
+              return 'app-loader';
+          }
+
+          static get properties() {
+              return {
+                  opened: {
+                      reflectToAttribute: true,
+                      type: Boolean
+                  }
+              }
+          }
+
+          static get observers() {
+              return [
+              ]
+          }
+
+          static get listeners() {
+              return []
+          }
+
+          constructor() {
+              super();
+          }
+        
+          ready() {
+              super.ready();
+              document.addEventListener('app-load', (e) => this.toggle(e));
+              
+              Polymer.RenderStatus.afterNextRender(this, function () {
+
+              });
+          }
+
+          toggle(e){
+              this.opened = !this.opened;
+          }
+
+      }
+
+      window.customElements.define(AppLoader.is, AppLoader);
+  </script>
+</dom-module>

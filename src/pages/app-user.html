@@ -1,13 +1,13 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
 
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../components/app-product-item/app-product-item.html">
 <link rel="import" href="../components/app-products/app-products.html">
 <link rel="import" href="../components/app-button/app-button.html">
-
+<link rel="import" href="../app-profile-data.html">
 
 <!--
 `<Name>` is Description
@@ -22,7 +22,7 @@
                 background-color: #fafafa;
             }
             main{
-                padding-right: 32px;
+                padding: 2em;
             }
             .flex-3{
                 flex:3;
@@ -33,16 +33,24 @@
             app-hero#profileCover{
                 height: 400px;
                 width: 100%;
-                background-color: var(--app-primary-color);
+                background-color: black;
                 display: block;
+                position: relative;
             }
+
             #products-grid>app-product-item{
                 width: 33.333%;
                 padding: 16px 8px;
             }
+
             app-hero>.background{
                 width: 100%;
                 height: 100%;
+                transition: all .15s ease-in-out;
+                cursor: pointer;
+            }
+            app-hero:hover .background{
+                opacity: .8
             }
             aside{
                 margin: 16px 0;
@@ -77,56 +85,77 @@
             .btn-follow iron-icon{
                 margin-right: 8px;
             }
+            #file-form{
+                position: absolute;
+                top:0;
+                right: 0;
+            }
+            #change-cover--button{
+                text-transform: capitalize;
+                background: #ffffffab;
+                margin: 16px;
+                color: #212121d6;
+                transition: all .15s ease-in-out;
+            }
+
+            #change-cover--button iron-icon{
+                margin-right: 4px;
+            }
+
+            #change-cover--button:hover{
+                background-color: var(--app-accent-lighter);
+                color: white;
+            }
         </style>
+
+        <!-- dapp-profile-data provides the data for a given username. -->
+        <app-profile-data
+                id="profileData"
+                profile-username="[[username]]"
+                designer="{{designer}}"
+                on-failure="_failed"></app-profile-data>
 
         <div class="content">
         <!-- Profile Cover -->
         <app-hero id="profileCover">
             <!-- Background Image -->
             <iron-image sizing="cover" 
-                        preload src="/images/banner/fig-2079166_960_720.jpg" 
+                        preload src="[[designer.highlight]]" 
+                        id="cover"
                         class="background" 
                         style="background-color: #5f5f5f;"></iron-image>
+                    <div id="file-form"  hidden$="[[!isOwner]]">
+                       <!-- Uploader -->
+                        <vaadin-upload id="cover_select" accept="image/*" max-files="1" method="POST" hidden timeout="300000" form-data-name="file" required></vaadin-upload>
+                          <paper-button on-click="_addFile" id="change-cover--button">
+                              <iron-icon icon="my-icons:camera"></iron-icon> Change Cover
+                        </paper-button>
+                    </div>
         </app-hero>
         <section class="container" id="small-content">
-            <main class="flex-3">            
-                <!-- Product Listing -->
-                <app-products class="layout vertical">
-                <h3>Goodies (6) </h3>
-                    <!-- List here -->
-                    <iron-list items="[[products]]" 
-                              as="product"
-                              scroll-target="document" 
-                              grid id="products-grid">
-                        <template>
-                          <app-product-item data="[[product]]" on-tap="_viewPost" index="[[index]]"></app-product-item>
-                        </template>
-                    </iron-list>
-                </app-products>
-            </main>
             <aside class="flex">
                 <div class="cards">
                     <!-- Author details -->
                     <section class="card author-info layout">
                         <div class="layout horizontal" style="align-items: center;">
-                            <app-avatar src="/images/defualt-profiles.png"
+                            <app-avatar src="[[designer.avatar]]"
                                         width="70px"
                                         height="70px"></app-avatar>
                             <div class="layout vertical">
-                              <span class="author">Jones&Co</span>
-                              <span class="author-title">Creative Studio</span>
-                              <span class="author-location">Toronto, Canada</span>
+                              <span class="author">[[designer.name]]</span>
+                              <span class="author-title">[[designer.company]]</span>
+                              <span class="author-location">[[designer.location]]</span>
                             </div>
                         </div>
                         <div>
-                            <p>Remained confused and silent by this explanation of the thoughts which had unconsciously been working in his mind. Follow your heart 💗</p>
+                            <p>[[designer.bio]]</p>
                         </div>
                         <div class="layout vertical center-center" style="margin: 1.5em 0;">
-                            <paper-button class="btn-follow"><iron-icon icon="my-icons:follow"></iron-icon> Follow</paper-button>
+                           <!--  <paper-button class="btn-follow"><iron-icon icon="my-icons:follow"></iron-icon> Follow</paper-button> -->
                         </div>
                     </section>
                     <section class="card author-info">
-                        <span class="layout horizontal author-info-item">
+<!--                         <span class="layout horizontal author-info-item">
                             <iron-icon icon="my-icons:followers"></iron-icon>
                             <a href="#" class="layout horizontal">
                                 <span>Followers</span>
@@ -141,13 +170,13 @@
                                 <span class="flex"></span>
                                 <span>36</span>
                             </a>
-                        </span>
+                        </span> -->
                         <span class="layout horizontal author-info-item">
                             <iron-icon icon="my-icons:share"></iron-icon>
                             <a href="#" class="layout horizontal">
                                 <span>Shares</span>
                                 <span class="flex"></span>
-                                <span>23</span>
+                                <span>0</span>
                             </a>
                         </span>
                         <span class="layout horizontal author-info-item">
@@ -155,7 +184,7 @@
                             <a href="#" class="layout horizontal">
                                 <span>Views</span>
                                 <span class="flex"></span>
-                                <span>1,267</span>
+                                <span>0</span>
                             </a>
                         </span>
                         <span class="layout horizontal author-info-item">
@@ -163,7 +192,7 @@
                             <a href="#" class="layout horizontal">
                                 <span>Likes</span>
                                 <span class="flex"></span>
-                                <span>903</span>
+                                <span>0</span>
                             </a>
                         </span>
                     </section>
@@ -187,28 +216,66 @@
                                 <span>Pinterest</span>
                             </a>
                         </span>
-                        <span class="layout horizontal author-info-item">
+                        <span class="layout horizontal author-info-item" hidden$="[[!designer.website]]">
                             <iron-icon icon="my-icons:eye"></iron-icon>
                             <a href="#" class="layout horizontal">
-                                <span>https://jobizzness.com</span>
+                                <span>[[designer.website]]</span>
                             </a>
                         </span>
                     </section>
                 </div>
             </aside>
+            <main class="flex-3">            
+                <!-- Product Listing -->
+                <app-products class="layout vertical">
+                <h3>Goodies (6) </h3>
+                    <!-- List here -->
+                    <iron-list items="[[products]]" 
+                              as="product"
+                              scroll-target="document" 
+                              grid id="products-grid">
+                        <template>
+                          <app-product-item data="[[product]]" on-tap="_viewPost" index="[[index]]"></app-product-item>
+                        </template>
+                    </iron-list>
+                </app-products>
+            </main>
         </section>
 
     </template>
 
     <script>
-        class AppUser extends Polymer.Element {
+        class AppUser extends ReduxMixin(Polymer.Element) {
 
             static get is() { return 'app-user'; }
 
             static get properties() {
                 return {
                   user:{
-                      type: Object
+                      type: Object,
+                      statePath:'user'
+                  },
+
+                  env: {
+                      type: Object,
+                      statePath: 'env',
+                      observer: 'init'
+                  },
+
+                  route:{
+                    type: String,
+                    observer: 'routeChanged'
+                  },
+
+                  isOwner: {
+                    type: Boolean,
+                    computed: '_computeIsOwner(designer, username)',
+                    observer: '_ownerComponents'
+                  },
+
+                  cover: {
+                    type: String,
+                    observer: '_coverChanged'
                   }
                 }
             }
@@ -217,12 +284,63 @@
                 super();
             }
 
-            ready() {
-                super.ready();
+            _addFile(){
+                this.$.cover_select.add();
+            }
 
-                Polymer.RenderStatus.afterNextRender(this, function() {
+            _computeIsOwner(designer, username){
+                if(!this.user) return false;
+                return (designer && designer.nickname == this.user.nickname);
+            }
 
-                });
+            routeChanged(newRoute, oldRoute){
+                if(newRoute.prefix != '/user') return;
+
+                let username = newRoute.path.substring(1, 100);
+                if(username){
+                    this.username = username;
+                }
+            }
+
+            _ownerComponents(){
+                if(!this.$.cover_select) return;
+
+                this.$.cover_select.addEventListener('upload-response', (e) => this._onBeforeUpload(e));
+                this.$.cover_select.addEventListener('upload-success', (e) => this._onUploaded(e));
+            }
+
+            _coverChanged(url){
+                if(!url) return;
+                this.$.cover.src = url;
+            }
+
+            _saveCover(){
+
+            }
+
+            _cancelCover(){
+
+            }
+
+            _onUploaded(e) {
+                this.cover = e.detail.xhr.response;
+            }
+
+            _onBeforeUpload(){}
+
+            init() {
+
+                this.tunnel = document.createElement('iron-ajax');
+                  this.tunnel.headers = {
+                      Authorization : `Bearer ${this.env.token}`,
+                      Accept: 'application/json'
+                  };
+                this.tunnel.contentType = 'application/json';
+                this.$.cover_select.target = this.env.app_domain + '/api/profile-cover';
+                this.$.cover_select.headers = {
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + this.env.token
+                };
             }
 
         }

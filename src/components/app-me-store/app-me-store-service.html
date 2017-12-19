@@ -86,11 +86,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               
               this.setAttribute('product-categories', []);
               
-              Polymer.RenderStatus.afterNextRender(this, function () {
-                  document.addEventListener('product-publish', (e) => this._onProductPublish(e));
-                  document.addEventListener('product-update', (e) => this._uploadProduct(e));
-                  document.addEventListener('fetch-user-products', (e) => this._loadMoreProducts(e));
-              });
+                document.addEventListener('product-save', (e) => this._onProductSave(e));
+                document.addEventListener('product-publish', (e) => this._onProductPublish(e));
+                document.addEventListener('product-update', (e) => this._uploadProduct(e));
+                document.addEventListener('fetch-user-products', (e) => this._loadMoreProducts(e));
+
               
               this._getProductCategories();
               
@@ -116,7 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               });
           }
 
-          _onProductPublish({detail:product}){
+          _onProductSave({detail:product}){
             if(!product) return;
               let mode = product.id ? 'PATCH' : 'POST';
               this.tunnel.url = `${this.env.app_domain}/api/product`;
@@ -134,19 +134,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   let data = req.parseResponse();
                   
                   if(mode === 'POST'){
+
                       document.dispatchEvent(new CustomEvent('product-published', {detail:data}));
                       this.dispatch('addProduct', data);
-                      document.dispatchEvent(new CustomEvent('app-toast',
-                          {detail:{msg:'Product was published successfully!'}}));
-                      return;
+                      return document.dispatchEvent(new CustomEvent('app-toast', {detail:{msg:'Product was published successfully!'}}));
+                      
                   }
                   //this.dispatch('updateProduct', data);
                   document.dispatchEvent(new CustomEvent('product-updated', {detail:data}));
                   //TODO dispatch to the store a product was updated
 
               }, (rejected) => {
-                  document.dispatchEvent(new CustomEvent('app-toast',
-                      {detail:{msg:'Oops! An error occured, Please try again.'}}));
+                  document.dispatchEvent(new CustomEvent('app-toast',{detail:{msg:'Oops! An error occured, Please try again.'}}));
                   
                   let req = rejected.request;
                   let error = rejected.error;
@@ -155,6 +154,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               
           }
         
+        _onProductPublish({ detail: product }){
+            if (!product) return;
+
+            this.tunnel.url = `${this.env.app_domain}/api/product-status/publish`;
+            this.tunnel.method = 'POST';
+            this.tunnel.body = product;
+
+            let request = this.tunnel.generateRequest();
+
+            request.completes.then((req) => {
+                document.dispatchEvent(new CustomEvent('product-published', { detail: data }));
+
+                return document.dispatchEvent(new CustomEvent('app-toast', { detail: { msg: 'Product was Published successfully!' } }));
+            }, (rejected) => {
+                //document.dispatchEvent(new CustomEvent('app-toast', { detail: { msg: 'Oops! An error occured, Please try again.' } }));
+
+                let req = rejected.request;
+                let error = rejected.error;
+
+            });
+        }
           
           _loadMoreProducts(){
 
@@ -179,6 +199,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   this.busy = false;
 
               });
+
+          }
+
+          _changeProductStatus(e){
 
           }
       }

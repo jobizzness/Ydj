@@ -1,0 +1,171 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../components/app-product-item/app-product-item.html">
+<link rel="import" href="../components/app-products/app-products.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../app-store.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-favorites">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        background-color: #fafafa;
+        display: block;
+        min-height: 100vh;
+      }
+      header{
+        background-color: #5c9cfb;
+        padding: 3em 16px;
+      }
+      header .title{
+        color: white;
+        font-size: 23px;
+        font-weight: 500;
+      }
+      iron-list{
+        width:100%;
+        padding-top:16px;
+      }
+      #products-grid>app-product-item{
+        width: 25%;
+        padding: 16px;
+      }
+      #category-banner>.hero-info {
+        position: absolute;
+        z-index: 1;
+      }
+      @media (max-width: 1024px) {
+        #products-grid>app-product-item{
+          width: 50%;
+          padding: 16px;
+        }
+      }
+      @media (max-width: 479px) {
+        #products-grid>app-product-item{
+          width: 100%;
+          padding: 16px;
+        }
+        iron-list{
+          padding-top: 8px;
+        }
+      }
+    </style>
+  
+    <header class="layout vertical center-center">
+      <h1 class="title">Your Favorites</h1>
+    </header>
+  
+    <!-- Product Listing -->
+    <app-products class="layout vertical">
+      <!-- List here -->
+      <iron-list items="[[products]]"
+                 as="product"
+                 class="content"
+                 scroll-target="document"
+                 grid id="products-grid">
+        <template>
+          <app-product-item data="[[product]]" on-click="_selectedChanged"></app-product-item>
+        </template>
+      </iron-list>
+    </app-products>
+    
+  </template>
+  
+  <script>
+      class AppFavorites extends ReduxMixin(Polymer.Element) {
+
+          static get is() {
+              return 'app-favorites';
+          }
+
+          static get properties() {
+              return {
+                  products:{
+                      type: Array,
+                      statePath: 'user.favorites'
+                  },
+                  env: {
+                      type: Object,
+                      statePath: 'env',
+                      observer: 'init'
+                  },
+              }
+          }
+
+          static get observers() {
+              return []
+          }
+
+          static get listeners() {
+              return []
+          }
+
+        static get actions() {
+          return {
+            setFavorites(products) {
+              return {
+                type: C.SET_USER_FAVORITES,
+                payload: products
+              };
+            }
+          
+          }
+        }
+
+          constructor() {
+              super();
+          }
+
+          init() {
+              
+              this.tunnel = document.createElement('iron-ajax');
+              this.tunnel.headers = {
+                  Authorization : `Bearer ${this.env.token}`,
+                  Accept: 'application/json'
+              };
+              this.tunnel.method = "GET";
+              this.tunnel.contentType = 'application/json';
+              this.tunnel.url = `${this.env.app_domain}/api/favorites`;
+
+              let request = this.tunnel.generateRequest();
+
+              request.completes.then((req) => {
+                  //We got our request
+                  let res = req.parseResponse();
+                  this.busy = false;
+                  //this.hasMore = res.page_info.has_more;
+                  this.set = this.set +1;
+                  
+                  this.dispatch('setFavorites', res.data);
+
+              }, (rejected) => {
+                  // failed request, argument is an object
+                  let req = rejected.request;
+                  let error = rejected.error;
+                  this.busy = false;
+
+              });
+              Polymer.RenderStatus.afterNextRender(this, function () {
+
+              });
+          }
+
+      }
+
+      window.customElements.define(AppFavorites.is, AppFavorites);
+  </script>
+</dom-module>

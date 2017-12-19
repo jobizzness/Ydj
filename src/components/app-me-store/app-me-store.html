@@ -4,7 +4,7 @@
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../components/app-goodies-editor/app-goodies-editor.html">
+<link rel="import" href="../../components/app-me-upload/app-me-upload.html">
 
 
 <!-- App Components -->
@@ -153,7 +153,7 @@
                   <a href="/me/upload/[[product.slug]]"><paper-icon-button icon="my-icons:edit" on-click="edit"
                                                                            item="[[product]]"
                   ></paper-icon-button></a>
-                  <paper-icon-button icon="my-icons:trash" on-click="delete"></paper-icon-button>
+                  <paper-icon-button icon="my-icons:trash" on-click="delete" item="[[product]]"></paper-icon-button>
                   
                 </div>
               </section>
@@ -182,7 +182,12 @@
             selected: {
                 type: Object,
                 notify: true
-            }
+            },
+            env: {
+              type: Object,
+              statePath: 'env',
+              observer: 'init'
+            },
         }
       }
       
@@ -194,23 +199,93 @@
       edit(e){
           this.selected = e.target.item;
       }
+
       _computeHasItems(products){
           return (products.length > 0);
       }
+
       upload(){
         this.dispatchEvent(new CustomEvent('product-create', {}))
       }
+
       _getMedia(media){
           if(media.length < 1) return;
           return media[0].src;
       }
-      ready() {
+
+      init() {
         super.ready();
         Polymer.RenderStatus.afterNextRender(this, function() {
           document.dispatchEvent(new CustomEvent('fetch-user-products', {}));
         });
+
+          this.tunnel = document.createElement('iron-ajax');
+                this.tunnel.headers = {
+                    Authorization: `Bearer ${this.env.token}`,
+                    Accept: 'application/json'
+          };
+          this.tunnel.method = "GET";
+          this.tunnel.contentType = 'application/json';
       }
 
+      _selectedChanged({detail:{action, payload}}){
+          this.selected = payload;
+          this[action]();
+      }
+
+      approve(){
+          let data = {
+              level: 'happy',
+              message: 'Are you sure you want to approve this item?'
+          }
+          this.onConfirmed(data, (e) => {
+              if(e.detail === true){
+                  this._processApprove();
+              }
+              document.removeEventListener('on-app-confirm', (e) => {});
+          });
+      }
+
+      delete(e){
+          this.selected = e.target.item;
+          let data = {
+              level: 'danger',
+              message: 'Are you sure you want to reject this item?'
+          }
+          this.onConfirmed(data, (e) => {
+              if (e.detail === true) {
+                  this._processReject()
+              }
+              document.removeEventListener('on-app-confirm', (e) => {});
+          });
+      }
+      
+      _processReject(){
+          this.tunnel.url = `${this.env.app_domain}/api/product/${this.selected.id}`;
+          this._makeChangeRequestCall();
+          
+      }
+
+      _makeChangeRequestCall(){
+          this.tunnel.method = "DELETE";
+          
+          let request = this.tunnel.generateRequest();
+          
+          request.completes.then((req) => {
+              location.reload();
+
+          }, (rejected) => {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+
+          });
+      }
+
+      onConfirmed(data, callback){
+          document.dispatchEvent(new CustomEvent('app-confirm', {detail:data}));
+          return document.addEventListener('on-app-confirm', (e) => callback(e));
+      }
       
     }
 

@@ -44,7 +44,7 @@
 	          </div>
 	          <div class="flex">
 	            <panel>
-	              <span class="panel-title center center-justified">Downloads:</span>
+	              <span class="panel-title center center-justified">Buyer</span>
 	            </panel>
 	          </div>
 	          <div class="flex">
@@ -55,12 +55,12 @@
 	        </section>
 
 	        <!-- Earnings List -->
-	        <template is="dom-repeat" items="[[items]]">
+	        <template is="dom-repeat" items="[[items]]" as="item">
 	          <section class="layout horizontal earnings">
-	            <div class="flex-4"><span class="light-text">April 2, 2017</span></div>
-	            <div class="flex-3"><span class="strong-text">STOREFRONT - Apparel Mockups Bundle</span></div>
-	            <div class="flex layout vertical center center-justified"><span class="light-text">3</span></div>
-	            <div class="flex layout vertical center center-justified"><span class="strong-text">$20.20</span></div>
+	            <div class="flex-4"><span class="light-text">April 02, 2017</span></div>
+	            <div class="flex-3"><span class="strong-text">[[item.product.title]]</span></div>
+	            <div class="flex layout vertical center center-justified"><span class="light-text">[[item.buyer.email]]</span></div>
+	            <div class="flex layout vertical center center-justified"><span class="strong-text">$[[item.product.price]]</span></div>
 	          </section>
 	        </template>
 
@@ -70,11 +70,6 @@
 	        	<div class="flex-3">
 	            <panel>
 	              <span class="strong-text">Total:</span>
-	            </panel>
-	          </div>
-	          <div class="flex">
-	            <panel>
-	              <span class="strong-text" style="margin-left:-40px;">11</span>
 	            </panel>
 	          </div>
 	          <div class="flex">
@@ -89,15 +84,17 @@
   </template>
 
   <script>
-    class AppMeEarnings extends Polymer.Element {
+    class AppMeEarnings extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-me-earnings'; }
 
       static get properties() {
         return {
-          items:{
-          	value: [{},{},{},{}]
-          }
+          env: {
+				type: Object,
+				statePath: 'env',
+				observer: 'init'
+			}
         };
       }
 
@@ -112,6 +109,46 @@
           
         });
       }
+		_getProducts() {
+
+			this.tunnel.url = `${this.env.app_domain}/api/sales`;
+			this.tunnel.method = "GET";
+
+			let request = this.tunnel.generateRequest();
+
+			request.completes.then((req) => {
+				//We got our request
+				let res = req.parseResponse();
+				this.busy = false;
+				//this.hasMore = res.page_info.has_more;
+				//this.set = this.set + 1;
+
+				this.items = res;
+
+			}, (rejected) => {
+				// failed request, argument is an object
+				let req = rejected.request;
+				let error = rejected.error;
+				this.busy = false;
+
+			});
+		}
+
+			init() {
+				if (this.firstLoad) return;
+
+				this.tunnel = document.createElement('iron-ajax');
+				this.tunnel.headers = {
+					Authorization: `Bearer ${this.env.token}`,
+					Accept: 'application/json'
+				};
+				this.tunnel.method = "GET";
+				this.tunnel.contentType = 'application/json';
+
+				this._getProducts();
+
+				this.firstLoad = true;
+			}
 
     }
 

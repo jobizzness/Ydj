@@ -165,8 +165,7 @@
 						 type="email" 
 						 name="email" 
 						 id="paypalEmail"
-             disabled
-						 value="[[user.email]]">
+						 value="[[user.billing]]">
 	            	<iron-icon icon="main" prefix></iron-icon>
 	          	</paper-input>
 			</div>
@@ -179,7 +178,7 @@
                    type="password"
                    name="password"
                    id="password"
-                   value="tester123" disabled>
+                   value="supersecretstuff">
             	<iron-icon icon="main" prefix></iron-icon>
           	</paper-input>
           	<!-- Delete Button -->
@@ -226,13 +225,21 @@
 			}
 
       _update(){
-         return this.$.dbRef.updateUser({
+        let password = this.$.password.value;
+        
+        let data = {
             username: this.$.username.value,
             email: this.$.email.value,
             location: this.$.location.value,
             name: this.$.name.value,
-            bio: this.$.bio.value
-        });
+            bio: this.$.bio.value,
+            billing: this.$.paypalEmail.value
+          }
+          if(password != 'supersecretstuff'){
+            data.password = password;
+          }
+
+         return this.$.dbRef.updateUser(data);
       }
       
       ready() {
