@@ -107,15 +107,15 @@
 	    	<aside class="flex">
 	    		<iron-selector attr-for-selected="name" selected="[[page]]" id="account_nav">
 
-            <a href="/me/dashboard" name="dashboard" class="acc-nav--item" hidden$="[[!user]]">Dashboard</a>
+            <a href="/me/dashboard" name="dashboard" class="acc-nav--item" hidden$="[[!user]]">My Dashboard</a>
             <a href="/me/requests" name="me-requests" class="acc-nav--item" hidden$="[[!admin]]">Requests</a>
             <a href="/me/categories" name="me-categories" class="acc-nav--item" hidden$="[[!admin]]">Categories</a>
-            <a href="/me/store" name="me-store" class="acc-nav--item" hidden$="[[!seller]]">Store</a>
-            <a href="/me/upload" name="me-upload" class="acc-nav--item" on-click="_create" hidden$="[[!seller]]">Upload Item</a>
-            <a href="/me/earnings" name="me-earnings" class="acc-nav--item" hidden$="[[!seller]]">Earnings</a>
+            <a href="/me/store" name="me-store" class="acc-nav--item" hidden$="[[!seller]]">My Store</a>
+            <a href="/me/upload" name="me-upload" class="acc-nav--item" on-click="_create" hidden$="[[!seller]]">Sell Item</a>
+            <a href="/me/earnings" name="me-earnings" class="acc-nav--item" hidden$="[[!seller]]">My Earnings</a>
             <a href="/me/withdrawals" name="me-withdrawals" class="acc-nav--item" hidden$="[[!seller]]"> Withdrawals</a>
             <a href="/me/goodies" name="me-goodies" class="acc-nav--item" hidden$="[[!seller]]">Purchases</a>
-            <a href="/me/account" name="me-account" class="acc-nav--item" hidden$="[[!user]]">Account</a>
+            <a href="/me/account" name="me-account" class="acc-nav--item" hidden$="[[!user]]">Account Settings</a>
             <a href="/me/settings" name="me-settings" class="acc-nav--item" hidden$="[[!admin]]">Settings</a>
 
 	    		</iron-selector>
