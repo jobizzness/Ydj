@@ -84,7 +84,7 @@
     
     	<section class="inputs">
       <!-- <section class="card"> -->
-        <h1>Upload an item</h1><br>
+        <h1>Upload an item to sell</h1><br>
       <!-- </section> -->
     		<vaadin-upload id="assetInput"
                        accept=".zip"
@@ -92,7 +92,7 @@
                        on-upload-success="_onAssetUploaded"
                        on-upload-before="_onAssetBeforeUpload"
                        required>
-          <span slot="drop-label">Assets ZIP file</span>
+          <span slot="drop-label">Drop your design assets in ZIP file here. </span>
 <!--             <div class="file-list">
               <div class="receipt-wrapper">
                 <img src$="[[_receiptURL]]" alt="Receipt" hidden$="[[!_showReceipt(expense._attachments.*)]]">
@@ -105,7 +105,7 @@
                        on-upload-success="_onMediaUploaded"
                        on-upload-before="_onMediaBeforeUpload"
                        required>
-          <span slot="drop-label">Preview</span>
+          <span slot="drop-label">Drop preview images here.</span>
           <!--             <div class="file-list">
                         <div class="receipt-wrapper">
                           <img src$="[[_receiptURL]]" alt="Receipt" hidden$="[[!_showReceipt(expense._attachments.*)]]">
@@ -118,14 +118,14 @@
                      name="name"
                      auto-validate
                      value="{{product.title}}"
-                     error-message="please enter a valid title"
+                     error-message="Please enter a valid item name."
                      id="name"
                      required></paper-input>
         <paper-textarea 
           required
           auto-validate
           value="{{product.description}}"
-          error-message="please enter a valid description"
+          error-message="Please enter a valid and detailed description of your item."
           label="Description"></paper-textarea>
         
 	      	<!-- Category -->
@@ -140,7 +140,7 @@
             </paper-listbox>
 			</paper-dropdown-menu><br>
         
-        <paper-input label="Files Included (PSD,AI,JPEG,PNG):"
+        <paper-input label="Enter file types (PSD, AI, JPEG, PNG, SVG):"
                      name="assets_extentions"
                      value="{{product.extensions}}"
                      id="assets_extentions"
@@ -176,7 +176,7 @@
         <paper-button toggles raised class="blue" on-click="_publish" disabled$="[[!canPublish]]">publish</paper-button><br>
       </div>
       <div class="flex layout horizontal end-justified">
-        <p>By clicking Publish, you agree to our Creativeprenuer <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+        <p>By clicking Publish, you agree to our Seller <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
       </div>
 
 		</section>
