@@ -285,7 +285,7 @@ based on your level.
                             <app-avatar src="[[user.avatar]]" width="40px" height="40px"></app-avatar>
                             <div class="user-info">
                               <span class="username">[[user.nickname]]</span>
-                              <span class="user-balance">$[[user.balance]]</span>
+                              <span class="user-balance">Earnings: $[[user.balance]]</span>
                             </div>
                           </a>
                           <template is="dom-if" if="[[is_seller]]">
@@ -298,7 +298,7 @@ based on your level.
                             <a href="/me/account">My Account</a>
                             <a href="/me/goodies">My Purchases</a>
                           </template>
-                          <a on-click="signOut">Sign out</a>
+                          <a on-click="signOut">Log out</a>
                         </shibui-dropdown-menu>
                       </user-actions>
                     </template>
