@@ -161,7 +161,7 @@
 		<section class="card">
 			<h1 class="card-title">Billing Settings</h1>
 			<div class="layout vertical">
-			<paper-input label="Your Paypal Email" 
+			<paper-input label="Add a Paypal account" 
 						 type="email" 
 						 name="email" 
 						 id="paypalEmail"
@@ -173,14 +173,21 @@
 
 		<!-- Security Settings -->
 		<section class="card">
-			<h1 class="card-title">Security Settings</h1>
-			<paper-input label="Your Password"
+			<h1 class="card-title">Security Settings - Change Password</h1>
+			<paper-input label="Current Password"
                    type="password"
                    name="password"
                    id="password"
                    value="supersecretstuff">
             	<iron-icon icon="main" prefix></iron-icon>
-          	</paper-input>
+       </paper-input>
+       <paper-input label="New Password"
+                   type="password"
+                   name="password"
+                   id="password"
+                   value="supersecretstuff">
+              <iron-icon icon="main" prefix></iron-icon>
+       </paper-input>
           	<!-- Delete Button -->
           	<paper-button class="danger-trans delete"  disabled="[[busy]]">
               <iron-icon icon="my-icons:sad"></iron-icon> Delete Account</paper-button>
