@@ -10,6 +10,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-hero/app-hero.html">
 
 <!--
 `<Name>` is Description
@@ -54,12 +57,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
   
     <section class="main">
-      <!-- Section 1 -->
+      <!-- Section 1 
       <app-hero class="layout vertical center-center" id="category-banner">
         <div class="hero-info layout vertical gradient-1">
           <h2 class="title">About YDJ Marketplace</h2>
           <p>This is a marketplace where you will find uniquely created design assets.</p>
         </div>
+      </app-hero>-->
+
+      <app-hero class="layout vertical center-center" id="category-banner">
+        <div class="hero-info layout vertical">
+          <h2>About YDJ Marketplace</h2>
+          <p>Find better and more creative graphic and design assets you need for your projects.</p>
+        </div>
+          <!-- Background Image -->
+          <iron-image sizing="cover" 
+                      preload src="/images/banner/design.jpg" 
+                      class="gradient-1" >    
+          </iron-image>
+      </app-hero>
+
+      <app-hero class="layout vertical center-center" id="category-banner">
+        <div class="hero-info layout vertical">
+          <h2>About YDJ Marketplace</h2>
+          <p>Find better and more creative graphic and design assets you need for your projects.</p>
+        </div>
+          <!-- Background Image -->
+          <iron-image sizing="cover" 
+                      preload src="/images/banner/design.jpg" 
+                      class="gradient-1" >    
+          </iron-image>
       </app-hero>
     
       <div class="page-content">

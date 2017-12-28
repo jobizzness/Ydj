@@ -10,6 +10,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/google-youtube/google-youtube.html">
+<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-hero/app-hero.html">
+<link rel="import" href="../my-icons.html">
+<link rel="import" href="../components/app-product-item/app-product-item.html">
+<link rel="import" href="../components/app-products/app-products.html">
+<link rel="import" href="../components/app-products-service/app-products-service.html">
+
 
 <!--
 `<Name>` is Description
@@ -22,6 +38,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+       app-hero{
+        height: 60vh;
+        background-color: white;
+        display: block;
+      }
+
+      app-hero>.hero-info{
+        max-width: 800px;
+      }
+      app-hero>.hero-info p{
+        margin: 0;
+        font-size: 16px;
+      }
+      app-hero .hero-info>* {
+        color:inherit;
+      }
+
       .gradient-1 {
         background: rgba(115,102,255,1);
         background: linear-gradient(to right, rgba(115,102,255,1) 0%, rgba(255,108,171,1) 100%);
@@ -40,8 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .page-content {
         max-height: 100%;
         padding: 0 50px;
-      }
-      
+      }      
       .page-heading {
         display: block;
         width: 60px;
@@ -54,18 +86,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
   
   
-    <section class="main">
-      <!-- Section 1 -->
+    <section class="main vertical content">
+      <!-- Section 1 
       <app-hero class="layout vertical center-center" id="category-banner">
         <div class="hero-info layout vertical gradient-3">
           <h2 class="title">Terms &amp; Condition</h2>
           <p>This is a marketplace where you will find uniquely created design assets.</p>
         </div>
-        <!-- Background Image -->
+        <!-- Background Image
         <iron-image sizing="cover"
                     preload src="/images/banner/design.jpg"
                     class="background"
                     style="background-color: #5f5f5f;"></iron-image>
+      </app-hero>-->
+
+      <!-- App Hero -->
+      <app-hero class="layout vertical center-center gradient-1">
+      <div class="hero-info layout vertical">
+            <h2>Terms &amp; Condition</h2>
+        </div>
+
       </app-hero>
     
       <div class="page-content">
@@ -146,7 +186,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <p><strong>8. &nbsp; Governing Law</strong></p>
         <p>The terms outlined above here be governed and construed in accordance with the laws of Malaysia. Any dispute, controversy or claim arising or relating to The Terms shall be settled by arbitration in Malaysia in accordance with the Arbitration Rules of Malaysia. The arbitration proceedings shall be conducted in English.</p>
       
-        <p><strong>Created:</strong> October 31, 2017 &nbsp; <strong>Effective date:</strong> November 6, 2017</p><br>
+        <p><strong>Created:</strong> December 27, 2017 &nbsp; <strong>Effective date:</strong> January 6, 2018</p><br>
       </div>
     </section>
   </template>
