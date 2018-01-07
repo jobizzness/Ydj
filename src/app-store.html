@@ -8,7 +8,7 @@
           notification: [],
           busy: false,
           history: [],
-          categories:[],
+          categories:   []
       },
       env: {
           app_domain: env.app_domain,
@@ -34,6 +34,8 @@
                 return App.setBusy(state, action);
             case C.SET_USER_TOKEN:
                 return App.setToken(state, action);
+            case C.SET_CATEGORIES:
+                return App.setCategories(state, action);
             case C.SET_CART:
                 return App.setCart(state, action);
             case C.MAKE_SELLER:
@@ -120,6 +122,16 @@
 		newState.app.busy = action.payload;
 		return newState;
 	};
+
+  /*
+   * sets the current user object.
+   * @param {state, action}
+   */
+  App.setCategories = (state, action) => {
+    let newState = Object.assign({}, state);
+    newState.categories = action.payload;
+    return newState;
+  };
 
   /*
    * We have new products so lets

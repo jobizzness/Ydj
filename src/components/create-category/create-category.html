@@ -1,0 +1,127 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="create-category">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block
+      }
+      #dialog {
+        display: block;
+        padding: 0 8px;
+        border-top: 3px solid var(--app-accent-lighter);
+        margin: 0;
+        width: 60vw;
+        min-height: 60vh;
+        max-height: 100vh;
+      }
+      .space-top-bottom>*{
+        margin:16px;
+      }
+
+      #form{
+        max-width: 800px;
+        margin:0 auto;
+        background-color: white;
+        padding: 24px;
+      }
+
+    </style>
+
+    <paper-dialog id="dialog" no-cancel-on-esc-key="false" opened="{{opened}}">
+    	<section class="inputs">
+        <iron-form id="form" >
+        <form is="iron-form" method="post" class="space-top-bottom">
+            <!-- Amount -->
+              <paper-input label="Enter Title" 
+                  name="name" 
+                  id="amount" 
+                  error-message="Title is required" 
+                  required
+                  value="{{data.name}}"
+                  auto-validate
+                  type="text">
+              </paper-input>
+
+              <paper-input 
+                  label="Description" 
+                  type="text"
+                  value="{{data.description}}"
+                  name="description" 
+                  id="description">
+              </paper-input>
+
+              <!-- Controls -->
+              <div class="layout horizontal center">
+                <paper-button raised on-click="_send" primary style="margin: 16px 0;" disabled="[[busy]]">[[state]]</paper-button>
+              </div>
+        </form>
+      </iron-form>
+    	</section>
+	</paper-dialog>
+
+  </template>
+
+  <script>
+    class CreateCategory extends Polymer.Element {
+
+      static get is() { return 'create-category'; }
+
+      static get properties() {
+        return {
+          opened: Boolean,
+          data: {
+            type: Object,
+            observer: '_dataChanged'
+          }
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      _send(){
+        if(this.$.form.validate()){
+          this.dispatchEvent(new CustomEvent('make-category', {detail: this.data}));
+        }
+      }
+
+      clear(){
+
+      }
+
+      _dataChanged(data){
+        this.state = data.id 
+                  ? 'Update'
+                  : 'Create';
+      }
+
+      ready() {
+        super.ready();
+
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(CreateCategory.is, CreateCategory);
+  </script>
+</dom-module>

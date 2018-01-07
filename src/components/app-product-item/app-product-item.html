@@ -125,13 +125,13 @@
 
         <footer>
           <div class="shot-footer">
-              <a href="#"><h1 class="product-title">[[data.title]]</h1></a>
+              <a href$="/goodies/[[data.slug]]"><h1 class="product-title">[[data.title]]</h1></a>
               <p class="product-owner">
-                  by <a href="#">[[data.owner.nickname]]</a>
+                  by <a href$="/user/[[data.owner.nickname]]">[[data.owner.nickname]]</a>
               </p>
               <div class="layout horizontal price-tag">
                 <p class="product-category">
-                  <a href="#">[[data.category]]</a>
+                  <a href$="/category/[[data.category]]">[[data.category]]</a>
                 </p>
                 <span class="flex"></span>
                 <span class="price">[[data.price]]</span>
