@@ -65,6 +65,7 @@ based on your level.
   <link rel="lazy-import" href="pages/app-category.html" group="category">
   <link rel="lazy-import" href="pages/app-me.html" group="me">
   <link rel="lazy-import" href="lazy-resources.html" group="lazy-resources">
+  <link rel="lazy-import" href="pages/app-questions.html" group="questions">
 
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment app-button user-actions">
@@ -126,6 +127,7 @@ based on your level.
         white-space: nowrap;
         position: relative;
         overflow: hidden;
+        text-transform: capitalize;
       }
       
       iron-pages{
@@ -233,6 +235,10 @@ based on your level.
     
     <shop-cart-modal id="cartModal"></shop-cart-modal>
 
+    <app-me-store-service
+            on-product-categories-changed="_setCategories">
+    </app-me-store-service>
+
     <app-loader id="loader"></app-loader>
 
 
@@ -314,8 +320,8 @@ based on your level.
                             selected="non-existing"
                             fallback-selection="default" 
                             class="app-nav">
-                              <template is="dom-repeat" items="[[nav.items]]" as="item">
-                                <a href="[[item.slug]]" class="link">[[item.name]]</a>
+                              <template is="dom-repeat" items="[[nav]]" as="item">
+                                <a href="category/[[item.slug]]" class="link">[[item.name]]</a>
                               </template>
                         </iron-selector>
                         <!-- Search Box -->
@@ -349,6 +355,7 @@ based on your level.
           <app-sell name="sell"></app-sell>
           <terms-seller name="terms-seller"></terms-seller>
           <terms-buyer name="terms-buyer"></terms-buyer>
+          <app-questions name="questions"></app-questions>
           <app-404 name="view404"></app-404>
         </iron-pages>
         
@@ -387,8 +394,8 @@ based on your level.
           subroute: String,
           
           nav:{
-            type:Object,
-            computed: 'navigation()'
+            type: Array,
+            statePath: 'categories'
           },
 
           page: {
@@ -411,6 +418,7 @@ based on your level.
               type: Boolean,
               statePath: 'user.is_seller'
           },
+
           _shouldRenderHeader: {
             computed: '_computeShouldRenderHeader(page)',
             type:Boolean,
@@ -439,6 +447,17 @@ based on your level.
           }
       }
       
+      static get actions(){
+        return {
+          setCategories(categories){
+              return {
+                  type: C.SET_CATEGORIES,
+                  payload: categories
+              };
+          },
+        }
+      }
+
       constructor() {
         super();
           this.firstLoad = true;
@@ -454,6 +473,14 @@ based on your level.
           document.addEventListener('app-toast', (e) =>this.announce(e));
           document.addEventListener('app-confirm', (e) => this._confirm(e));
 
+          this.dispatch('setCategories', [
+              {name: 'Print Templates', slug: 'print-templates'},
+              {name: 'Graphics', slug: 'graphics'},
+              {name: 'Web & Apps', slug: 'web-apps'},
+              {name: 'Branding', slug: 'branding'},
+              {name: 'Plug-ins', slug: 'plugins'},
+              {name: 'Fonts', slug: 'fonts'},
+              {name: '3D', slug: '3d'}]);
 
           Polymer.RenderStatus.afterNextRender(this, function() {
               
@@ -555,6 +582,7 @@ based on your level.
         case 'category':
         case 'favorites':
         case 'terms-seller':
+        case 'questions':
             return page;
           default:
               return '404';
@@ -582,17 +610,6 @@ based on your level.
         this.page = 'view404';
       }
 
-      navigation(){return {
-            items: [
-              {name: 'Print Templates', slug: 'category/print-templates'},
-              {name: 'Graphics', slug: 'category/graphics'},
-              {name: 'Web & Apps', slug: 'category/web-apps'},
-              {name: 'Branding', slug: 'category/branding'},
-              {name: 'Plug-ins', slug: 'category/plugins'},
-              {name: 'Fonts', slug: 'category/fonts'},
-              {name: '3D', slug: 'category/3d'}
-            ]}
-      }
 
       _headerChanged(){
           Polymer.Async.timeOut.run(() => {
@@ -659,6 +676,10 @@ based on your level.
           this.$.modal.classList.remove("happy");
           this.$.modal.classList.add(data.level);
           this.$.modal.open();
+      }
+
+      _setCategories({detail:categories}){
+        this.dispatch('setCategories', categories);
       }
 
       _onModalConfirm(e){

@@ -96,6 +96,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           _getProducts(){
               
+              if(this.category){
+                this.tunnel.params = {category:this.category}
+              }
               this.tunnel.url = `${this.env.app_domain}/api/product`;
               this.tunnel.method = "GET";
 
