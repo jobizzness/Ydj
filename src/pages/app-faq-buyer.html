@@ -1,0 +1,170 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-hero/app-hero.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="faq-buyer">
+  <template>
+    <style include="">
+      :host {
+        display: block;
+      }
+
+      app-hero{
+        height: 200px;
+        margin-bottom: 3em;
+        background-color: transparent;
+        position: relative;
+        display: block;
+        color: white;
+      }
+
+      app-hero>.hero-info{
+        max-width: 800px;
+        position: absolute;
+        z-index: 1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%)
+
+      }
+      app-hero>.hero-info p{
+        margin: 0;
+        font-size: 16px;
+      }
+      app-hero .hero-info>* {
+        color:inherit;
+      }
+
+      .gradient-1 {
+        background: rgba(115,102,255,1);
+        background: linear-gradient(to right, rgba(115,102,255,1) 0%, rgba(255,108,171,1) 100%);
+      }
+      
+      .gradient-2 {
+        background: rgba(110,226,245,1);
+        background: linear-gradient(to right, rgba(110,226,245,1) 0%, rgba(100,84,240,1) 100%);
+      }
+      
+      .gradient-3 {
+        background: rgba(238,77,95,1);
+        background: linear-gradient(to right, rgba(238,77,95,1) 0%, rgba(255,207,165,1) 100%);
+      }
+      
+      .page-content {
+        max-height: 100%;
+        padding: 0 50px;
+      }
+      
+      .page-heading {
+        display: block;
+        width: 60px;
+        height: 5px;
+        margin-bottom: 26px;
+        background-color: #212121;
+        border: none;
+        float: none;
+      }
+    </style>
+    
+ <section class="layout vertical content">
+      <!-- Section 1 -->
+      <!-- App Hero -->
+      <app-hero class="layout vertical center-center gradient-3">
+        <div class="hero-info layout vertical">
+            <h2>FAQ - For Buyers</h2>
+        </div>
+      </app-hero>
+
+    <div class="page-content">
+      <hr class="page-heading">
+      <h4>I’d like to signup, but will the registration process take long?</h4>
+      <p>Creating an account is very easy on YDJ Marketplace. You can sign up using your email address, Facebook, Twitter or Google account.</p><br>
+
+      <h4>What am I allowed to sell?</h4>
+      <p>You may sell any digital and vector based items. We accept items like fonts, icons, logos and anything ranging from print to web elements. You can also sell 3D design assets that can be used for game development, desktop, mobile, AR or VR consoles.</p><br>
+
+      <h4>How many items can I purchase and download?</h4>
+      <p>We currently do not restrict the number of items you can purchase on the marketplace. So feel free to purchase as many items as you want.</p><br>
+
+      <h4>Once items are downloaded, are there any restrictions on usage?</h4>
+      <p>All items purchased have a <strong>Standard License</strong> coverage. The items may be used to create <strong>End Products</strong> for sale for your client and you may charge them for your services. However, its usage is limited to only one single end product or project.</p>
+      <p>For personal use there is no limited number of usages for the items purchased. For more information, click here to view our <a href="/terms-seller">licensing terms &amp; conditions</a>.</p><br>
+
+      <h4>Can I use purchased templates to create my printed end product and, without any further customizations, sell the product?</h4>
+      <p>Yes. Some templates designed for printed products require little or no modification. However, do keep in mind that you should not sell the original template itself.</p><br>
+
+      <h4>What methods of payment do you accept?</h4>
+      <p>Currently, we accept only online payments using PayPal. PayPal is a reputable, safe and trusted online payment service that lets you enjoy secure payment transactions. All major credits cards are accepted via <a href="https://www.paypal.com">PayPal</a>. Payments are made in U.S. Dollars. </p><br>
+
+      <h4>How long will the items I’ve purchased be available for download? Will it expire?</h4>
+      <p>Items purchased will not expire but we do recommend that you download your items as soon as you have purchased them. This is because we can’t guarantee the ongoing availability of items after your initial download. We may remove the item (either temporarily or permanently) for the following reasons:</p>
+      <ul>
+        <li>Sellers may update the item anytime without prior notice.</li>
+        <li>The item could be disabled due to a technical problem.</li>
+        <li>We may have received a copyright complaint or other legal issues about the item.</li>
+      </ul><br>
+
+      <h4>How do I edit or update my payment details?</h4>
+      <p>You can update, add new or delete your payment account in the <strong>My Account</strong> page, under <strong>Billing Settings</strong>.</p><br>
+
+      <h4>If I have accidentally done a duplicate purchase can I get a refund?</h4>
+      <p>Yes. Do notify us <a href="mailto:support@yourdesignjuice.com">here</a> about the accidental purchase. We will be happy to issue you a refund.</p><br>
+    </div>
+ </section>
+</template>
+  
+  <script>
+      class FaqBuyer extends Polymer.Element {
+
+          static get is() {
+              return 'faq-buyer';
+          }
+
+          static get properties() {
+              return {}
+          }
+
+          static get observers() {
+              return []
+          }
+
+          static get listeners() {
+              return []
+          }
+
+          constructor() {
+              super();
+          }
+
+          ready() {
+              super.ready();
+
+              Polymer.RenderStatus.afterNextRender(this, function () {
+
+              });
+          }
+
+      }
+
+      window.customElements.define(FaqBuyer.is, FaqBuyer);
+  </script>
+</dom-module>
