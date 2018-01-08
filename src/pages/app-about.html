@@ -19,7 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 @element Name
 -->
-<dom-module id="about">
+<dom-module id="app-about">
   <template>
     <style include="">
       :host {
@@ -88,20 +88,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <section class="layout vertical content">
     <!-- Section 1 -->
     <!-- App Hero -->
-      <app-hero class="layout vertical center-center gradient-3">
+      <app-hero class="layout vertical center-center gradient-1">
         <div class="hero-info layout vertical">
             <h2>About YDJ Marketplace</h2>
         </div>
       </app-hero>
     
-      <div class="page-content">
-        <hr class="page-heading">
-        <h4>What We Are Made Of?</h4>
-        <p>YDJ Marketplace is an online marketplace that sells digital design assets. These digital goods are created by a design community brought together by our core company YDJ (YourDesignJuice.com).</p>
+      <div class="page-content" style="text-align:center; padding-bottom:65px;">
+        <!-- <hr class="page-heading"> -->        
+        <img src="images/about-ydjm-logo.png">
+        <h2>What We Are Made Of?</h2>
+        <p style="text-align:left;">YDJ Marketplace is an online marketplace that sells digital design assets. These digital goods are created by a design community brought together by our core company YDJ (YourDesignJuice.com).</p>
       
-        <p>Our community members create and exchange digital design assets through the platform mainly for use in design and marketing projects. Assets include vector graphics, packaging design mockups, document templates, website templates, 3D assets, fonts and other miscellaneous design goods.</p>
+        <p style="text-align:left;">Our community members create and exchange digital design assets through the platform mainly for use in design and marketing projects. Assets include vector graphics, packaging design mockups, document templates, website templates, 3D assets, fonts and other miscellaneous design goods.</p>
       
-        <p>We understand too well that design plays an important role in every business. Our passionate and dedicate team are always striving to provide you with design assets that are of the highest quality, up-to-date and easily customizable.</p>
+        <p style="text-align:left;">We understand too well that design plays an important role in every business. We strive to provide you with design assets that are of the highest quality, up-to-date and easily customizable.</p>
       </div>
     </section>
   </template>
@@ -110,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       class AppAbout extends Polymer.Element {
 
           static get is() {
-              return 'about';
+              return 'app-about';
           }
 
           static get properties() {

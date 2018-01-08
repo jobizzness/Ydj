@@ -61,11 +61,14 @@ based on your level.
   <link rel="lazy-import" href="pages/app-favorites.html" group="favorites">
   <link rel="lazy-import" href="pages/terms-seller.html" group="terms-seller">
   <link rel="lazy-import" href="pages/terms-buyer.html" group="terms-buyer">
+  <link rel="lazy-import" href="pages/app-faq-seller.html" group="faq-seller">
+  <link rel="lazy-import" href="pages/app-faq-buyer.html" group="faq-buyer">
   <link rel="lazy-import" href="pages/app-about.html" group="about">
+  <link rel="lazy-import" href="pages/privacy-policy.html" group="privacy-policy">
   <link rel="lazy-import" href="pages/app-category.html" group="category">
   <link rel="lazy-import" href="pages/app-me.html" group="me">
   <link rel="lazy-import" href="lazy-resources.html" group="lazy-resources">
-  <link rel="lazy-import" href="pages/app-questions.html" group="questions">
+  <!-- <link rel="lazy-import" href="pages/app-questions.html" group="questions"> -->
 
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment app-button user-actions">
@@ -353,8 +356,11 @@ based on your level.
           <app-cart name="cart"></app-cart>
           <app-about name="about"></app-about>
           <app-sell name="sell"></app-sell>
+          <privacy-policy name="privacy-policy"></privacy-policy>
           <terms-seller name="terms-seller"></terms-seller>
           <terms-buyer name="terms-buyer"></terms-buyer>
+          <faq-seller name="faq-seller"></faq-seller>
+          <faq-buyer name="faq-buyer"></faq-buyer>
           <app-questions name="questions"></app-questions>
           <app-404 name="view404"></app-404>
         </iron-pages>
@@ -581,7 +587,13 @@ based on your level.
         case 'cart':
         case 'category':
         case 'favorites':
+        case 'about':
+        case 'privacy-policy':
+        case 'sell':
         case 'terms-seller':
+        case 'terms-buyer':
+        case 'faq-seller':
+        case 'faq-buyer':
         case 'questions':
             return page;
           default:
