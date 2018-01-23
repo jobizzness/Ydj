@@ -1,0 +1,47 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-message">
+  <template>
+    <style>
+      :host {
+        display: block
+      }
+    </style>
+
+    
+
+  </template>
+
+  <script>
+    class AppMessage extends Polymer.Element {
+
+      static get is() { return 'app-message'; }
+
+      static get properties() {
+        return {
+          
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMessage.is, AppMessage);
+  </script>
+</dom-module>

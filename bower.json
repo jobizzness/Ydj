@@ -19,7 +19,29 @@
     "iron-localstorage": "^2.0.0",
     "iron-list": "^2.0.4",
     "paper-button": "^2.0.0",
-    "paper-input": "^2.0.1"
+    "paper-input": "^2.0.1",
+    "paper-material": "^2.0.0",
+    "iron-ajax": "^2.0.5",
+    "paper-badge": "^2.0.0",
+    "paper-dropdown-menu": "^2.0.0",
+    "paper-listbox": "^2.0.0",
+    "paper-item": "^2.0.0",
+    "paper-checkbox": "^2.0.1",
+    "chartist": "^0.11.0",
+    "vaadin-date-picker": "2.0.0-beta2",
+    "paper-dialog": "^2.0.0",
+    "vaadin-upload": "^2.0.0",
+    "shibui-dropdown-menu": "ShibuiElements/shibui-dropdown-menu#^1.1.0",
+    "paper-radio-button": "^2.0.0",
+    "google-youtube": "^1.3.0",
+    "paper-search": "Collaborne/paper-search#^2.0.9",
+    "iron-location": "^2.0.1",
+    "polymer-redux": "^1.0.4",
+    "lazy-imports": "^2.0.0",
+    "paper-toast": "^2.0.0",
+    "tinymce": "^4.7.1",
+    "wysiwyg-e": "miztroh/wysiwyg-e#^2.0.6",
+    "iron-form": "^2.0.1"
   },
   "resolutions": {
     "polymer": "^2.0.1",
@@ -29,7 +51,7 @@
     "iron-resizable-behavior": "1 - 2",
     "iron-scroll-target-behavior": "1 - 2",
     "app-route": "2869c7bc2c",
-    "webcomponentsjs": "^1.0.0-rc.7",
+    "webcomponentsjs": "^1.0.1",
     "iron-iconset-svg": "^2.0.1",
     "iron-meta": "1 - 2",
     "iron-pages": "^2.0.0",
@@ -43,7 +65,8 @@
     "iron-validatable-behavior": "1 - 2",
     "iron-form-element-behavior": "1 - 2",
     "paper-ripple": "1 - 2",
-    "paper-styles": "1 - 2"
+    "paper-styles": "1 - 2",
+    "iron-localstorage": "^1.0.0"
   },
   "devDependencies": {
     "web-component-tester": "^6.0.0"

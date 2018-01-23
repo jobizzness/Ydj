@@ -1,0 +1,137 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="create-withdrawal">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block
+      }
+      #dialog {
+        display: block;
+        padding: 0 8px;
+        border-top: 3px solid var(--app-accent-lighter);
+        margin: 0;
+        width: 60vw;
+        min-height: 60vh;
+        max-height: 100vh;
+      }
+      .space-top-bottom>*{
+        margin:16px;
+      }
+
+      #form{
+        max-width: 800px;
+        margin:0 auto;
+        background-color: white;
+        padding: 24px;
+      }
+
+    </style>
+
+    <paper-dialog id="dialog" no-cancel-on-esc-key="false" opened="{{opened}}">
+    	<section class="inputs">
+        <iron-form id="form" >
+        <form is="iron-form" method="post" class="space-top-bottom">
+            <!-- Amount -->
+              <paper-input label="Enter Amount" 
+                  name="amount" 
+                  id="amount" 
+                  error-message="Ammount is required" 
+                  required
+                  auto-validate
+                  type="number">
+                <span prefix>$</span>
+              </paper-input>
+
+              <paper-input label="Enter your login email for verification" 
+                            name="email" 
+                            error-message="Invalid Email!" 
+                            required
+                            id="email">
+                <iron-icon icon="mail" prefix></iron-icon>
+              </paper-input>
+
+
+              <paper-input label="Password" 
+                          type="password" 
+                          required
+                          error-message="Enter your password" 
+                          name="password" 
+                          id="password">
+                <iron-icon icon="communication:vpn-key" prefix></iron-icon>
+              </paper-input>
+              <!-- Controls -->
+              <div class="layout horizontal center">
+                <paper-button raised on-click="_send" primary style="margin: 16px 0;" disabled="[[busy]]">Send Request</paper-button>
+              </div>
+        </form>
+      </iron-form>
+    	</section>
+	</paper-dialog>
+
+  </template>
+
+  <script>
+    class CreateWithdrawal extends Polymer.Element {
+
+      static get is() { return 'create-withdrawal'; }
+
+      static get properties() {
+        return {
+          opened: Boolean
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      _send(){
+        if(this.$.form.validate()){
+
+          let data = {
+            email: this.$.email.value,
+            password: this.$.password.value,
+            amount: parseFloat(this.$.amount.value)
+          }
+
+          this.dispatchEvent(new CustomEvent('make-withdrawal', {detail:data}));
+
+
+        }
+      }
+
+      clear(){
+            this.$.email.value = '';
+          this.$.password.value = '';
+           this.$.amount.value = '';
+      }
+
+      ready() {
+        super.ready();
+
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(CreateWithdrawal.is, CreateWithdrawal);
+  </script>
+</dom-module>

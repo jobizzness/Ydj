@@ -1,0 +1,43 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+
+<dom-module id="app-avatar">
+	<template>
+		<style>
+			:host {
+				display: block;
+				position: relative;
+			}
+			.avatar {
+			    position: relative;
+			}
+			.avatar img {
+			  border-radius: 9999px;
+			  height: 100%;
+			  border: 3px solid var(--avatar-border-color, transparent);
+			  position: relative;
+			  width: 100%;
+			  z-index: 2;
+			}
+		</style>
+		
+		<div class="avatar" style$="width:[[width]]; height:[[height]]">
+		  <img src="[[src]]">
+		</div>
+	</template>
+	<script>
+
+        class AppAvatar extends Polymer.Element{
+            static get is() { return 'app-avatar'; }
+
+            static get properties() {return {
+                    src: String,
+                    width: String,
+                    height: String
+                }}
+        }
+
+        window.customElements.define(AppAvatar.is, AppAvatar);
+	
+	</script>
+</dom-module>

@@ -1,0 +1,185 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-hero/app-hero.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="faq-seller">
+  <template>
+    <style include="">
+      :host {
+        display: block;
+      }
+
+      app-hero{
+        height: 200px;
+        margin-bottom: 3em;
+        background-color: transparent;
+        position: relative;
+        display: block;
+        color: white;
+      }
+
+      app-hero>.hero-info{
+        max-width: 800px;
+        position: absolute;
+        z-index: 1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%)
+
+      }
+      app-hero>.hero-info p{
+        margin: 0;
+        font-size: 16px;
+      }
+      app-hero .hero-info>* {
+        color:inherit;
+      }
+
+      .gradient-1 {
+        background: rgba(115,102,255,1);
+        background: linear-gradient(to right, rgba(115,102,255,1) 0%, rgba(255,108,171,1) 100%);
+      }
+      
+      .gradient-2 {
+        background: rgba(110,226,245,1);
+        background: linear-gradient(to right, rgba(110,226,245,1) 0%, rgba(100,84,240,1) 100%);
+      }
+      
+      .gradient-3 {
+        background: rgba(238,77,95,1);
+        background: linear-gradient(to right, rgba(238,77,95,1) 0%, rgba(255,207,165,1) 100%);
+      }
+      
+      .page-content {
+        max-height: 100%;
+        padding: 0 50px;
+      }
+      
+      .page-heading {
+        display: block;
+        width: 60px;
+        height: 5px;
+        margin-bottom: 26px;
+        background-color: #212121;
+        border: none;
+        float: none;
+      }
+    </style>
+    
+ <section class="layout vertical content">
+      <!-- Section 1 -->
+      <!-- App Hero -->
+      <app-hero class="layout vertical center-center gradient-2">
+        <div class="hero-info layout vertical">
+            <h2>FAQ - For Sellers</h2>
+        </div>
+      </app-hero>
+
+    <div class="page-content">
+      <hr class="page-heading">
+      <h4>How can I start selling on YDJ Marketplace?</h4>
+      <p>YDJ Marketplace supports designers and we bring out the entrepreneur in you. To get started, all you need to do is:</p>
+      <ol>
+        <li>Sign up for an account</li>
+        <li>Build your profile (to include on-boarding video in near future). For best practices, we recommend that you build an impressive profile by including your biodata, a profile photo, your specialisation and some awesome portfolios. You may also include links to your website or social media pages.
+        <li>Go to <strong>My Store</strong> and upload your items. Items uploaded will be reviewed before it is made available for sale online.</li>
+        <li>Start making sales!</li>
+      </ol><br>
+
+      <h4>What am I allowed to sell?</h4>
+      <p>You may sell any digital and vector based items. We accept items like fonts, icons, logos and anything ranging from print to web elements. You can also sell 3D design assets that can be used for game development, desktop, mobile, AR or VR consoles.</p><br>
+
+      <h4>How do I upload my items on YDJ Marketplace?</h4>
+      <p>When uploading your items, you must ensure that your submissions meet our standards. To upload your items, follow the guidelines below.</p><br>
+      <ol>
+        <li><strong>Image preview:</strong><br>
+            You can upload a maximum of 5 images of your items to be featured as images previews ideally, <strong>800 x 500 pixels in JPG format</strong>.  The images uploaded <strong>must be an accurate representation of your item</strong>. Your images must not contain trademarks or images of celebrities.</li><br>
+        <li><strong>Item Name &amp; Descriptions:</strong><br>
+            You must provide an accurate name and description of your item. You should provide concise and relevant information such that buyers can easily find your item that matches their needs.</li><br><br>
+        <li><strong>Original files:</strong><br>
+            All of your original files must be saved in a <strong>.zip</strong> format. We also recommend that you include a Read Me file, detailing some instructions on how to best use your files. You files must be in organized manner. Your files must not contain trademarks or images of celebrities.</li><br>
+        <li><strong>Category:</strong><br>
+            Choose a suitable category for your file.</li><br>
+      </ol>
+      <h4>How many items can I upload on YDJ Marketplace?</h4>
+          <p>You can upload up to 3 items to be reviewed within the item listing at any time. You can check the review status of your uploaded items in your <strong>My Store</strong> page. There is also an option for you to update or delete your items in the list. Any items updated will also be reviewed.</p><br>
+
+      <h4>Are there any reviewing process?</h4>
+          <p>Yes. Each of your design assets uploaded will be assesed and reviewed for quality. The wait time will normally take 2 - 3 days. If there are high volume of design assets uploaded, we will have to extend the wait time. Therefore, your patience is much appreciated.</p><br>
+
+      <h4>How do I know if my items are rejected or approved?</h4>
+          <p>We will notify you via email. Alternatively, you also check the current status of your item in your <strong>My Store</strong> page.</p><br>
+
+      <h4>How much do I earn from each sale?</h4>
+      <p>Set your own price and put a value to your creative works. You will be earning a big fat <strong>75%</strong> of sales for very successful downloads!</p><br>
+
+      <h4>How do I request for a payout?</h4>
+      <p>The minimum payout threshold is <strong>USD50.00</strong>. To cash out your earnings, just go to <strong>My Withdrawals</strong> and click on the Withdraw button. Select the amount you wish to withdraw. </p>
+      <p>We send out payments on the 8th day of the month. We will credit the requested amount to your PayPal account once it is approved. A notification of the withdrawal status will also be sent to your email.</p><br>
+
+      <h4>How do I change my payment details?</h4>
+      <p>You can update or change your payment details on your <strong>My Account</strong> page under the <strong>Billing Settings</strong>.</p><br>
+
+      <h4>If there’s a copyright violation, how do I resolve it?</h4>
+      <p>YDJ Marketplace is merely an online platform to buy and sell creative and design assets. We are not liable for any loss suffered by you as a result of a buyer using your items contrary or in a manner that contravenes our standard licenses and terms.</p>
+      <p>If however, you noticed that your design assets are being sold on YDJ Marketplace without your permission, please <a href="mailto:support@yourdesignjuice.com">notify us</a> immediately. We will take immediate steps to investigate and help resolve any copyright dispute that may arise.</p>
+      <p>It is your responsibility as a Seller to provide us with credit information prior to selling your items on YDJ Marketplace. If you feel any of your items’ copyright has been infringed, you may sue the Infringer in court and seek injunction against future violations of copyrights.</p><br><br>     
+    </div>
+ </section>
+</template>
+  
+  <script>
+      class FaqSeller extends Polymer.Element {
+
+          static get is() {
+              return 'faq-seller';
+          }
+
+          static get properties() {
+              return {}
+          }
+
+          static get observers() {
+              return []
+          }
+
+          static get listeners() {
+              return []
+          }
+
+          constructor() {
+              super();
+          }
+
+          ready() {
+              super.ready();
+
+              Polymer.RenderStatus.afterNextRender(this, function () {
+
+              });
+          }
+
+      }
+
+      window.customElements.define(FaqSeller.is, FaqSeller);
+  </script>
+</dom-module>

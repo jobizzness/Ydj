@@ -1,0 +1,305 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="../../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+
+
+<link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../../app-store.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-upload">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block
+      }
+    #dialog {
+        display: block;
+        padding: 0 8px;
+        border-top: 3px solid var(--app-accent-lighter);
+        margin: 0;
+        width: 60vw;
+        min-height: 60vh;
+        max-height: 100vh;
+      }
+      .inputs{
+	    max-width: 42em;
+	    margin: 2em auto;
+	    background: white;
+	    padding: 24px;
+      }
+      .inputs>*{
+      	margin-bottom: 24px;
+      }
+      iron-autogrow-textarea {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        border: 0;
+        margin: 1em 0 0;
+        padding: 0;
+        font-size: 1em;
+        }
+       paper-input{
+        --paper-input-container-focus-color: var(--app-accent-color);
+    	}
+    	 paper-dropdown-menu {
+	  	--paper-dropdown-menu-input:{
+        		--paper-input-container-focus-color: var(--app-accent-color);
+	  	}
+	    display: block;
+	  }
+
+    paper-button.green {
+      color: #ffffff;
+      background: #09c3b2;
+    }
+    paper-button.grey {
+      background-color: var(--paper-grey-500);
+      color: white;
+    }
+
+    paper-button.blue {
+      background-color: var(--app-accent-lighter);
+      color: white;
+    }
+
+    wysiwyg-e{
+      width: 100%;
+      min-height: 50vh;
+      --wysiwyg-toolbar-background: var(--app-accent-lighter);
+    }
+    </style>
+    
+    	<section class="inputs">
+      <!-- <section class="card"> -->
+        <h1>Upload an item to sell</h1><br>
+      <!-- </section> -->
+    		<vaadin-upload id="assetInput"
+                       accept=".zip"
+                       max-files="1"
+                       on-upload-success="_onAssetUploaded"
+                       on-upload-before="_onAssetBeforeUpload"
+                       required>
+          <span slot="drop-label">Drop your design assets in ZIP file here. </span>
+<!--             <div class="file-list">
+              <div class="receipt-wrapper">
+                <img src$="[[_receiptURL]]" alt="Receipt" hidden$="[[!_showReceipt(expense._attachments.*)]]">
+              </div>
+            </div> -->
+          </vaadin-upload>
+        <vaadin-upload id="mediaInput"
+                       accept="image/*"
+                       max-files="3"
+                       on-upload-success="_onMediaUploaded"
+                       on-upload-before="_onMediaBeforeUpload"
+                       required>
+          <span slot="drop-label">Drop preview images here (preferably 800 x 500 in size). </span>
+          <!--             <div class="file-list">
+                        <div class="receipt-wrapper">
+                          <img src$="[[_receiptURL]]" alt="Receipt" hidden$="[[!_showReceipt(expense._attachments.*)]]">
+                        </div>
+                      </div> -->
+        </vaadin-upload>
+        
+        <!-- Product Title -->
+    		<paper-input label="Item name:"
+                     name="name"
+                     auto-validate
+                     value="{{product.title}}"
+                     error-message="Please enter a valid item name."
+                     id="name"
+                     required></paper-input>
+        <paper-textarea 
+          required
+          auto-validate
+          value="{{product.description}}"
+          error-message="Please enter a valid and detailed description of your item."
+          label="Description"></paper-textarea>
+        
+	      	<!-- Category -->
+	      	<paper-dropdown-menu label="Select a category:">
+            <paper-listbox slot="dropdown-content"
+                           attr-for-selected="item-slug"
+                           selected="{{product.category}}"
+                           fallback-selection="None">
+              <template is="dom-repeat" items="[[categories]]" as="item">
+                <paper-item item-slug="[[item.slug]]">[[item.name]]</paper-item>
+              </template>
+            </paper-listbox>
+			</paper-dropdown-menu><br>
+        
+        <paper-input label="Enter file types (PSD, AI, JPEG, PNG, SVG):"
+                     name="assets_extentions"
+                     value="{{product.extensions}}"
+                     id="assets_extentions"
+                     required></paper-input>
+        <!-- Dowload it for free? -->
+      <paper-checkbox id="freebee" checked="{{product.is_free}}">Allow users to download for free</paper-checkbox>
+      
+        <!-- Pricing -->
+			<div class="layout horizontal justified">
+				<paper-input label="Enter your price (USD):" type="number" on-value-changed="_priceChanged"
+                     value="{{product.price}}"
+                     name="name"
+                     id="price"></paper-input>
+				<paper-input label="Enter discount (optional):" name="name" id="discount"></paper-input>
+			</div>
+        
+        <!-- Earning -->
+      <div class="layout horizontal justified">
+        <paper-input label="You will earn (USD):" disabled name="earn" type="number" id="earn"></paper-input>
+        <p><a href="#">What are the chargeable fees?</a></p>
+      </div>
+      
+      <div class="layout horizontal justified">
+        <!--<paper-input class="flex-3" label="disabled input" disabled value="Your PayPal account (verified)"></paper-input>-->
+        <!--<p><a href="#">Edit account</a></p>-->
+      </div>
+
+      <!-- Editor insert -->
+
+      <div class="flex layout horizontal end-justified">     
+        <paper-button toggles raised class="green" on-click="_save">[[mode]]</paper-button>
+        <!-- <paper-button toggles raised class="grey" on-click="_preview" disabled$="[[!canPublish]]">Preview</paper-button>    -->
+        <paper-button toggles raised class="blue" on-click="_publish" disabled$="[[!canPublish]]">publish</paper-button><br>
+      </div>
+      <div class="flex layout horizontal end-justified">
+        <p>By clicking Publish, you agree to our Seller <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+      </div>
+
+		</section>
+  </template>
+
+  <script>
+    class AppMeUpload extends ReduxMixin(Polymer.Element) {
+
+      static get is() { return 'app-me-upload'; }
+
+      static get properties() {
+        return {
+            product: {
+                type: Object,
+                value: {
+                    media_list: []
+                },
+                observer: 'productChanged'
+            },
+            env:{
+                type: Object,
+                statePath: 'env',
+                observer: 'init'
+            },
+            busy:{
+                type: Boolean,
+                statePath: 'user.products_fetching'
+            },
+            categories:{
+                type: Array
+            }
+        }
+      }
+
+      static get actions (){
+          return {
+              setBusy(busy) {
+                  return {
+                      type: C.SET_USER_PRODUCTS_FETCHING,
+                      payload: busy
+                  };
+              }
+          };
+      }
+      
+      constructor() {
+        super();
+        this.mode = 'save';
+        this.canPublish = false;
+      }
+
+      init() {
+        if(this.loaded) return; this.loaded = true;
+        
+        this.$.mediaInput.target = this.env.app_domain + '/api/media';
+        this.$.mediaInput.headers = {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + this.env.token
+        };
+
+        this.$.assetInput.headers = this.$.mediaInput.headers;
+        this.$.assetInput.target = this.env.app_domain + '/api/asset';
+        
+        document.addEventListener('product-published', (e) => this._onProductPublished(e));
+      }
+
+      productChanged(product){
+          this.canPublish = (Boolean) (product.id);
+      }
+      /**
+       *
+       * @param e
+       * @private
+       */
+      _onMediaUploaded(e){
+        this.push('product.media_list', parseInt(e.detail.xhr.response));
+      }
+
+      _preview(){
+        document.dispatchEvent(new CustomEvent('product-preview', { detail: this.product }));
+      }
+
+      _publish(){
+        document.dispatchEvent(new CustomEvent('product-publish', { detail: this.product }));
+      }
+      /**
+       *
+       * @param e
+       * @private
+       */
+      _onAssetUploaded(e){
+        this.set('product.asset_url', e.detail.xhr.response);
+      }
+
+      _onProductPublished(e){
+        this.product = {
+            media_list: []
+        }
+        
+        this.$.upload.files = [];
+        this.mode = 'save';
+        history.pushState(null, null, '/me/store');
+      }
+      
+      _save(){
+          document.dispatchEvent(new CustomEvent('product-save', {detail: this.product}));
+      }
+      
+      open({detail:product}){
+            if(product.id){
+                this.product = product;
+                this.mode = 'update';
+                return;
+            }
+            this.product = {
+                media_list: []
+            }
+            this.mode = 'save'
+            
+      }
+      
+    }
+
+    window.customElements.define(AppMeUpload.is, AppMeUpload);
+  </script>
+</dom-module>

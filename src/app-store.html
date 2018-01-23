@@ -1,0 +1,168 @@
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="constants.html">
+<link rel="import" href="components/app-env/app-env.html">
+
+<script>
+	const initial = {
+      app: {
+          notification: [],
+          busy: false,
+          history: [],
+          categories:   []
+      },
+      env: {
+          app_domain: env.app_domain,
+          production: env.production,
+          clientSecret: env.clientSecret,
+          clientId: env.clientId
+      },
+      user: null,
+      products: []
+  };
+
+	//App Namespace
+	const App = {};
+
+	// App Reducer 
+	App.reducer =  (state = null, action) => {
+		if(!state) return initial;
+
+		switch(action.type){
+            case C.SET_USER:
+                return App.setUser(state, action);
+            case C.SET_APP_BUSY:
+                return App.setBusy(state, action);
+            case C.SET_USER_TOKEN:
+                return App.setToken(state, action);
+            case C.SET_CATEGORIES:
+                return App.setCategories(state, action);
+            case C.SET_CART:
+                return App.setCart(state, action);
+            case C.MAKE_SELLER:
+                return App.makeSeller(state, action);
+            case C.ADD_PRODUCTS:
+                return App.addProducts(state, action);
+            case C.ADD_USER_PRODUCT:
+                return App.addUserProduct(state, action);
+            case C.ADD_USER_PRODUCTS:
+                return App.addUserProducts(state, action);
+            case C.SET_USER_FAVORITES:
+                return App.setUserFavorites(state, action)
+                default:
+                return state;
+		}
+	}
+	
+	/*
+	 * sets the current user object.
+	 * @param {state, action}
+	 */
+	App.setUser = (state = null, action) => Object.assign({}, state, {
+        user: action.payload
+  });
+	
+  /*
+   * sets the current user object.
+   * @param {state, action}
+   */
+  App.makeSeller = (state = null, action) => {
+      let newState = Object.assign({}, state);
+      newState.user.is_seller = true;
+      return newState;
+  };
+
+  App.setCart = (state = null, action) => {
+      let newState = Object.assign({}, state);
+      newState.user.cart = action.payload;
+      return newState;
+  }
+  
+  App.addUserProducts = (state = null, action) => {
+
+      let products = [];
+      if(state.user.products) {
+          products = state.user.products.slice(0);
+      }
+      action.payload.forEach( (item) => products.push(item));
+      let newState = Object.assign({}, state);
+      newState.user.products = products;
+      return newState;
+
+  };
+
+    App.setUserFavorites = (state = null, action) => {
+
+            let products = [];
+            if (state.user.favorites) {
+                products = state.user.favorites.slice(0);
+            }
+            action.payload.forEach((item) => products.push(item));
+            let newState = Object.assign({}, state);
+            newState.user.favorites = products;
+            return newState;
+
+    };
+
+  App.addUserProduct = (state = null, action) => {
+      //let products = state.products.slice(0);
+      let newState = Object.assign({}, state);
+      let products = state.user.products.slice(0);
+      products.unshift(action.payload);
+      newState.user.products = products;
+
+      return newState;
+  };
+  
+	/*
+	 * sets the current user object.
+	 * @param {state, action}
+	 */
+	App.setBusy = (state = null, action) => {
+		let newState = Object.assign({}, state);
+		newState.app.busy = action.payload;
+		return newState;
+	};
+
+  /*
+   * sets the current user object.
+   * @param {state, action}
+   */
+  App.setCategories = (state, action) => {
+    let newState = Object.assign({}, state);
+    newState.categories = action.payload;
+    return newState;
+  };
+
+  /*
+   * We have new products so lets
+   * push it to our products array
+   * @param {state, action}
+   */
+  App.addProducts = (state = null, action) => {
+      let products = state.products.slice(0);
+      action.payload.forEach( (item) => products.push(item));
+      return Object.assign({}, state, {products: products});
+  };
+  
+	/*
+	 * sets the current user object.
+	 * @param {state, action}
+	 */
+	App.setToken = (state = null, action) => {
+		let newState = Object.assign({}, state);
+		newState.env.token = action.payload;
+		return newState;
+  	};
+
+	const store = Redux.createStore(App.reducer, initial,
+
+	    // The best part 8)
+	    Redux.compose(
+	      window.devToolsExtension
+	        ? window.devToolsExtension()
+	        : v => v
+	    )
+		);
+	// Create the Polymer mixin
+	const ReduxMixin = PolymerRedux(store);
+</script>

@@ -1,0 +1,65 @@
+
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<!-- shared styles for all views -->
+<dom-module id="user-actions">
+  <template>
+    <style>
+      app-avatar{
+        --avatar-border-color: var(--app-accent-lighter, #13c3b3);
+      }
+      .user-info{
+        color: white;
+        margin-left: 16px;
+      }
+      .user-info>*{
+        display: block;
+      }
+      .user-info .user-balance{
+        font-size: .7em;
+        font-weight: 600;
+        color:var(--app-accent-lighter, #13c3b3);
+      }
+      .user-info .username{
+        text-transform: capitalize;
+        line-height: 1em;
+        margin-bottom: 2px;
+        font-size: 0.7em;
+        font-weight: 500;
+      }
+      ul.notification-icons{
+        margin: 0;
+        margin-right: 8px;
+        padding: 0;
+      }
+      ul.notification-icons li{
+        list-style: none;
+        position: relative;
+        padding: 0 14px;
+      }
+      ul.notification-icons iron-icon{
+            color: #717f82;
+        --iron-icon-height: 24px;
+        --iron-icon-width: 24px;
+      }
+      ul.notification-icons .arrow-down{
+        display: none;
+      }
+      app-badge{
+        position: absolute;
+        top: 1px;
+        left: 5px;
+        display: inline-block;
+        padding: 0px 5px;
+        border-radius: 2px;
+        background-color: var(--app-accent-lighter, #13c3b3);
+        color: #fff;
+        font-family: "Titillium Web", sans-serif;
+        font-size: 0.5em;
+        font-weight: 700;
+        line-height: 15px;
+        text-transform: uppercase;
+      }
+    </style>
+  </template>
+</dom-module>

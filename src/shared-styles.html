@@ -18,20 +18,132 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 0 auto;
         max-width: 1300px;
       }
+
       :link, :visited {
           outline: 0;
           text-decoration: none;
       }
+
+      paper-input {
+        --paper-input-container-focus-color: var(--app-accent-color);
+      }
+
       .flex-2 {
         flex:2;
       }
+
+      .flex-3 {
+        flex:3;
+      }
+
+      .small-heading{
+        margin: 0;
+        font-size: 1em;
+        font-weight: 600;
+        color: #3c3c3c;
+      }
+
+      .card{
+        background-color: white;
+        min-height: 200px;
+        padding: 16px;
+        box-sizing: border-box;
+        box-shadow:0 1px 1px rgba(0,0,0,.1);
+      }
+
+      .cards>*{
+        margin-bottom:1em;
+        padding: 16px;
+      }
+
+      p{
+        color:var(--app-primary-color);
+      }
+
       .accent-color{
         color:var(--app-accent-color);
       }
+
       h1 {
         margin: 16px 0;
         color: #212121;
         font-size: 22px;
+      }
+
+      /* Buttons*/
+      .danger-trans{
+        color: #f44336;
+        background-color: transparent;
+      }
+
+      .rounded-btn{
+        border-radius: 25px;
+        padding: 12px 24px;
+      }
+
+      .action-btn{
+        color: white;
+        background-color: var(--app-accent-lighter);
+        box-shadow: var(--shadow-elevation-2dp_-_box-shadow);
+      }
+
+      .action-btn:hover{
+        box-shadow: 0 4px 20px 0 rgb(19, 195, 179);
+      }
+
+      /*Buttons*/
+      paper-button[primary]{
+        background-color:var(--app-accent-lighter);
+        color:white;
+      }
+
+      paper-button[trans]{
+        background-color:transparent;
+        color:var(--app-accent-lighter);
+      }
+
+      .p-0{
+        padding: 0;
+      }
+
+      .strong-text{
+        font-weight: 500;
+        color: #333232;
+      }
+
+      .light-text{
+        font-size: .9rem;
+        color: rgba(95, 95, 95, 0.76);
+      }
+
+      /* Panel */
+      .card.with--panel{
+        border-top: 2px solid var(--app-accent-lighter, white);
+        padding: 0;
+        border-radius: 5px;
+      }
+
+      panel{
+        background-color: #fafafa;
+        display: block;
+        padding: 16px;
+      }
+
+      panel .panel-title{
+        font-weight: 500;
+        color: var(--app-primary-color);
+        font-size: 0.89rem;
+      }
+
+      .main-frame {
+        margin: 0 auto;
+        padding: 48px 24px;
+        max-width: 900px;
+        overflow: hidden;
+      }
+      [hidden]{
+        display: none !important;
+        visibility: hidden !important;
       }
     </style>
   </template>

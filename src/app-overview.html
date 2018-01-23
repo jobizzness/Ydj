@@ -1,0 +1,719 @@
+<!--
+@Design Juice
+@Author Jobizzness.com
+This is our overview element. Kind of like a middleware that will give you access
+based on your level.
+-->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/lazy-imports/lazy-imports-mixin.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+
+<!-- 
+  Lazy resources  
+-->
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/shibui-dropdown-menu/shibui-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-search/paper-search-panel.html">
+
+<!-- 
+  App Components
+ -->
+
+
+<link rel="import" href="components/app-logo/app-logo.html">
+<link rel="import" href="components/app-button/app-button.html">
+<link rel="import" href="components/user-actions/user-actions.html">
+<link rel="import" href="components/app-avatar/app-avatar.html">
+<link rel="import" href="components/app-loader/app-loader.html">
+
+
+<!-- 
+  Critical Components 
+-->
+<link rel="import" href="app-store.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="components/app-footer/app-footer.html">
+<link rel="import" href="my-icons.html">
+
+<dom-module id="app-overview">
+
+  <!-- 
+    Lazy Pages
+   -->
+  <link rel="lazy-import" href="pages/app-home.html" group="home">
+  <link rel="lazy-import" href="pages/app-goodies.html" group="goodies">
+  <link rel="lazy-import" href="pages/app-login.html" group="login">
+  <link rel="lazy-import" href="pages/app-register.html" group="register">
+  <link rel="lazy-import" href="pages/app-user.html" group="user">
+  <link rel="lazy-import" href="pages/app-sell.html" group="sell">
+  <link rel="lazy-import" href="pages/app-cart.html" group="cart">
+  <link rel="lazy-import" href="pages/app-favorites.html" group="favorites">
+  <link rel="lazy-import" href="pages/terms-seller.html" group="terms-seller">
+  <link rel="lazy-import" href="pages/terms-buyer.html" group="terms-buyer">
+  <link rel="lazy-import" href="pages/app-faq-seller.html" group="faq-seller">
+  <link rel="lazy-import" href="pages/app-faq-buyer.html" group="faq-buyer">
+  <link rel="lazy-import" href="pages/app-about.html" group="about">
+  <link rel="lazy-import" href="pages/privacy-policy.html" group="privacy-policy">
+  <link rel="lazy-import" href="pages/app-category.html" group="category">
+  <link rel="lazy-import" href="pages/app-me.html" group="me">
+  <link rel="lazy-import" href="lazy-resources.html" group="lazy-resources">
+  <!-- <link rel="lazy-import" href="pages/app-questions.html" group="questions"> -->
+
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment app-button user-actions">
+      
+      :host {
+        display: block;
+        --app-primary-color: #212121;
+        --app-secondary-color: white;
+        --app-link-color: #bbbbbb;
+        --app-text-color: #212121;
+        --app-accent-color:#7250ff;
+        --app-accent-lighter: #509fff;
+      }
+
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+      
+      .toolbar-bottom{
+        background-color: white;
+      }
+      
+      .toolbar-top{
+        height: 90px;
+      }
+      
+      app-logo{
+        padding-top: 5px;
+      }
+      
+      .logo-link{
+        padding: 0 24px;
+        display: block;
+      }
+      
+      iron-selector.app-nav{
+        width: 100%;
+        @apply(--layout-horizontal);
+      }
+      
+      iron-selector.app-nav a.link{
+        @apply --layout-vertical;
+        color: var(--app-text-color);
+        text-decoration: none;
+        font-weight: 600;
+        outline: none;
+        font-size: 1rem;
+        padding: 22px 24px;
+        cursor: pointer;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+        text-transform: capitalize;
+      }
+      
+      iron-pages{
+        min-height: 100vh;
+      }
+      
+      iron-selector.app-nav a.link:before{
+        position: absolute;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        height: 4px;
+        left:0;
+        content: "";
+        transition: -webkit-transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
+        transition: transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
+        -webkit-transform: translate3d(0, 4px, 0);
+        transform: translate3d(0, 4px, 0);
+        background: var(--app-accent-lighter, #509fff);
+      }
+      
+      iron-selector.app-nav a.link:hover:before, iron-selector.app-nav a.link.selected:before{
+        transform: translate3d(0, 0, 0);
+      }
+      
+      header-actions{
+        @apply --layout-horizontal;
+      }
+      
+      header-actions>*{
+        margin: 0 8px;
+      }
+      
+      shibui-dropdown-menu#dropMenu{
+        --shibui-dropdown-content:{
+          width: 190px;
+          top: 60px;
+          left: -56px;
+        };
+        --shibui-dropdown-item:{
+          padding: 12px 16px;
+          font-weight: 500;
+          color: #5f5f5f;
+        }
+      }
+
+      paper-search-bar {
+        margin: 8px;
+        color: #333333;
+        border: solid 1px #509fff;
+      }
+      
+      .yellow-button {
+        text-transform: none;
+        color: #eeff41;
+      }
+
+      #modal{
+        width: 25vw;
+      }
+
+      #modal>.modal-info{
+        margin-top: 0;
+        padding: 24px;
+      }
+
+      .modal-info h1, .modal-info p {
+        color: white;
+      }
+
+      #modal.danger .modal-info{
+        background-image: -webkit-repeating-linear-gradient(135deg,#f04b51,#f04b51 24px,#f2545b 0,#f2545b 48px);
+        background-image: repeating-linear-gradient(135deg,#f04b51,#f04b51 24px,#f2545b 0,#f2545b 48px);
+      }
+
+      #modal.danger paper-button.confirm{
+        background: #eb4b54;
+        color: white;
+      }
+
+      #modal.happy .modal-info{
+        background-image: -webkit-repeating-linear-gradient(135deg,#1dbace,#00BCD4 24px,#0cc5dc 0,#00BCD4 48px);
+        background-image: repeating-linear-gradient(135deg,#1dbace,#00BCD4 24px,#0cc5dc 0,#00BCD4 48px);
+      }
+
+      #modal.happy paper-button.confirm{
+        background: #33c0d7;
+        color: white;
+      }
+
+      #modal.danger paper-button.cancel{
+        background: #eee;
+      }
+    </style>
+
+    <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
+
+    <app-location route="{{route}}"></app-location>
+
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPattern]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+    
+    <shop-cart-modal id="cartModal"></shop-cart-modal>
+
+    <app-me-store-service
+            on-product-categories-changed="_setCategories">
+    </app-me-store-service>
+
+    <app-loader id="loader"></app-loader>
+
+
+      <app-header-layout id="layout">
+
+          <app-header slot="header" condenses fixed effects="waterfall">
+            <template is="dom-if" if="[[_shouldRenderHeader]]">
+              <app-toolbar class="toolbar-top content">
+
+                <!-- Logo -->
+                <a href="/" class="logo-link"><app-logo 
+                    height="90" 
+                    width="150"></app-logo></a>
+                <span class="flex"></span>
+
+                <header-actions>
+                  
+                  <for-guests and-if="[[!smallScreen]]">
+                    <template>
+                      <a href="/login">
+                        <app-button border>Login</app-button>
+                      </a>
+                      <a href="/register">
+                        <app-button shaded>Sign up</app-button>
+                      </a>
+                    </template>
+                  </for-guests>
+
+                  <for-members and-if="[[!smallScreen]]">
+                    <template>
+                      <user-actions class="layout horizontal">
+                        <ul class="notification-icons layout horizontal">
+                          <li>
+                            <a href="/favorites">
+                              <iron-icon src="/images/icons/heart.svg"></iron-icon>
+                              <app-badge hidden$="[[favorites.empty]]">[[favorites.items.length]]</app-badge>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/cart">
+                              <iron-icon src="/images/icons/cart.svg"></iron-icon>
+                              <app-badge hidden$="[[cart.empty]]">[[cart.items.length]]</app-badge>
+                            </a>
+                          </li>
+                        </ul>
+
+                        <!-- User Info & Avatar -->
+                        <shibui-dropdown-menu id="dropMenu">
+                          <a slot="trigger" class="avatar-wrapper layout horizontal">
+                            <app-avatar src="[[user.avatar]]" width="40px" height="40px"></app-avatar>
+                            <div class="user-info">
+                              <span class="username">[[user.nickname]]</span>
+                              <span class="user-balance">Earnings: $[[user.balance]]</span>
+                            </div>
+                          </a>
+                          <template is="dom-if" if="[[is_seller]]">
+                            <a href="/me/dashboard">Dashboard</a>
+                            <a href="/me/account">My Account</a>
+                            <a href="/me/store">My Store</a>
+                            <a href="/me/earnings">My Earnings</a>
+                          </template>
+                          <template is="dom-if" if="[[!is_seller]]">
+                            <a href="/me/account">My Account</a>
+                            <a href="/me/goodies">My Purchases</a>
+                          </template>
+                          <a on-click="signOut">Log out</a>
+                        </shibui-dropdown-menu>
+                      </user-actions>
+                    </template>
+                  </for-members>
+                </header-actions>
+              </app-toolbar>
+
+                <app-toolbar class="toolbar-bottom" sticky hidden$="[[!_shouldRenderBottomHeader]]">
+                  <div class="content layout horizontal">
+                    <dom-if if="[[!smallScreen]]">
+                      <template>
+                        <iron-selector attr-for-selected="href" 
+                            selected="non-existing"
+                            fallback-selection="default" 
+                            class="app-nav">
+                              <template is="dom-repeat" items="[[nav]]" as="item">
+                                <a href="category/[[item.slug]]" class="link">[[item.name]]</a>
+                              </template>
+                        </iron-selector>
+                        <!-- Search Box -->
+                            <paper-search-bar
+                              placeholder="Search and you shall find..."
+                              disable-filter-button="true"></paper-search-bar>
+                      </template>
+                    </dom-if>
+                  </div>
+                </app-toolbar>
+
+            </template>
+          </app-header>
+          
+          <!-- App pages -->
+        <iron-pages
+            selected="[[page]]"
+            attr-for-selected="name"
+            fallback-selection="view404"
+            role="main">
+          <app-login name="login"></app-login>
+          <app-home name="home"></app-home>
+          <app-goodies name="goodies" product="[[product]]" route="[[subroute]]"></app-goodies>
+          <app-register name="register"></app-register>
+          <app-category name="category" route="[[subroute]]"></app-category>
+          <app-user name="user" route="[[subroute]]"></app-user>
+          <app-me name="me" route="[[subroute]]"></app-me>
+          <app-favorites name="favorites"></app-favorites>
+          <app-cart name="cart"></app-cart>
+          <app-about name="about"></app-about>
+          <app-sell name="sell"></app-sell>
+          <privacy-policy name="privacy-policy"></privacy-policy>
+          <terms-seller name="terms-seller"></terms-seller>
+          <terms-buyer name="terms-buyer"></terms-buyer>
+          <faq-seller name="faq-seller"></faq-seller>
+          <faq-buyer name="faq-buyer"></faq-buyer>
+          <app-questions name="questions"></app-questions>
+          <app-404 name="view404"></app-404>
+        </iron-pages>
+        
+        <!-- Footer -->
+          <footer>
+            <app-footer></app-footer>
+          </footer>
+      </app-header-layout>
+
+  
+    <paper-toast id="toast" duration="0">
+      <paper-button on-click="toggleToast" class="yellow-button">Okay!</paper-button>
+    </paper-toast>
+
+    <paper-dialog id="modal" modal class="danger">
+      <div class="layout vertical modal-info">
+        <h1>Just checking</h1>
+        <p>[[modalMesssage]]</p>
+      </div>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus class="confirm" on-click="_onModalConfirm">Sure</paper-button>
+        <paper-button dialog-confirm autofocus class="cancel" on-click="_onModalCancel">Nope</paper-button>
+      </div>
+    </paper-dialog>
+      
+  </template>
+
+  <script>
+    class AppOverview extends ReduxMixin(Polymer.LazyImportsMixin(Polymer.Element)) {
+
+      static get is() { return 'app-overview'; }
+
+      static get properties() {return {
+          rootPattern: String,
+          routeData: Object,
+          subroute: String,
+          
+          nav:{
+            type: Array,
+            statePath: 'categories'
+          },
+
+          page: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          
+          cart:{
+              type: Object,
+              statePath: 'user.cart'
+          },
+          
+          user: {
+            type: Object,
+            statePath: 'user',
+          },
+
+          is_seller: {
+              type: Boolean,
+              statePath: 'user.is_seller'
+          },
+
+          _shouldRenderHeader: {
+            computed: '_computeShouldRenderHeader(page)',
+            type:Boolean,
+            observer: '_headerChanged'
+            
+          },
+
+        _shouldRenderBottomHeader: {
+            computed: '_computeShouldRenderBottomHeader(page)',
+            type:Boolean,
+            observer: '_headerChanged'
+            
+          }
+        }}
+
+      // Observe for changes to these props
+      static get observers() {
+        return [
+          '_routePageChanged(routeData.page)'
+        ];
+      }
+
+      static get listeners(){
+          return {
+              'product-updated': '_onProductUpdate',
+          }
+      }
+      
+      static get actions(){
+        return {
+          setCategories(categories){
+              return {
+                  type: C.SET_CATEGORIES,
+                  payload: categories
+              };
+          },
+        }
+      }
+
+      constructor() {
+        super();
+          this.firstLoad = true;
+        // Get root pattern for app-route, for more info about `rootPath` see:
+        // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
+        this.rootPattern = (new URL(this.rootPath)).pathname;
+      }
+
+      ready() {
+          super.ready();
+
+          document.addEventListener('product-selected', (e) =>this._onProductSelect(e));
+          document.addEventListener('app-toast', (e) =>this.announce(e));
+          document.addEventListener('app-confirm', (e) => this._confirm(e));
+
+          this.dispatch('setCategories', [
+              {name: 'Print Templates', slug: 'print-templates'},
+              {name: 'Graphics', slug: 'graphics'},
+              {name: 'Web & Apps', slug: 'web-apps'},
+              {name: 'Branding', slug: 'branding'},
+              {name: 'Plug-ins', slug: 'plugins'},
+              {name: 'Fonts', slug: 'fonts'},
+              {name: '3D', slug: '3d'}]);
+
+          Polymer.RenderStatus.afterNextRender(this, function() {
+              
+              // If we have a user the lazy import the
+              // user components
+              if(this.user){
+                  this.importLazyGroup('me').then(() => {});
+              }
+              
+              this.importLazyGroup('lazy-resources').then(() => {
+                  // All the resources are loaded so we will reset the layout
+                  Polymer.Async.timeOut.run(() => {
+                      this.$.layout.resetLayout();
+                  }, 1);
+                  // If the user is not logged in the
+                  // lazy load the login component
+                  //if(!this.user) setTimeout(() => {Polymer.importHref(this.resolveUrl('../../pages/dapp-login/dapp-login.html'), null, null, true)}, 100);
+              });
+          });
+      }
+      
+      _routePageChanged(page) {
+        // Polymer 2.0 will call with `undefined` on initialization.
+        // Ignore until we are properly called with a string.
+        if (page === undefined) {
+          return;
+        }
+
+        // If no page was found in the route data, page will be an empty string.
+        // Deault to 'home' in that case.
+        this.page = page || 'home';
+
+
+        this._listScrollTop = document.scrollTop;
+
+        // Check if we need to scroll back
+        // back to a previous position
+        this._computeScroller();
+      }
+
+        /**
+         * @desc Shows the login page
+         * @param string $page - the page the user wants to access
+         * @return string - success - $page or failure - $redirect
+         */
+        _computeScroller() {
+            // Scroll to the top of the page when navigating to a non-list page. For list view,
+            // scroll to the last saved position only if the category has not changed.
+            let scrollTop = 0;
+            //if (this.page === 'feed') {
+                //scrollTop = this._listScrollTop;
+            //} else {
+                // Reset the list view scrollTop if the category changed.
+                //this._listScrollTop = 0;
+            //}
+            Polymer.AppLayout.scroll({ top: scrollTop, behavior: 'silent' });
+        }
+        
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        page = this._middleware(page);
+          
+          // Load page import on demand then register
+          // then service worker if this is the first app load
+          
+          this.importLazyGroup(page).then(() => {
+              if(this.firstLoad)
+                  this.registerWorker();
+          });
+          this.firstLoad = false;
+      }
+
+      announce({detail:data}){
+        this.$.toast.text = data.msg;
+        this.$.toast.open();
+      }
+        
+      toggleToast(){
+            this.$.toast.toggle();
+      }
+      
+      _middleware(page){
+        switch(page){
+          case 'login':
+          case 'register':
+            if(this.user){
+              return 'home';
+            }
+            return page;
+          case 'me':
+            if(!this.user){
+              return 'login';
+            }
+            return page;
+        case 'home':
+        case 'user':
+        case 'goodies':
+        case 'cart':
+        case 'category':
+        case 'favorites':
+        case 'about':
+        case 'privacy-policy':
+        case 'sell':
+        case 'terms-seller':
+        case 'terms-buyer':
+        case 'faq-seller':
+        case 'faq-buyer':
+        case 'questions':
+            return page;
+          default:
+              return '404';
+        }
+      }
+
+      _computeShouldRenderHeader(page){
+        let res = true;
+        switch(page){
+          case 'login':
+          case 'register':
+            res = false;
+            break;
+        }
+        return res;
+      }
+
+      _shouldRenderAuthElements(smallScreen, loggedIn){
+        if(smallScreen || loggedIn){
+          return false;
+        }
+        return true;
+      }
+      _showPage404() {
+        this.page = 'view404';
+      }
+
+
+      _headerChanged(){
+          Polymer.Async.timeOut.run(() => {
+              this.$.layout.resetLayout();
+          }, 1);
+      }
+
+      _shouldRenderUserElements(smallScreen, loggedIn){
+        if(smallScreen || !loggedIn){
+          return false;
+        }
+        return true;
+      }
+
+      _userIsLoggedIn(){
+        if(this.page === 'login' || this.page === 'register'){
+          this.set("route.path", '/');
+          console.info('logged in');
+          this._loadUserResources();
+
+        }
+
+      }
+      takeMeHome(){
+        this.page = 'home';
+      }
+      _computeShouldRenderBottomHeader(page){
+        return  (page != 'me');
+      }
+
+      _loadUserResources(){
+        this.takeMeHome();
+      }
+
+      /**
+       * Fired when `element` changes its awesomeness level.
+       *
+       * @event awesome-change
+       * @param {number} newAwesome New level of awesomeness.
+       */
+      _onProductSelect(e){
+          this.product = e.detail.product;
+      }
+      
+      signOut(){
+        window.dispatchEvent(new CustomEvent('signout', {detail: {kicked: true, bubble:false}}));
+      }
+
+      /**
+       * @desc Navigate to a diffrent route
+       * @param Object $event - The event with the route location
+       * @return void
+       */
+      navigate(e){
+          let location = e.uri;
+          this.set('route.path', location);
+      }
+        
+      _confirm(e) {
+
+          const data = e.detail;
+          this.modalMesssage = data.message;
+          this.$.modal.classList.remove("danger");
+          this.$.modal.classList.remove("happy");
+          this.$.modal.classList.add(data.level);
+          this.$.modal.open();
+      }
+
+      _setCategories({detail:categories}){
+        this.dispatch('setCategories', categories);
+      }
+
+      _onModalConfirm(e){
+        document.dispatchEvent(new CustomEvent('on-app-confirm', { detail: true }));
+      }
+
+      _onModalCancel(e) {
+        document.dispatchEvent(new CustomEvent('on-app-confirm', { detail: false }));
+      }
+      /**
+       * Registers `service-worker.js` file if supported
+       * by our current browser.
+       * @param {void}
+       * @return {void}
+       */
+      registerWorker(){
+
+      }
+    }
+
+    window.customElements.define(AppOverview.is, AppOverview);
+  </script>
+
+
+</dom-module>

@@ -4,10 +4,10 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<!-- <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html"> -->
 
 <!-- App Components -->
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-auth/app-auth.html">
 
 <!--
 `<app-login>` is Description
@@ -34,17 +34,22 @@
       }
 
       .login{
-      	padding: 3em 0;
+      	padding: 2.3em 0;
       	width: 100%;
       }
       .login-card{
         background: white;
-        padding: 3em;
+        padding: 2.3em;
         margin: 16px;
-        box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.1);
         max-width: 820px;
         min-height: 300px;
         width:100%;
+        margin-bottom: 40px;
+
+        -webkit-box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
+        -moz-box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
+        box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
+        -moz-box-shadow: 0px 20px 39px 4px rgba(214,214,214,1);
       }
       .logo{
       	max-width: 140px;
@@ -54,18 +59,35 @@
       	margin:0 auto;
       }
       .space-top-bottom{
-  	    margin: 3em 0;
+  	    margin: 2.3em 0;
       }
       #login-btn{
-  	    background: var(--app-accent-color);
+  	    background:#7250ff;
     	   color: white;
       }
       .link{
-      	color: var(--app-primary-color, #4e4e4e);
+      	color: var(--app-link-color);
+        font-style: italic;
+        text-decoration: underline;
       }
       .link:hover{
       	color: var(--app-accent-color);
       }
+      .social-icons{
+        margin: 0;        
+      }
+      .social-icons>li{
+        list-style: none;
+        display: block;
+        padding:6px;
+      }
+      .social-icons>li>a{
+        display: block;
+      }
+      .social-icons>li img{
+        width: 40px;
+      }
+
        /*Mobile*/
       @media (max-width: 425px) {
       	.login{
@@ -80,59 +102,101 @@
       }
     </style>
 
+    <app-auth id="auth" user="{{user}}" on-error="handleError" signed-in="{{userIsLoggedIn}}"></app-auth>
+
     <section class="layout vertical center-center login content">
     	<div class="login-card">
-    		<div class="layout horizontal center-center">
-    			<img src="images/login-logo.png" class="logo">
-			</div>
-			<form is="iron-form" method="post" id="form" class="space-top-bottom">
-				<div class="inputs">
-					<!-- Inputs -->
-		            <paper-input label="Email" name="username" id="username">
-		              <iron-icon icon="mail" prefix></iron-icon>
-		            </paper-input>
-		            <paper-input label="password" type="password" name="password" id="password">
-		              <iron-icon icon="communication:vpn-key" prefix></iron-icon>
-		            </paper-input>
-		            <!-- Controls -->
-		            <div class="layout horizontal center space-top-bottom">
-		            	<a href="#" class="link">Forgot password</a>
-		            	<span class="flex"></span>
-		            	<paper-button raised id="login-btn">Login</paper-button>
-		            </div>
-		            <!-- Social Login -->
-		            <div  class="layout horizontal space-top-bottom">
-		            	<span>Or login with:</span>
-		            	<span class="flex"></span>
-		            	
-		            </div>
-				</div>
-	            
-        	</form>
+      		<div class="layout horizontal center-center">
+      			<a href="https://market.yourdesignjuice.com"><img src="images/login-logo.png" class="logo"></a>
+  			</div>
+  			<form is="iron-form" method="post" id="form" class="space-top-bottom">
+  				<div class="inputs">
+  					<!-- Inputs -->
+              <paper-input label="EMAIL"
+                           name="username"
+                           id="username"
+                           on-keydown="checkForEnter"
+                           required auto-validate
+                           error-message="Email is required">
+                <iron-icon icon="mail" prefix></iron-icon>
+              </paper-input>
+              <paper-input label="PASSWORD"
+                           type="password"
+                           name="password"
+                           id="password"
+                           on-keydown="checkForEnter"
+                           required auto-validate
+                           error-message="Password is required"
+                           on-keydown="checkForEnter">
+                <iron-icon icon="communication:vpn-key" prefix></iron-icon>
+              </paper-input>
+              <!-- Controls -->
+              <div class="layout horizontal center space-top-bottom">
+              	<a href="#" class="link">Forgot password</a>
+              	<span class="flex"></span>
+              	<paper-button raised id="login-btn" on-tap="signIn" disabled="[[busy]]">Login</paper-button>
+              </div>
+              <!-- Social Login -->
+              <div  class="layout horizontal space-top-bottom">
+              	<span>Or login with:</span>
+              	<span class="flex"></span>
+                <ul class="layout horizontal social-icons">
+                  <li>
+                    <a href="https://api.yourdesignjuice.com/login/facebook"><img src="/images/icons/facebook.svg"></a>
+                  </li>
+                  <li>
+                    <a href="https://api.yourdesignjuice.com/login/twitter"><img src="/images/icons/twitter.svg"></a>
+                  </li>
+                  <li>
+                    <a href="https://api.yourdesignjuice.com/login/google"><img src="/images/icons/google-plus.svg"></a>
+                  </li>
+                </ul>
+              </div>
+  				</div>  
+      	</form>
     	</div>
+      <p>Don't have an account? Apply <a href="/register" class="link">here</a>.</p>
     </section>
 
   </template>
 
   <script>
-    class AppLogin extends Polymer.Element {
+    class AppLogin extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-login'; }
 
       static get properties() {return {
-          
+        busy: {
+            type: Boolean,
+            statePath: 'app.busy'
+          }
+
         }}
 
       constructor() {
         super();
       }
 
+      checkForEnter(e){
+          if (e.keyCode === 13) {
+              this.signIn();
+          }
+      }
+        
       ready() {
         super.ready();
 
         Polymer.RenderStatus.afterNextRender(this, function() {
           
         });
+      }
+
+        /**
+         * Once user submits the form, we validate the inputs
+         * and then fire out an event to get them signed in.
+         */
+      signIn () {
+        window.dispatchEvent(new CustomEvent('login', {detail:{username: this.$.username.value , password: this.$.password.value}}, {bubbles: true, composed: true}));
       }
 
     }

@@ -1,0 +1,193 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../components/app-hero/app-hero.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="terms-buyer">
+  <template>
+    <style include="">
+      :host {
+        display: block;
+      }
+
+      app-hero{
+        height: 200px;
+        margin-bottom: 3em;
+        background-color: transparent;
+        position: relative;
+        display: block;
+        color: white;
+      }
+
+      app-hero>.hero-info{
+        max-width: 800px;
+        position: absolute;
+        z-index: 1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%)
+
+      }
+      app-hero>.hero-info p{
+        margin: 0;
+        font-size: 16px;
+      }
+      app-hero .hero-info>* {
+        color:inherit;
+      }
+
+      .gradient-1 {
+        background: rgba(115,102,255,1);
+        background: linear-gradient(to right, rgba(115,102,255,1) 0%, rgba(255,108,171,1) 100%);
+      }
+      
+      .gradient-2 {
+        background: rgba(110,226,245,1);
+        background: linear-gradient(to right, rgba(110,226,245,1) 0%, rgba(100,84,240,1) 100%);
+      }
+      
+      .gradient-3 {
+        background: rgba(238,77,95,1);
+        background: linear-gradient(to right, rgba(238,77,95,1) 0%, rgba(255,207,165,1) 100%);
+      }
+      
+      .page-content {
+        max-height: 100%;
+        padding: 0 50px;
+      }
+      
+      .page-heading {
+        display: block;
+        width: 60px;
+        height: 5px;
+        margin-bottom: 26px;
+        background-color: #212121;
+        border: none;
+        float: none;
+      }
+    </style>
+    
+ <section class="layout vertical content">
+      <!-- Section 1 -->
+      <!-- App Hero -->
+      <app-hero class="layout vertical center-center gradient-3">
+        <div class="hero-info layout vertical">
+            <h2>Terms &amp; Condition -  For Buyers</h2>
+        </div>
+      </app-hero>
+
+    <div class="page-content">
+      <hr class="page-heading">
+      <h4>Terms Of Use For Buyers</h4>
+      <p>Hello!</p>
+      <p>You have arrived at YDJ Marketplace. This is a platform where you can browse for lots of unique design assets created with love from our community of passionate designers and creative professionals. Signing up for an account here is free. Upon signing up, you will also enjoy the benefits of getting connected with potentially millions of designers, transact and contribute your own design assets in this marketplace.</p>
+      <p>By signing up, you also agree you have read, understood, and be bound by the terms and conditions outlined below.</p><br />
+      <p><strong>1.   Use Of Service</strong></p>
+      <p>When you sign up, you are granted the rights to use our services to buy and sell your creative items such as fonts, UI kits, logos, background patterns and other design assets on the Marketplace. </p><br />
+
+      <p><strong>2.   License</strong></p>
+      <p>The items on YDJ Marketplace are owned by the Creators who are also the Sellers, not by us. All of the items that are made available for sale are covered by our <strong>Standard License</strong> term.</p>
+      <p>You, the Buyer may use the items purchased to create end-product. However, the item has to be reproduced in a significantly different manner than the original item.</p>
+      <p>You, the Buyer are not granted the rights to use our Standard License on multiple projects, jobs and/or for multiple clients, or transfer the Standard License to third parties.</p>
+      <p>You, the Buyer  are not permitted to make the items purchased available on shared drives or the likes for the purpose of sharing or transferring to be used separatly from the End Product.</p><br />
+
+      <p><strong>3.   Your Role As A Buyer</strong></p>
+      <ul>
+        <li><p><strong>Signing up</strong></p>
+          <p>You need to be <strong>18 years or above</strong> to sign-up as a member and/or buy items as a Guest. When signing up, you will be given an <strong>YDJ Marketplace account</strong>. It is your responsibility to provide true and accurate information as required. We also recommend you to create &quot;strong&quot; passwords when signing up.</p>
+        </li>
+        <li>
+          <p><strong>Your membership</strong></p>
+          <p>Your membership is <strong>NOT transferrable</strong>. You are responsible for any use of the platform including any activities that occur in conjunction with your username and password. If there's any breach of your password and security, <strong>do notify us immediately</strong>. </p>
+        </li>
+      </ul><br />
+
+      <p><strong>4.   Service Rulees</strong></p>
+      <p>By using our service, you agree not to engage in any of the following prohibited activities: </p>
+      <ol>
+        <li>Copying, distributing, and disclosing any part of our service in any medium.</li>
+        <li>Pornographic activities.</li>
+        <li>Gambling activities.</li>
+        <li>Illegal online activities.</li>
+        <li>Using any automated system, including without limitation &quot;robots,&quot; &quot;spiders,&quot; &quot;offline readers,&quot; etc., to access the our service in a manner that sends more request messages to the CM servers than a human can reasonably produce in the same period of time by using a conventional online web browser. </li>
+        <li>Creating propaganda including politically or religiously motivated ones.</li>
+      </ol><br />
+
+      <p><strong>5.   Transacting As A Buyer</strong></p>
+      <ul>
+        <li>We use PayPal as our main online payment provider. Your payments will transact securely via PayPal. When you choose to buy an item, you will be redirected to PayPal upon checkout and may be required to pay a service fee charged over the item price.</li>
+        <li>All transactions are in <strong>US Dollars</strong>. Your payments are converted by your financial institution from your currency to US Dollars.</li>
+        <li>Your general details may be provided to the Creator of the item to facilitate the transaction and for invoicing purpose.</li>
+      </ul><br />
+
+      <p><strong>6.   No Third Party Rights</strong></p>
+      <p>Nothing expressed in these terms are intended to be given to any Person or any third parties. YDJ Marketplace is relieved from any liability arising from your use of any third-party website, service or content.</p><br />
+
+      <p><strong>7.   Privacy &amp; Security</strong></p>
+      <p>We care about the integrity and security of your personal information. We only accept personal information and identification documents uploaded securely within our site. We ensure all documents used to verify your identification remains undisclosed. We will not rent, sell, or share your personal information with other parties or non-affiliated companies, unless we are required to do so by law, or in good faith.</p><br />
+
+      <p><strong>8.   Cancellation Policy</strong></p>
+      <p>You may request to cancel your account at any time by contacting us at <a href="mailto:support@yourdesignjuice.com" onclick="return rcmail.command('compose','support@yourdesignjuice.com',this)" rel="noreferrer">support@yourdesignjuice.com</a>. There are <strong>no refunds</strong> for cancellation. In the event we suspend or terminate your account, you understand and agree that you shall receive no refund or exchange any YDJ Marketplace properties, any license or subscription fees for any portion of our service, any content or data associated with your account, or for anything else.</p><br />
+
+      <p><strong>9.   Governing Law</strong></p>
+      <p>The terms outlined here shall be governed and construed in accordance with the laws of Malaysia. Any dispute, controversy or claim arising or relating to the terms shall be settled by arbitration in Malaysia in accordance with the Arbitration Rules of Malaysia. The arbitration proceedings shall be conducted in English.</p><br />
+
+      <p><strong>Created:</strong> December 27, 2017   <strong>Effective date:</strong> January 6, 2018</p><br />
+    </div>
+ </section>
+</template>
+  
+  <script>
+      class TermsBuyer extends Polymer.Element {
+
+          static get is() {
+              return 'terms-buyer';
+          }
+
+          static get properties() {
+              return {}
+          }
+
+          static get observers() {
+              return []
+          }
+
+          static get listeners() {
+              return []
+          }
+
+          constructor() {
+              super();
+          }
+
+          ready() {
+              super.ready();
+
+              Polymer.RenderStatus.afterNextRender(this, function () {
+
+              });
+          }
+
+      }
+
+      window.customElements.define(TermsBuyer.is, TermsBuyer);
+  </script>
+</dom-module>

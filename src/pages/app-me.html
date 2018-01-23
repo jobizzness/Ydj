@@ -1,0 +1,231 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+<!-- App Components -->
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../app-store.html">
+<link rel="import" href="../components/app-me-store/app-me-store-service.html">
+
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me">
+
+    <!-- 
+        Lazy Pages
+    -->
+
+    <link rel="lazy-import" href="../components/app-me-account/app-me-account.html" group="me-account">
+    <link rel="lazy-import" href="../components/app-me-goodies/app-me-goodies.html" group="me-goodies">
+    <link rel="lazy-import" href="../components/app-dashboard/app-dashboard.html" group="dashboard">
+    <link rel="lazy-import" href="../components/app-me-store/app-me-store.html" group="me-store">
+     <link rel="lazy-import" href="../components/app-me-categories/app-me-categories.html" group="me-categories">
+    <link rel="lazy-import" href="../components/app-me-settings/app-me-settings.html" group="me-settings"> 
+    <link rel="lazy-import" href="../components/app-me-requests/app-me-requests.html" group="me-requests">
+    <link rel="lazy-import" href="../components/app-me-withdrawals/app-me-withdrawals.html" group="me-withdrawals">
+    <link rel="lazy-import" href="../components/app-me-earnings/app-me-earnings.html" group="me-earnings">
+    <link rel="lazy-import" href="../components/app-me-upload/app-me-upload.html" group="me-upload">
+
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+        background-color: #fafafa;
+      }
+	  .container>*{
+        padding: 16px;
+      }
+      .container{
+        @apply(--layout-horizontal);
+      }
+      .acc-nav--item{
+      	padding: 16px;
+      	color: var(--app-primary-color);
+      }
+      .acc-nav--item.iron-selected{
+      	background-color: #fafafa;
+      	color: var(--app-accent-color);
+      }
+      #account_nav{
+      	@apply(--layout-vertical);
+      	background-color: white;
+  	    min-height: 100vh;
+  	    padding: 16px 24px;
+        box-shadow: 0 1px 1px rgba(0,0,0,.1);
+      }
+      iron-selector.pages>*:not(.iron-selected){
+      	display: none !important;
+      }
+      /*Mobile*/
+      @media (max-width: 425px) {
+        .container>*{
+          padding: 0;
+        }
+        .container{
+          @apply(--layout-vertical);
+        }
+    }
+    </style>
+
+    <!-- app-route provides the name of the category. -->
+    <app-route
+            route="[[route]]"
+            pattern="/:slug"
+            data="{{routeData}}"></app-route>
+    
+    <app-me-store-service
+            on-product-categories-changed="_setCategories">
+    </app-me-store-service>
+  
+
+    
+    <div class="content">
+	    <section class="container">
+        <main class="flex-3">
+          <iron-selector attr-for-selected="name" selected="[[page]]" class="pages">
+            <app-dashboard name="dashboard"></app-dashboard>
+            <app-me-account name="me-account"></app-me-account>
+            <app-me-goodies name="me-goodies"></app-me-goodies>
+            <app-me-earnings name="me-earnings"></app-me-earnings>
+            <app-me-favorites name="me-favorites"></app-me-favorites>
+            <app-me-messages name="me-messages"></app-me-messages>
+            <app-me-categories name="me-categories" categories="[[categories]]"></app-me-categories>
+            <app-me-requests name="me-requests"></app-me-requests>
+            <app-me-settings name="me-settings"></app-me-settings>
+            <app-me-store name="me-store" selected="{{selectedProduct}}" on-product-create="_create"></app-me-store>
+            <app-me-upload name="me-upload" id="productEditor"></app-me-upload>
+            <app-me-withdrawals name="me-withdrawals"></app-me-withdrawals>
+            <app-me-users name="me-users"></app-me-users>
+          </iron-selector>
+          
+        </main>
+	    	<aside class="flex">
+	    		<iron-selector attr-for-selected="name" selected="[[page]]" id="account_nav">
+
+            <a href="/me/dashboard" name="dashboard" class="acc-nav--item" hidden$="[[!user]]">My Dashboard</a>
+            <a href="/me/requests" name="me-requests" class="acc-nav--item" hidden$="[[!admin]]">Requests</a>
+            <a href="/me/categories" name="me-categories" class="acc-nav--item" hidden$="[[!admin]]">Categories</a>
+            <a href="/me/store" name="me-store" class="acc-nav--item" hidden$="[[!seller]]">My Store</a>
+            <a href="/me/upload" name="me-upload" class="acc-nav--item" on-click="_create" hidden$="[[!seller]]">Sell Item</a>
+            <a href="/me/earnings" name="me-earnings" class="acc-nav--item" hidden$="[[!seller]]">My Earnings</a>
+            <a href="/me/withdrawals" name="me-withdrawals" class="acc-nav--item" hidden$="[[!seller]]"> Withdrawals</a>
+            <a href="/me/goodies" name="me-goodies" class="acc-nav--item" hidden$="[[!seller]]">Purchases</a>
+            <a href="/me/account" name="me-account" class="acc-nav--item" hidden$="[[!user]]">Account Settings</a>
+
+	    		</iron-selector>
+	    	</aside>
+
+	    </section>
+  </div>
+  
+
+
+  </template>
+
+  <script>
+    class AppMe extends ReduxMixin(Polymer.LazyImportsMixin(Polymer.Element)) {
+
+      static get is() { return 'app-me'; }
+
+      static get properties() {return {
+          page:{
+          	type: String,
+          	reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          
+          routeData:{
+          	type: Object
+          },
+
+          seller: {
+              type: Boolean,
+              statePath: 'user.is_seller'
+          },
+
+          user: {
+              type: Object,
+              statePath: 'user'
+          },
+
+          admin: {
+            statePath: 'user.is_admin',
+            value: false
+          }
+      }}
+
+      static get observers(){
+      	return [
+      		'routeChanged(routeData.slug)',
+            'productSelected(selectedProduct)'
+      	]
+      }
+
+      constructor() {
+        super();
+      }
+
+      routeChanged(slug){
+      	switch(slug){
+      		case 'account':
+      		case 'goodies':
+      		case 'favorites':
+      		case 'messages':
+          case 'earnings':
+          case 'categories':
+          case 'store':
+          case 'withdrawals':
+          case 'settings':
+          case 'upload':
+          case 'requests':
+      			this.page = 'me-'+slug;
+      			break;
+      		default:
+      			this.page = 'dashboard';
+      	}
+      }
+
+      _create(){
+          this.$.productEditor.open({detail:{}});
+      }
+
+      _pageChanged(page) {
+        
+        switch (page) {
+          case 'requests':
+            if(this.admin)
+            page = page;
+          default:
+            break;
+        }
+
+        this.importLazyGroup(page).then(() => {
+
+        });
+
+      }
+
+      productSelected(selectedProduct){
+       if(selectedProduct) {
+           this.$.productEditor.open({detail:selectedProduct});
+       }
+      }
+      
+      ready() {
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMe.is, AppMe);
+  </script>
+</dom-module>

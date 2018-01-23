@@ -1,0 +1,116 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+
+
+<dom-module id="app-request-item">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            .item-details {
+                padding: 16px;
+                @apply --layout-horizontal;
+            }
+        
+            .item-details>* {
+                padding: 16px;
+                justify-content: center;
+            }
+            .allow-btn{
+                color: #00BCD4;
+            }
+            .start-center {
+                justify-content: center;
+            }
+        </style>
+
+        <section class="layout horizontal">
+            <div class="flex-3">
+                <!-- Items Names -->
+                <div class="item-details">
+                    <a href="#" class="flex">
+                        <iron-image preload style="background-color: #eee;width: 100%;height: 100%;min-height: 70px;" fade sizing="cover" src="[[data.media.0.src]]"></iron-image>
+                    </a>
+                    <div class="flex-3 layout vertical">
+                        <a href="#" class="strong-text">
+                            <span>[[data.title]]</span>
+                        </a>
+                        <span class="light-text">[[data.published_at]]</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex layout vertical center start-center">
+                <!-- Prices -->
+                <span class="strong-text mb-20" hidden$="[[!data.price]]">$[[data.price]]</span>
+            </div>
+            <div class="flex layout horizontal center start-center">
+                <!-- Actions -->
+                <paper-icon-button icon="my-icons:approve" on-click="approve" class="allow-btn"></paper-icon-button>
+                <paper-icon-button icon="my-icons:close" on-click="delete"></paper-icon-button>
+                <a href$="[[data.asset]]" target="_blank"><paper-icon-button icon="my-icons:download"></paper-icon-button></a>
+            </div>
+        </section>
+
+    </template>
+
+    <script>
+        /**
+         * `app-request-item` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class AppRequestItem extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'app-request-item';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    
+                };
+            }
+
+            approve(){
+                this._tellParent('approve', this.data);
+            }
+
+            delete(){
+                this._tellParent('delete', this.data);
+            }
+
+            _tellParent(action, payload){
+                this.dispatchEvent(new CustomEvent('selected', {detail:{action:action, payload: payload}}));
+            }
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+
+        }
+
+        window.customElements.define(AppRequestItem.is, AppRequestItem);
+    </script>
+</dom-module>

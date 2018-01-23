@@ -1,0 +1,48 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<script>
+
+    const MyMixin = superclass => class extends superclass {
+
+        static get properties() {
+            return {
+                selected: {
+                    type: Object,
+                    observer: '_selectedChanged'
+                },
+                data:{
+                    type: Object,
+                    observer:'_resetSelected'
+                }
+            };
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+
+            this.shadowRoot.addEventListener('slotchange', this._resetSelected.bind(this));
+            this._resetSelected();
+        }
+
+        _selectedChanged(selected, oldSelected) {
+            if (oldSelected) oldSelected.removeAttribute('selected');
+            if (selected) selected.setAttribute('selected', '');
+        }
+
+        _resetSelected() {
+            console.log('changed');
+            if (!this.selected || this.selected.parentElement !== this) {
+                this.selected = this.getElementsByClassName('slide')[0];
+            }
+        }
+
+    };
+
+</script>

@@ -1,0 +1,218 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../../components/create-category/create-category.html">
+<link rel="import" href="../../app-store.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-categories">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      .earnings>div>*{
+        padding:16px;
+        display: block;
+      }
+    </style>
+
+    <create-category id="category" on-make-category="_makeCategory" error="[[error]]" busy="[[busy]]" data="[[selected]]"></create-category>
+
+   <div class="cards">
+
+      <section class="layout horizontal">
+          <span class="flex"></span>
+          <a><paper-button raised class="rounded-btn action-btn" on-tap="_make">Create Category</paper-button></a>
+      </section>
+
+        <!-- All Earnings -->
+        <section class="card with--panel">
+          <section class="layout horizontal">
+            <div class="flex">
+              <panel>
+                <span class="panel-title">Date:</span>
+              </panel>
+            </div>
+            <div class="flex-2">
+              <panel>
+                <span class="panel-title">Name</span>
+              </panel>
+            </div>
+            <div class="flex">
+              <panel>
+                <span class="panel-title">Status:</span>
+              </panel>
+            </div>
+            <div class="flex">
+              <panel>
+                <span class="panel-title">Actions:</span>
+              </panel>
+            </div>
+          </section>
+
+          <!-- Earnings List -->
+          <template is="dom-repeat" items="[[categories]]" as="item">
+            <section class="layout horizontal earnings">
+              <div class="flex"><span class="light-text">[[item.created_at]]</span></div>
+              <div class="flex layout vertical start-center"><span class="strong-text">[[item.name]]</span></div>
+              <div class="flex layout vertical start-center"><span class="light-text">Active</span></div>
+
+              <!-- Actions -->
+              <paper-icon-button icon="my-icons:edit" on-click="_edit" data="[[item]]" class="allow-btn"></paper-icon-button>
+              <paper-icon-button icon="my-icons:close" on-click="_delete" data="[[item]]"></paper-icon-button>
+            </section>
+          </template>
+      </section>
+    </div>
+  </template>
+
+  <script>
+    class AppMeCategories extends ReduxMixin(Polymer.Element) {
+
+      static get is() { return 'app-me-categories'; }
+
+      static get properties() {
+        return {
+          env: {
+              type: Object,
+              statePath: 'env',
+              observer: 'init'
+          },
+          selected: {
+              type: Object
+          },
+          categories: {
+              statePath: 'categories',
+              type: Array
+          }
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      _make(){
+        this.selected = {};
+        this.$.category.opened = true;
+      }
+
+      _edit(e){
+
+        let data = Polymer.dom(e).localTarget.data;
+
+        this.selected = data;
+        this.$.category.opened = true;
+      }
+
+      _makeCategory({detail}){
+        this.busy = true;
+        this.tunnel.method = detail.id ? 'PATCH' : 'POST';
+        this.tunnel.body = detail;
+        this.tunnel.url = `${this.env.app_domain}/api/category`;
+              
+        if(detail.id){
+          this.tunnel.url += '/' + detail.id;
+        }
+
+        let request = this.tunnel.generateRequest();
+        
+
+        request.completes.then((req) => {
+            
+            location.reload();
+
+        }, (rejected) => {
+          this.busy = false;
+          
+            // TODO dispatch new error occurred
+            let req = rejected.request;
+            let error = rejected.error;
+
+
+        });
+        
+      }
+
+      _processDelete(detail){
+        this.busy = true;
+        this.tunnel.method = 'DELETE';
+        this.tunnel.body = detail;
+        this.tunnel.url = `${this.env.app_domain}/api/category`;
+              
+        if(detail.id){
+          this.tunnel.url += '/' + detail.id;
+        }
+
+        let request = this.tunnel.generateRequest();
+        
+
+        request.completes.then((req) => {
+            
+            location.reload();
+
+        }, (rejected) => {
+          this.busy = false;
+          
+            // TODO dispatch new error occurred
+            let req = rejected.request;
+            let error = rejected.error;
+
+
+        });
+      }
+
+      _delete(e){
+
+        let item = Polymer.dom(e).localTarget.data;
+        this.selected = item;
+
+        let data = {
+              level: 'danger',
+              message: 'Are you sure you want to delete this item?'
+          }
+
+          this.onConfirmed(data, (e) => {
+              if (e.detail === true) {
+                  this._processDelete(item)
+              }
+              document.removeEventListener('on-app-confirm', (e) => {});
+          });
+      }
+
+      onConfirmed(data, callback){
+          document.dispatchEvent(new CustomEvent('app-confirm', {detail:data}));
+          return document.addEventListener('on-app-confirm', (e) => callback(e));
+      }
+      /**
+       * Use for one-time configuration of your component after local DOM is initialized. 
+       */
+      init() {
+          if (this.firstLoad) return;
+
+          this.tunnel = document.createElement('iron-ajax');
+          this.tunnel.headers = {
+              Authorization: `Bearer ${this.env.token}`,
+              Accept: 'application/json'
+          };
+          this.tunnel.contentType = 'application/json';
+
+
+          this.firstLoad = true;
+      }
+
+      ready() {
+        super.ready();
+        
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMeCategories.is, AppMeCategories);
+  </script>
+</dom-module>

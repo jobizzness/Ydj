@@ -1,0 +1,70 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="auth-store">
+    <script>
+        class AuthStore extends Polymer.Element {
+
+            static get is() { return 'auth-store'; }
+
+            static get properties() {return {
+                    data:{
+                        type: Object,
+                        notify: true,
+                        value: null,
+                        observer: '_dataChanged'
+                    },
+                    accessToken: {
+                        type: String
+                    },
+                    refreshToken: {
+                        type: String
+                    }
+                }}
+
+            constructor() {
+                super();
+                this.attachShadow({mode: 'closed', delegatesFocus: true});
+            }
+
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+            unSetTokens() {
+                window.localStorage.removeItem('auth');
+            }
+            _dataChanged() {
+                if(!this.data) return;
+                this.accessToken = this.data.access_token;
+                this.refreshToken = this.data.refresh_token;
+                this._storeTokens(this._setFields());
+            }
+
+            _setFields() {
+                return {
+                    "access_token": this.accessToken,
+                    "refresh_token": this.refreshToken
+                }
+            }
+
+            _storeTokens(data) {
+                window.localStorage.setItem('auth', JSON.stringify(data));
+            }
+            getTokens() {
+                // we want a promise here
+                return JSON.parse(window.localStorage.getItem('auth'));
+            }
+
+        }
+
+        window.customElements.define(AuthStore.is, AuthStore);
+    </script>
+</dom-module>

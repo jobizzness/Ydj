@@ -1,0 +1,203 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-goodies">
+  <template>
+    <style  include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block
+      }
+
+      .item-details{
+        padding: 16px;
+        @apply --layout-horizontal;
+      }
+
+      .item-details>*{
+        padding: 16px;
+        justify-content: center;
+      }
+
+      .panel-title{
+        padding-left: 22px;
+      }
+
+      .mb-20{
+        margin-bottom: 20px;
+      }
+
+      .start-center{
+        justify-content: center;
+      }
+    </style>
+
+    <div class="cards">
+      <!-- General Account -->
+      <section class="card with--panel">
+        <section class="layout horizontal">
+          <div class="flex-3">
+            <panel>
+              <span class="panel-title">Item Name</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Item Price</span>
+            </panel>
+          </div>
+          <div class="flex">
+            <panel>
+              <span class="panel-title">Actions</span>
+            </panel>
+          </div>
+        </section>
+
+        <!-- Goodies List -->
+        <template is="dom-repeat" items="[[items]]">
+          <section class="layout horizontal">
+            <div class="flex-3">
+              <!-- Items Names -->
+              <div class="item-details">
+                <a href="/goodies/[[item.slug]]" class="flex">
+                <iron-image preload style="background-color: #eee;width: 100%;height: 100%;min-height: 70px;" 
+                            fade sizing="cover" 
+                            src="[[item.thumbnail]]"></iron-image>
+                </a>
+                <div class="flex-3 layout vertical">
+                  <a href="/goodies/[[item.slug]]" class="strong-text"><span>[[item.title]]</span></a>
+                  <span class="light-text">[[item.date]]</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex layout vertical center start-center">
+              <!-- Prices -->
+                  <span class="strong-text mb-20">$[[item.price]]</span>
+            </div>
+            <div class="flex layout vertical start-center">
+              <!-- Actions -->
+                <div class="strong-text mb-20">
+                  <paper-button primary on-click="download" data="[[item]]">Download</paper-button>
+                </div>
+            </div>
+          </section>
+        </template>
+      </section>
+    </div>
+    
+  <!-- </section> -->
+
+  <div class="card" style="margin-bottom:36px;">
+    <section class="layout vertical">
+      <h3>Download tips</h3>
+      <p>YDJ Marketplace recommends that you download your purchases immediately. If you are having trouble downloading or experiencing incomplete downloads, try the following steps:</p>
+        <ol>
+          <li>Check your connection and try downloading again.</li>
+          <li>If the problem persists, contact our <a href="mailto:support@yourdesignjuice.com">support team</a> by stating your issues.</li>
+        </ol>
+    </section>
+  </div>
+
+  </template>
+
+  <script>
+    class AppMeGoodies extends ReduxMixin(Polymer.Element) {
+
+      static get is() { return 'app-me-goodies'; }
+
+      static get properties() {return {
+          items:{
+            type: Array,
+          },
+          env:{
+            type: String,
+            observer: 'init',
+            statePath: 'env'
+          }
+        }}
+
+      constructor() {
+        super();
+      }
+
+      /**
+       * Use for one-time configuration of your component after local DOM is initialized. 
+       */
+      init() {
+        if (this.firstLoad) return;
+
+        this.tunnel = document.createElement('iron-ajax');
+        this.tunnel.headers = {
+          Authorization: `Bearer ${this.env.token}`,
+          Accept: 'application/json'
+        };
+        this.tunnel.method = "GET";
+        this.tunnel.contentType = 'application/json';
+
+        this._getProducts();
+
+        this.firstLoad = true;
+      }
+
+      download(e){
+
+        let data = Polymer.dom(e).localTarget.data;
+
+        this.tunnel.url = `${this.env.app_domain}/api/purchases/any`;
+        this.tunnel.params = {order: data.order, product: data.id};
+        this.tunnel.method = "GET";
+
+        let request = this.tunnel.generateRequest();
+
+        request.completes.then((res) => {
+          let link = res.parseResponse();
+          window.location.href = link;
+
+        }, (rejected) => {
+          // failed request, argument is an object
+          let req = rejected.request;
+          let error = rejected.error;
+          this.busy = false;
+
+        });
+      
+      }
+      
+      _getProducts() {
+
+        this.tunnel.url = `${this.env.app_domain}/api/purchases`;
+        this.tunnel.method = "GET";
+
+        let request = this.tunnel.generateRequest();
+
+        request.completes.then((req) => {
+          //We got our request
+          let res = req.parseResponse();
+          this.busy = false;
+          this.hasMore = res.page_info.has_more;
+          this.set = this.set + 1;
+
+
+          this.items = res.data;
+
+        }, (rejected) => {
+          // failed request, argument is an object
+          let req = rejected.request;
+          let error = rejected.error;
+          this.busy = false;
+
+        });
+      }
+
+    }
+
+    window.customElements.define(AppMeGoodies.is, AppMeGoodies);
+  </script>
+</dom-module>

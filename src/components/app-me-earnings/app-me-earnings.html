@@ -1,0 +1,166 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-earnings">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block
+      }
+      .earnings>div>*{
+        padding:16px;
+        display: block;
+      }
+    </style>
+
+     <div class="cards">
+
+     	  <section class="layout horizontal">
+     	  	<!-- Date Picker -->
+     	  	<vaadin-date-picker label="View From"></vaadin-date-picker>
+     	  </section>
+	      <!-- All Earnings -->
+	      <section class="card with--panel">
+	        <section class="layout horizontal">
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title">Date:</span>
+	            </panel>
+	          </div>
+	          <div class="flex-3">
+	            <panel>
+	              <span class="panel-title">Item Name:</span>
+	            </panel>
+	          </div>
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title center center-justified">Buyer</span>
+	            </panel>
+	          </div>
+	          <div class="flex">
+	            <panel>
+	              <span class="panel-title">Total Earnings:</span>
+	            </panel>
+	          </div>
+	        </section>
+
+	        <!-- Earnings List -->
+	        <template is="dom-repeat" items="[[items]]" as="item">
+	          <section class="layout horizontal earnings">
+	            <div class="flex-4"><span class="light-text">April 02, 2017</span></div>
+	            <div class="flex-3"><span class="strong-text">[[item.product.title]]</span></div>
+	            <div class="flex layout vertical center center-justified"><span class="light-text">[[item.buyer.email]]</span></div>
+	            <div class="flex layout vertical center center-justified"><span class="strong-text">$[[item.product.price]]</span></div>
+	          </section>
+	        </template>	        
+
+
+	        <!-- Footer -->
+	        <section class="layout horizontal" style="background-color: #fafafa">
+	        	<span class="flex-3"></span>
+	        	<div class="flex-3">
+	            <panel>
+	              <span class="strong-text">Total:</span>
+	            </panel>
+	          </div>
+	          <div class="flex">
+	            <panel>
+	              <span class="strong-text">USD $00.00</span>
+	            </panel>
+	          </div>
+	        </section>
+
+	        <!-- Note -->
+	        <div class="card" style="margin-bottom:36px;">
+			    <section class="layout vertical">
+			      <h3>How prices and earnings are calculated?</h3>
+			      <p>For every item purchased, YDJ Marketplace charges a 25% Seller fee. The amount is deducted from the price you set for each of your design assets put on sale.</p>
+			    </section>
+		  	</div>
+	   	</section>
+   	</div>
+
+  </template>
+
+  <script>
+    class AppMeEarnings extends ReduxMixin(Polymer.Element) {
+
+      static get is() { return 'app-me-earnings'; }
+
+      static get properties() {
+        return {
+          env: {
+				type: Object,
+				statePath: 'env',
+				observer: 'init'
+			}
+        };
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+		_getProducts() {
+
+			this.tunnel.url = `${this.env.app_domain}/api/sales`;
+			this.tunnel.method = "GET";
+
+			let request = this.tunnel.generateRequest();
+
+			request.completes.then((req) => {
+				//We got our request
+				let res = req.parseResponse();
+				this.busy = false;
+				//this.hasMore = res.page_info.has_more;
+				//this.set = this.set + 1;
+
+				this.items = res;
+
+			}, (rejected) => {
+				// failed request, argument is an object
+				let req = rejected.request;
+				let error = rejected.error;
+				this.busy = false;
+
+			});
+		}
+
+			init() {
+				if (this.firstLoad) return;
+
+				this.tunnel = document.createElement('iron-ajax');
+				this.tunnel.headers = {
+					Authorization: `Bearer ${this.env.token}`,
+					Accept: 'application/json'
+				};
+				this.tunnel.method = "GET";
+				this.tunnel.contentType = 'application/json';
+
+				this._getProducts();
+
+				this.firstLoad = true;
+			}
+
+    }
+
+    window.customElements.define(AppMeEarnings.is, AppMeEarnings);
+  </script>
+</dom-module>

@@ -1,0 +1,278 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../app-avatar/app-avatar.html">
+<link rel="import" href="app-me-account-data.html">
+<link rel="import" href="../app-avatar-editor/app-avatar-editor.html">
+
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-account">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+      }
+      .card-title{
+  	    font-weight: 300;
+    	color: #5f5f5f;
+      }
+      .spaceout>*{
+      	margin-right: 2em;
+      	flex:1;
+      }
+      paper-input{
+        max-width: 300px;
+      }
+      #changeAvatar{
+	    text-transform: capitalize;
+	    max-width: 151px;
+	    margin-top: 1em;
+	    padding: 8px 9px;
+      }
+	  paper-dropdown-menu, paper-listbox {
+		    max-width: 300px;
+	  }
+	  paper-dropdown-menu {
+	  	--paper-dropdown-menu-input:{
+        		--paper-input-container-focus-color: var(--app-accent-color);
+	  	}
+	    display: block;
+	  }
+	  .delete{
+	  	margin-top: 16px;
+	  	text-transform: capitalize;
+	  }
+	  .delete iron-icon{
+	  	margin-right: 5px;
+	  }
+	  .subcription>*{
+	  	margin: 8px 0;
+	  }
+	  paper-checkbox{
+	  	--paper-checkbox-label-checked-color: var(--app-accent-color);
+	  	--paper-checkbox-checked-color: gray;
+	  }
+	  #paypalEmail{
+	  	max-width: 500px;
+	  }
+    #closeBtn{
+      color: #5c9cfb;
+    }
+    </style>
+  
+    <!--
+    User account service.
+    tell me if you need anything. i have open APIs
+    -->
+    <app-me-account-data id="dbRef"></app-me-account-data>
+    
+    <!--
+      Avatar Editor
+    -->
+    <app-avatar-editor id="avatar_cropper"></app-avatar-editor>
+    
+    <div class="cards">
+			<!-- General Account -->
+      <template is="dom-if" if="[[!is_seller]]">
+        <section class="card">
+          <div class="layout horizontal">
+            <span class="flex"></span>
+            <paper-icon-button
+                    icon="my-icons:close"
+                    id="closeBtn"
+                    aria-label="Close dialog"></paper-icon-button>
+          </div>
+            <div class="layout vertical center-center">
+              <p>Are you a Creativepreneuer? Start selling today on YDJ Marketplace</p>
+              <paper-button raised
+                            class="action-btn"
+                            on-tap="_makeSeller"
+                            style="font-size: 14px;">Start Selling
+              </paper-button>
+            </div>
+        </section>
+      </template>
+		<section class="card">
+			<h1 class="card-title">General Account Information</h1>
+			<div class="layout vertical">
+				<div class="layout horizontal spaceout">
+					<paper-input label="Your Name"
+                       name="name"
+                       id="name"
+                       value="[[user.name]]"
+                      disabled="[[app.busy]]"
+                      >
+              <iron-icon icon="person" prefix></iron-icon>
+          </paper-input>
+          <paper-input
+                  label="Your Email"
+                  type="email"
+                  name="email"
+                  id="email"
+                  value="[[user.email]]">
+            <iron-icon icon="main" prefix></iron-icon>
+          </paper-input>
+
+          <div class="layout vertical center-center">
+            <app-avatar src$="[[user.avatar]]" width="60px" height="60px"></app-avatar>
+            <input type="file" id="avatar_input" hidden accept="image/*">
+            <paper-button raised primary id="changeAvatar" on-click="_uploadAvatar">Change Image</paper-button>
+          </div>
+        </div>
+        <div class="layout horizontal spaceout">
+          <!-- Location -->
+          <paper-input label="Your Location"
+                       name="location"
+                       id="location"
+                       value="[[user.location]]">
+            <iron-icon icon="person" prefix></iron-icon>
+          </paper-input>
+          <!-- Nick name -->
+          <paper-input label="Username"
+                       name="username"
+                       id="username"
+                       value="[[user.nickname]]">
+            <iron-icon icon="person" prefix></iron-icon>
+          </paper-input>
+        </div>
+        
+        <div  class="layout horizontal spaceout">
+          <!-- Bio -->
+          <paper-textarea 
+              label="Your Bio"
+              rows="4"
+              value="[[user.bio]]"
+              id="bio"></paper-textarea>
+        </div>
+			</div>
+		</section>
+
+		<!-- Billing Settings -->
+		<section class="card">
+			<h1 class="card-title">Billing Settings</h1>
+			<div class="layout vertical">
+			<paper-input label="Add a Paypal account" 
+						 type="email" 
+						 name="email" 
+						 id="paypalEmail"
+						 value="[[user.billing]]">
+	            	<iron-icon icon="main" prefix></iron-icon>
+	          	</paper-input>
+			</div>
+		</section>
+
+		<!-- Security Settings -->
+		<section class="card">
+			<h1 class="card-title">Security Settings - Change Password</h1>
+			<paper-input label="Current Password"
+                   type="password"
+                   name="password"
+                   id="password"
+                   value="supersecretstuff">
+            	<iron-icon icon="main" prefix></iron-icon>
+       </paper-input>
+       <paper-input label="New Password"
+                   type="password"
+                   name="password"
+                   id="password"
+                   value="supersecretstuff">
+              <iron-icon icon="main" prefix></iron-icon>
+       </paper-input>
+          	<!-- Delete Button -->
+          	<paper-button class="danger-trans delete"  disabled="[[busy]]">
+              <iron-icon icon="my-icons:sad"></iron-icon> Delete Account</paper-button>
+		</section>
+
+		<!-- Controls -->
+		<section>
+			<paper-button primary
+                    disabled="[[busy]]"
+                    on-click="_update">Update</paper-button>
+		</section>
+	</div>	
+  </template>
+
+  <script>
+    class AppMeAccount extends ReduxMixin(Polymer.Element) {
+
+      static get is() { return 'app-me-account'; }
+
+      static get properties() { return{
+          user: {
+              type: Object,
+              statePath: 'user'
+          },
+          is_seller: {
+              type: Boolean,
+              statePath: 'user.is_seller'
+          }
+      }}
+
+      constructor() {
+        super();
+      }
+
+      _makeSeller(){
+          this.$.dbRef.makeSeller();
+      }
+
+			_uploadAvatar(e){
+          this.$.avatar_input.click();
+          
+			}
+
+      _update(){
+        let password = this.$.password.value;
+        
+        let data = {
+            username: this.$.username.value,
+            email: this.$.email.value,
+            location: this.$.location.value,
+            name: this.$.name.value,
+            bio: this.$.bio.value,
+            billing: this.$.paypalEmail.value
+          }
+          if(password != 'supersecretstuff'){
+            data.password = password;
+          }
+
+         return this.$.dbRef.updateUser(data);
+      }
+      
+      ready() {
+        super.ready();
+        this.$.avatar_input.addEventListener('change', (e) => this._avatarUpdated(e));
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          
+        });
+      }
+
+      _cropAvatar(image){
+        this.$.avatar_cropper.open(image);
+      }
+        
+      _avatarUpdated(e){
+          let image = this.$.avatar_input.files[0];
+          
+          if(image){
+              let imageUrl = window.URL.createObjectURL(image);
+              this._cropAvatar(imageUrl);
+          }
+      }
+    }
+
+    window.customElements.define(AppMeAccount.is, AppMeAccount);
+  </script>
+</dom-module>

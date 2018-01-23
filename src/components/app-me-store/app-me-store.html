@@ -1,0 +1,294 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../components/app-me-upload/app-me-upload.html">
+
+
+<!-- App Components -->
+<link rel="import" href="../../shared-styles.html">
+<link rel="import" href="../../app-store.html">
+<!--
+`<Name>` is Description
+
+@element Name
+-->
+<dom-module id="app-me-store">
+  <template>
+    <style  include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block
+      }
+      .item-details{
+        padding: 16px;
+        @apply --layout-horizontal;
+      }
+      .item-details>*{
+        padding: 16px;
+        justify-content: center;
+      }
+      .mb-20{
+        margin-bottom: 20px;
+      }
+      .start-center{
+        justify-content: center;
+      }
+      
+      .actions>*{
+        color: inherit;
+      }
+       paper-button.custom {
+        max-height: 30px;
+      --paper-button-ink-color: var(--paper-primary-color);
+      /* These could also be individually defined for each of the
+        specific css classes, but we'll just do it once as an example */
+      --paper-button-flat-keyboard-focus: {
+      background-color: var(--paper-primary-color);
+      color: white !important;
+    };
+    --paper-button-raised-keyboard-focus: {
+      background-color: var(--paper-primary-color) !important;
+      color: white !important;
+    };
+  }
+    paper-button.custom:hover {
+    background-color: var(--app-primary-color);
+    }
+    paper-button.grey {
+      background-color: var(--paper-grey-500);
+      color: white;
+    }
+
+    paper-button.green {
+      background-color: var(--paper-green-500);
+      margin-bottom: 85px;
+      color: white;
+    }
+     paper-button.red {
+      background-color: var(--paper-red-500);
+      margin-bottom: 85px;
+      color: white;
+    }
+    paper-button.disabled {
+      color: white;
+    }
+ 
+  </style>
+
+    <app-goodies-editor id="goodiesEditor"></app-goodies-editor>
+
+    <div class="cards">      
+      <section class="layout horizontal">
+        <span class="flex"></span>
+        <a href="/me/upload" on-click="upload">
+          <paper-button raised class="rounded-btn action-btn">
+              <iron-icon icon="my-icons:upload" style="margin-right: 26px;"></iron-icon>Upload
+          </paper-button>
+        </a>
+      </section>
+      <template is="dom-if" if="[[hasItems]]">
+          <!-- Panel -->
+          <section class="card with--panel">
+            <section class="layout horizontal around-justified layout">
+              <div class="flex-3">
+                <panel>
+                  <span class="panel-title">Item Name</span>
+                </panel>
+              </div>
+              <div class="flex">
+                <panel>
+                  <span class="panel-title">Item Price</span>
+                </panel>
+              </div>
+              <div class="flex vertical center start-center">
+                <panel>
+                  <span class="panel-title">Status</span>
+                </panel>
+              </div>
+              <div class="flex">
+                <panel>
+                  <span class="panel-title">Downloads</span>
+                </panel>
+              </div>
+              <div class="flex">
+                <panel>
+                  <span class="panel-title">Actions</span>
+                </panel>
+              </div>
+            </section>
+    
+            <!-- Goodies List -->
+            <template is="dom-repeat" items="[[products]]" as="product">
+              <section class="layout horizontal around-justified layout">
+                <div class="flex-3">
+                  <!-- Items Names -->
+                  <div class="item-details">
+                    <a href="#" class="flex">
+                    <iron-image preload style="background-color: #eee;width: 100%;height: 100%;min-height: 70px;"
+                                fade sizing="cover"
+                                src$="[[_getMedia(product.media)]]"></iron-image>
+                    </a>
+                    <div class="flex-3 layout vertical">
+                      <a href="#" class="strong-text"><span>[[product.title]]</span></a>
+                      <span class="light-text">Created: [[product.published_at]]</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Price -->
+                <div class="flex layout vertical center start-center">
+                    <span class="strong-text mb-20">[[product.price]]</span>
+                </div>
+                 <!-- Status -->
+                <div class="flex layout vertical start-center">
+                    <span class="strong-text mb-20">Pending</span>
+                </div>
+                <!-- Downloads -->
+                <div class="flex layout vertical center start-center">
+                  <span class="light-text mb-20">0</span>
+                </div>
+                <!-- Actions -->
+                <div class="flex layout horizontal center-center actions">
+                  <a href="/me/upload/[[product.slug]]"><paper-icon-button icon="my-icons:edit" on-click="edit"
+                                                                           item="[[product]]"
+                  ></paper-icon-button></a>
+                  <paper-icon-button icon="my-icons:trash" on-click="delete" item="[[product]]"></paper-icon-button>
+                  
+                </div>
+              </section>
+            </template>
+         </section>
+      </template>
+    </div>
+  </section>
+  </template>
+
+  <script>
+    class AppMeStore extends ReduxMixin(Polymer.Element) {
+
+      static get is() { return 'app-me-store'; }
+
+      static get properties() {
+          return {
+            products: {
+                type: Array,
+                statePath: 'user.products'
+            },
+            hasItems:{
+                type: Boolean,
+                computed: '_computeHasItems(products)'
+            },
+            selected: {
+                type: Object,
+                notify: true
+            },
+            env: {
+              type: Object,
+              statePath: 'env',
+              observer: 'init'
+            },
+        }
+      }
+      
+      
+      constructor() {
+        super();
+      }
+      
+      edit(e){
+          this.selected = e.target.item;
+      }
+
+      _computeHasItems(products){
+          return (products.length > 0);
+      }
+
+      upload(){
+        this.dispatchEvent(new CustomEvent('product-create', {}))
+      }
+
+      _getMedia(media){
+          if(media.length < 1) return;
+          return media[0].src;
+      }
+
+      init() {
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          document.dispatchEvent(new CustomEvent('fetch-user-products', {}));
+        });
+
+          this.tunnel = document.createElement('iron-ajax');
+                this.tunnel.headers = {
+                    Authorization: `Bearer ${this.env.token}`,
+                    Accept: 'application/json'
+          };
+          this.tunnel.method = "GET";
+          this.tunnel.contentType = 'application/json';
+      }
+
+      _selectedChanged({detail:{action, payload}}){
+          this.selected = payload;
+          this[action]();
+      }
+
+      approve(){
+          let data = {
+              level: 'happy',
+              message: 'Are you sure you want to approve this item?'
+          }
+          this.onConfirmed(data, (e) => {
+              if(e.detail === true){
+                  this._processApprove();
+              }
+              document.removeEventListener('on-app-confirm', (e) => {});
+          });
+      }
+
+      delete(e){
+          this.selected = e.target.item;
+          let data = {
+              level: 'danger',
+              message: 'Are you sure you want to reject this item?'
+          }
+          this.onConfirmed(data, (e) => {
+              if (e.detail === true) {
+                  this._processReject()
+              }
+              document.removeEventListener('on-app-confirm', (e) => {});
+          });
+      }
+      
+      _processReject(){
+          this.tunnel.url = `${this.env.app_domain}/api/product/${this.selected.id}`;
+          this._makeChangeRequestCall();
+          
+      }
+
+      _makeChangeRequestCall(){
+          this.tunnel.method = "DELETE";
+          
+          let request = this.tunnel.generateRequest();
+          
+          request.completes.then((req) => {
+              location.reload();
+
+          }, (rejected) => {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+
+          });
+      }
+
+      onConfirmed(data, callback){
+          document.dispatchEvent(new CustomEvent('app-confirm', {detail:data}));
+          return document.addEventListener('on-app-confirm', (e) => callback(e));
+      }
+      
+    }
+
+    window.customElements.define(AppMeStore.is, AppMeStore);
+  </script>
+</dom-module>

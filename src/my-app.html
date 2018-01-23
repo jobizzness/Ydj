@@ -1,300 +1,135 @@
-
+<!--
+@Design Juice
+@Author Jobizzness.com
+This is our main app element. Without this our app will not function.
+-->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-
-<!-- App Components -->
-<link rel="import" href="shared-styles.html">
-<link rel="import" href="components/app-logo/app-logo.html">
-<link rel="import" href="components/app-button/app-button.html">
-<link rel="import" href="my-icons.html">
-
-<!-- Pages -->
-<link rel="lazy-import" href="pages/app-home.html">
-<link rel="lazy-import" href="pages/app-goodies.html">
-<link rel="lazy-import" href="pages/app-login.html">
-<link rel="lazy-import" href="my-view404.html">
+<link rel="import" href="constants.html">
+<link rel="import" href="app-store.html">
+<link rel="import" href="components/app-auth/app-auth.html">
+<link rel="import" href="components/app-roles/app-roles.html">
 
 <dom-module id="my-app">
+
   <template>
-    <style include="shared-styles iron-flex iron-flex-alignment app-button">
-      :host {
-        --app-primary-color: #5f5f5f;
-        --app-secondary-color: white;
-        --app-link-color: #036df4;
-        --app-text-color: rgba(0, 0, 0, 0.74);
-        --app-accent-color:#009688;
-        display: block;
-      }
-
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
-      }
-
-      app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
-      }
-
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
-      }
-
-      .drawer-list {
-        margin: 0 20px;
-      }
-
-      .drawer-list a {
-        display: block;
-        padding: 0 16px;
-        text-decoration: none;
-        color: var(--app-secondary-color);
-        line-height: 40px;
-      }
-
-      .drawer-list a.iron-selected {
-        color: black;
-        font-weight: bold;
-      }
-      .toolbar-bottom{
-        background-color: white;
-      }
-      .toolbar-top{
-        height: 90px;
-      }
-      app-logo{
-        padding-top: 5px;
-      }
-      .logo-link{
-        padding: 0 24px;
-        display: block;
-      }
-      iron-selector.app-nav{
-        width: 100%;
-        @apply --layout-horizontal;
-      }
-      iron-selector.app-nav a.link{
-        @apply --layout-vertical;
-          color: var(--app-text-color);
-          text-decoration: none;
-          font-weight: 600;
-          outline: none;
-          font-size: 14px;
-          padding: 22px 24px;
-          cursor: pointer;
-          white-space: nowrap;
-          position: relative;
-          overflow: hidden;
-      }
-      iron-selector.app-nav a.link:before{
-        position: absolute;
-        bottom: 0;
-        display: block;
-        width: 100%;
-        height: 4px;
-        left:0;
-        content: "";
-        transition: -webkit-transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
-        transition: transform 0.4s cubic-bezier(0.4, 1, 0.4, 1);
-        -webkit-transform: translate3d(0, 4px, 0);
-        transform: translate3d(0, 4px, 0);
-        background: var(--app-accent-color, #509fff);
-      }
-      iron-selector.app-nav a.link:hover:before, iron-selector.app-nav a.link.selected:before{
-        transform: translate3d(0, 0, 0);
-      }
-      header-actions{
-        @apply --layout-horizontal;
-      }
-      header-actions>*{
-        margin: 0 8px;
-      }
-    </style>
-
-    <iron-media-query query="(max-width: 768px)" query-matches="{{smallScreen}}"></iron-media-query>
-    <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="[[rootPattern]]:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
-
-    <app-drawer-layout fullbleed force-narrow id="layout">
-      <!-- Drawer content -->
-      <app-drawer id="drawer" slot="drawer" align="end" opened>
-        <app-toolbar>Navigation</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="view1">View One</a>
-          <a name="view2" href="view2">View Two</a>
-          <a name="view3" href="view3">View Three</a>
-        </iron-selector>
-      </app-drawer>
-
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
-
-          <app-header slot="header" condenses reveals effects="waterfall">
-            <template is="dom-if" if="[[_shouldRenderHeader]]">
-              <app-toolbar class="toolbar-top content">
-                <a href="#" class="logo-link">
-                  <app-logo height="90" width="180"></app-logo>
-                </a>
-                <span class="flex"></span>
-                <template is="dom-if" if="[[smallScreen]]">
-                  <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-                </template>
-                <header-actions>
-                  <dom-if if="[[!smallScreen]]">
-                    <template>
-                      <a href="/login"><app-button border>Log In</app-button></a>
-                      <a href="/register"><app-button shaded>Sign Up</app-button></a>
-                    </template>
-                  </dom-if>
-                </header-actions>
-              </app-toolbar>
-
-              <app-toolbar class="toolbar-bottom" sticky>
-                <div class="content layout horizontal">
-                  <dom-if if="[[!smallScreen]]">
-                    <template>
-                      <iron-selector attr-for-selected="href" 
-                          selected="non-existing"
-                          fallback-selection="default" 
-                          class="app-nav">
-                            <template is="dom-repeat" items="[[nav.items]]" as="item">
-                              <a href="[[item.slug]]" class="link">[[item.name]]</a>
-                            </template>
-                      </iron-selector>
-                      <!-- Search Box -->
-                      <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-                    </template>
-                  </dom-if>
-                </div>
-              </app-toolbar>
-            </template>
-          </app-header>
-          
-          <!-- App pages -->
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="view404"
-            role="main">
-          <app-login name="login"></app-login>
-          <app-home name="home"></app-home>
-          <app-goodies name="goodies"></app-goodies>
-          <app-register name="register"></app-register>
-          <app-404 name="view404"></app-404>
-        </iron-pages>
-      </app-header-layout>
-    </app-drawer-layout>
+    <app-auth signed-in="{{loggedIn}}"
+              id="auth"
+              on-app-ready="_done"
+              code="[[code]]"></app-auth>
+    <app-overview id="app"></app-overview>
   </template>
 
   <script>
-    class MyApp extends Polymer.Element {
+
+    class MyApp extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'my-app'; }
 
-      static get properties() {return {
-          nav:{
-            type:Object,
-            computed: 'navigation()'
-          },
-          page: {
-            type: String,
-            reflectToAttribute: true,
-            observer: '_pageChanged',
-          },
-          rootPattern: String,
-          routeData: Object,
-          subroute: String,
-
-          _shouldRenderHeader: {
-            computed: '_computeShouldRenderHeader(page)',
-            type:Boolean,
-            observer: '_headerChanged'
-            
+      static get properties (){
+        return {
+          user: {
+            type: Object,
+            statePath: 'user'
           }
-        }}
-
-      static get observers() {
-        return [
-          '_routePageChanged(routeData.page)',
-        ];
+        };
       }
 
-      constructor() {
-        super();
-
-        // Get root pattern for app-route, for more info about `rootPath` see:
-        // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
-        this.rootPattern = (new URL(this.rootPath)).pathname;
-      }
-
-      _routePageChanged(page) {
-        // Polymer 2.0 will call with `undefined` on initialization.
-        // Ignore until we are properly called with a string.
-        if (page === undefined) {
-          return;
+      static get actions (){
+        return {
+            setUser(user) {
+              return {
+                type: C.SET_USER,
+                payload: user
+              };
+            }
+          };
         }
 
-        // If no page was found in the route data, page will be an empty string.
-        // Deault to 'home' in that case.
-        this.page = page || 'home';
+      constructor(){
+          super();
+          this.code = this.getParameterByName('code') || null;
+          this.firstLoad = true;
+      }
+        
+     /**
+      * Runs when this @component is loaded.
+      * Listeners are set here to listen for auth changes.
+      */
+      ready(){
+        super.ready();
+        
+        
+        //Auth events
+        this.$.auth.onAuthStateChanged((e) => this._handleAuthChanged(e.detail.value));
+        window.addEventListener('login', e => this._login(e));
+        window.addEventListener('signout', e => this._signOut(e));
+        window.addEventListener('register', e => this._register(e));
 
-        // Close a non-persistent drawer when the page & route are changed.
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
+      }
+
+        /*
+         * When auth changes we will tell everyone.
+         * @param user
+         * @private
+         */
+        _handleAuthChanged(user){
+            this.dispatch('setUser', user);
+            if(!this.firstLoad)
+              window.location.href = '/'; //works better
+
+
         }
+
+      /**
+       * Will attempt to log the user in when the credentials are provided.
+       * @param event
+       * @private
+       */
+      _login(e){
+        if(!e.detail) return;
+        let creds = e.detail;
+        this.$.auth.signInWithUserNameAndPassword(creds.username, creds.password);
       }
 
-      _pageChanged(page) {
-        // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('pages/app-' + page + '.html');
-        Polymer.importHref(resolvedPageUrl, null, this._showPage404.bind(this), true);
+      /**
+       * Sign the current user out
+       * @param event
+       * @private
+       */
+      _signOut(e){
+        this.$.auth.signOut();
+        window.location.href = '/'; //works better
+      }
+      
+      /**
+       * @desc when page changes loads the page on demand or show a 404 page.
+       * @param string $page - the page to be displayed
+       * @return void
+       */
+      getParameterByName(name, url) {
+          if (!url) url = window.location.href;
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
+      /**
+       * Register a new user from username and password
+       * @param event
+       * @private
+       */
+      _register(e){
+        let creds = e.detail;
+        this.$.auth.registerWithUsernameAndPassword(creds.email, creds.password, creds.name);
       }
 
-      _showPage404() {
-        this.page = 'view404';
-      }
+      _done(e){
+        var resolvedPageUrl = this.resolveUrl('app-overview.html');
+        Polymer.importHref(resolvedPageUrl, null, null, true);
 
-      navigation(){return {
-            items: [
-              {name: 'Print Templates', slug: 'templates/print'},
-              {name: 'Graphics', slug: '#'},
-              {name: 'Web & Apps', slug: '#'},
-              {name: 'Branding', slug: '#'},
-              {name: 'Plug-ins', slug: '#'},
-              {name: 'Fonts', slug: '#'},
-              {name: '3D', slug: '#'}
-            ]}
-      }
-      _computeShouldRenderHeader(page){
-        let res = true;
-        switch(page){
-          case 'login':
-          case 'register':
-            res = false;
-          break;
-        }
-        return res;
-      }
-
-      _headerChanged(){
-        this.$.layout.resetLayout();
+        this.firstLoad = false;
       }
     }
 

@@ -1,7 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-
+<link rel="import" href="../../app-store.html">
 <!-- App components -->
 
 <dom-module id="app-product-item">
@@ -21,18 +21,15 @@
       .product-owner{
         font-weight: 500;
         font-size: 13px;
-        padding: 0 0 24px;
+        padding: 0 0 8px;
         margin: 0;
       }
       .product-owner a{
         color: inherit;
       }
       .card{
-        transition: all 0.3s ease;
-        box-sizing: border-box;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        box-shadow:0 1px 1px rgba(0,0,0,.1);
+        padding: 0 !important;
+        
       }
       .shot{
         width: 100%;
@@ -57,11 +54,6 @@
       footer{
         position: relative;
         display: block;
-      }
-      .shot-fab{
-        position: absolute;
-        top: -26px;
-        right: 8px;
       }
       .shot-buttons{
         padding-top: 8px;
@@ -95,7 +87,7 @@
         padding-bottom: 8px;
       }
       .product-category a{
-        color: var(--app-accent-color);
+        color: #64b1d3;
         font-size: 12px;
         font-weight: 600;
       }
@@ -115,36 +107,42 @@
           white-space: nowrap;
           overflow: hidden;
        }
+       .liked{
+             color: #00d7b3;
+       }
 
     </style>
 
     <!-- local DOM goes here -->
     <article class="shot" id="shot">
       <div class="card shot-card">
-        <a href="/goodies/cool-design-made-by-me"><iron-image preload
+        <a href$="/goodies/[[data.slug]]"><iron-image preload
                     class="shot-image"
                     style="background-color: #eee;"
                     fade
-                    sizing="cover" src="http://lorempixel.com/400/700/fashion/[[index]]">
+                    sizing="cover" src="{{_getMedia(data.media)}}">
             </iron-image></a>
 
         <footer>
           <div class="shot-footer">
-              <a href="#"><h1 class="product-title">Phantom Cloud Illustration Shop</h1></a>
+              <a href$="/goodies/[[data.slug]]"><h1 class="product-title">[[data.title]]</h1></a>
               <p class="product-owner">
-                  by <a href="#">LB Design</a>
+                  by <a href$="/user/[[data.owner.nickname]]">[[data.owner.nickname]]</a>
               </p>
               <div class="layout horizontal price-tag">
                 <p class="product-category">
-                  <a href="#">Branding</a>
+                  <a href$="/category/[[data.category]]">[[data.category]]</a>
                 </p>
                 <span class="flex"></span>
-                <span class="price">$150</span>
+                <span class="price">$[[data.price]]</span>
               </div>
               <div class="shot-buttons layout horizontal">
-                <paper-button class="pink flex"><iron-icon icon="app-icons:like"></iron-icon> <span>Like</span></paper-button>
-                <paper-button class="pink flex"><iron-icon icon="app-icons:comment"></iron-icon><span>Comment</span></paper-button>
-                <paper-button class="pink flex"><iron-icon icon="app-icons:share"></iron-icon><span>Share</span></paper-button>
+                <paper-button class="pink flex"><iron-icon icon="my-icons:eye"></iron-icon><span>[[data.views]]</span></paper-button>
+                <paper-button
+                        class="pink flex"
+                        on-click="like" class$="[[_getLikedClass(data.likes.is_liked)]]"><iron-icon icon="my-icons:heart"></iron-icon><span>[[data.likes.count]]</span></paper-button>
+                <paper-button
+                        class="pink flex"><iron-icon icon="my-icons:share"></iron-icon><span>0</span></paper-button>
               </div>
           </div>
         </footer>
@@ -153,18 +151,42 @@
   </template>
 
   <script>
-      class AppProductItem extends Polymer.Element {
+      class AppProductItem extends ReduxMixin(Polymer.Element) {
 
       static get is() { return 'app-product-item'; }
 
-      static get properties() {return {
-          properties: {
+      static get properties() {
+        return {
             data: Object,
+            env: {
+                type: Object,
+                statePath: 'env'
+            }
         }
-      }}
+      }
 
       constructor() {
         super();
+      }
+      
+      _getMedia(media){
+          if(media.length < 1) return;
+          return media[0].src;
+      }
+      
+      like(){
+        fetch(`${this.env.app_domain}/api/favorites/${this.data.slug}`, {
+          headers:{
+            Authorization: `Bearer ${this.env.token}`,
+            Accept: 'application/json'
+          }
+        }).then((res) => (res.json())
+            .then((val) => this.set('data.likes', val))
+        );
+      }
+
+      _getLikedClass(liked){
+        if(liked) return 'liked';
       }
 
       ready() {
