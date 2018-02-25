@@ -237,14 +237,14 @@
         let password = this.$.password.value;
         
         let data = {
-            username: this.$.username.value,
+            nickname: this.$.username.value,
             email: this.$.email.value,
             location: this.$.location.value,
             name: this.$.name.value,
             bio: this.$.bio.value,
             billing: this.$.paypalEmail.value
           }
-          if(password != 'supersecretstuff'){
+          if(password != 'supersecretstuff' || password != ''){
             data.password = password;
           }
 

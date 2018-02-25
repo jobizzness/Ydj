@@ -57,7 +57,7 @@
 	        <!-- Earnings List -->
 	        <template is="dom-repeat" items="[[items]]" as="item">
 	          <section class="layout horizontal earnings">
-	            <div class="flex-4"><span class="light-text">April 02, 2017</span></div>
+	            <div class="flex-4"><span class="light-text">[[item.created_at]]</span></div>
 	            <div class="flex-3"><span class="strong-text">[[item.product.title]]</span></div>
 	            <div class="flex layout vertical center center-justified"><span class="light-text">[[item.buyer.email]]</span></div>
 	            <div class="flex layout vertical center center-justified"><span class="strong-text">$[[item.product.price]]</span></div>
