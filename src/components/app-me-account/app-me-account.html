@@ -248,7 +248,9 @@
             data.password = password;
           }
 
-         return this.$.dbRef.updateUser(data);
+          this.$.dbRef.updateUser(data);
+
+          location.reload()
       }
       
       ready() {
