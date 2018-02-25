@@ -4,6 +4,9 @@
 This is our main app element. Without this our app will not function.
 -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+
 <link rel="import" href="constants.html">
 <link rel="import" href="app-store.html">
 <link rel="import" href="components/app-auth/app-auth.html">
