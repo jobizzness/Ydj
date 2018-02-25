@@ -180,14 +180,14 @@
                    type="password"
                    name="password"
                    id="password"
-                   value="supersecretstuff">
+                   value="secret">
             	<iron-icon icon="main" prefix></iron-icon>
        </paper-input>
        <paper-input label="New Password"
                    type="password"
                    name="password"
                    id="password"
-                   value="supersecretstuff">
+                   value="secret">
               <iron-icon icon="main" prefix></iron-icon>
        </paper-input>
           	<!-- Delete Button -->
@@ -244,7 +244,7 @@
             bio: this.$.bio.value,
             billing: this.$.paypalEmail.value
           }
-          if(password != 'supersecretstuff' || password != ''){
+          if(password != 'secret'){
             data.password = password;
           }
 
