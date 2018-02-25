@@ -164,9 +164,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             let request = this.tunnel.generateRequest();
 
             request.completes.then((req) => {
+
+                let data = req.parseResponse();
+
                 document.dispatchEvent(new CustomEvent('product-published', { detail: data }));
 
-                return document.dispatchEvent(new CustomEvent('app-toast', { detail: { msg: 'Product was Published successfully!' } }));
+                document.dispatchEvent(new CustomEvent('app-toast', { detail: { msg: 'Product was Published successfully!' } }));
+
+                window.location = '/store';
             }, (rejected) => {
                 //document.dispatchEvent(new CustomEvent('app-toast', { detail: { msg: 'Oops! An error occured, Please try again.' } }));
 
