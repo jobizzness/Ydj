@@ -21,7 +21,11 @@
 					value: null,
 					notify: true
 				},
-
+                products: {
+                    type: Array,
+                    value: null,
+                    notify: true
+                },
 		    env: {
 		        type: Object,
 		        statePath: 'env',
@@ -73,13 +77,12 @@
       }
 
       _getUserProducts(username){
-				this.tunnel.url = this.env.app_domain + `/api/products/designer/${username}`;
+				this.tunnel.url = this.env.app_domain + `/api/user-product/${username}`;
 				let request = this.tunnel.generateRequest();
 				
           request.completes.then((req) => {
               //We got our request
-              this.designer.store = req.parseResponse();
-              this.notifyPath('designer.store');
+              this.products = req.parseResponse().data;
 
           }, (rejected) => {
               // failed request, argument is an object

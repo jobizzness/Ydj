@@ -2,7 +2,6 @@
   "name": "polymer-starter-kit",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "cypress": "^1.0.2",
     "eslint": "^3.12.0",
     "browser-sync": "^2.18.8",
     "eslint-config-google": "^0.7.1",
@@ -12,9 +11,7 @@
     "dev": "polymer serve | npm run watch",
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "npm run lint && polymer test",
-    "watch": "browser-sync start --proxy localhost:8081 --files \"src/**/*.*, index.html, *.js\"",
-    "lint": "eslint . --ext js,html --ignore-path .gitignore",
-    "test": "npm run lint && polymer test"
+    "watch": "browser-sync start --proxy localhost:8081 --files \"src/**/*.*, index.html, *.js\""
   },
   "dependencies": {
     "firebase-functions": "^0.6.3",

@@ -113,6 +113,7 @@
                 id="profileData"
                 profile-username="[[username]]"
                 designer="{{designer}}"
+                products="{{products}}"
                 on-failure="_failed"></app-profile-data>
 
         <div class="content">
@@ -228,7 +229,7 @@
             <main class="flex-3">            
                 <!-- Product Listing -->
                 <app-products class="layout vertical">
-                <h3>Goodies (6) </h3>
+                <h3>Goodies ([[products.length]]) </h3>
                     <!-- List here -->
                     <iron-list items="[[products]]" 
                               as="product"
