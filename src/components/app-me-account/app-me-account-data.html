@@ -113,7 +113,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               request.completes.then((req) => {
                   this.dispatch('setBusy', false);
                   this.dispatch('setUser', req.parseResponse());
-                  //console.log(req)
+                  
+                  location.reload();
 
               }, (rejected) => {
                   // TODO dispatch new error occurred
