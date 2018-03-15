@@ -277,9 +277,10 @@
             media_list: []
         }
         
-        this.$.upload.files = [];
+        this.$.mediaInput.files = [];
         this.mode = 'save';
         history.pushState(null, null, '/me/store');
+        location.reload();
       }
       
       _save(){

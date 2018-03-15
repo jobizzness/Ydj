@@ -171,7 +171,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 document.dispatchEvent(new CustomEvent('app-toast', { detail: { msg: 'Product was Published successfully!' } }));
 
-                window.location = '/store';
+                history.pushState(null, null, '/me/store');
+                location.reload();
             }, (rejected) => {
                 //document.dispatchEvent(new CustomEvent('app-toast', { detail: { msg: 'Oops! An error occured, Please try again.' } }));
 
