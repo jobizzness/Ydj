@@ -13,11 +13,13 @@
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "npm run lint && polymer test",
     "watch": "browser-sync start --proxy localhost:8081 --files \"src/**/*.*, index.html, *.js\"",
-    "lint": "eslint . --ext js,html --ignore-path .gitignore",
-    "test": "npm run lint && polymer test"
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "firebase-functions": "^0.6.3",
-    "redux": "^3.7.2"
-  }
+    "redux": "^3.7.2",
+    "snyk": "^1.192.0"
+  },
+  "snyk": true
 }
